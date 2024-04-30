@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://db_user:P!0h42sd5@localhost:3306/lottery"
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  name            String
+  username        String
+  password        String
+  mobile          String    @unique
+  email           String    @unique
+  credit          Decimal   @default(0)
+  remark          String?
+  status          Status    @default(ACTIVE)
+  currency        Currency
+  is_open_downline Boolean   @default(true)
+  updated_at      DateTime  @updatedAt
+  created_at      DateTime  @default(now())
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum Currency {
+  USD
+  EUR
+  GBP
+  JPY
+  CNY
+}
