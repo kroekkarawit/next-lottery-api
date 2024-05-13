@@ -29,23 +29,18 @@ router.post('/login', async (req, res, next) => {
         /*
         // Find user by email
         const user = await prisma.admin.findUnique({ where: { username } });
-
         // If user is not found, return error
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
         // Verify password
         const passwordMatch = await bcrypt.compare(password, user.password);
-
         // If password does not match, return error
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
-
         // Generate access token
         const accessToken = jwt.sign({ email: user.email, role: user.role }, '8W8JKqrLYZYkITPCKZszQMxv9n83Ygyv', { expiresIn: '7d' });
-
         res.json({ "accessToken": "2312klsdklfsdklfkm" });
 */
         res.json({
