@@ -88,7 +88,7 @@ router.post('/login', async (req, res, next) => {
                 })*/
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
 
@@ -107,7 +107,7 @@ router.get('/gen-user', async (req, res, next) => {
         res.json(createdUser);
     } catch (error) {
         console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
 
