@@ -112,7 +112,7 @@ router.get('/get', async (req, res) => {
     const username = "user";
 
     try {
-        const user = await prisma.user.find({ where: { username } });
+        const user = await prisma.user.findMany();
 
         if (user) {
             res.json(user);
