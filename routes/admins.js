@@ -19,7 +19,11 @@ router.get('/get/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const user = await prisma.admin.findUnique({ where: { username } });
+        const user = await prisma.admin.findFirst({
+            where: {
+                username: username,
+            },
+        });
 
         if (user) {
             res.json(user);
@@ -40,12 +44,16 @@ router.post('/login', async (req, res, next) => {
 
     // Check if email and password are provided
     if (!username || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+        return res.status(400).json({ message: 'Username and password are required' });
     }
 
     try {
         // Find user by email
-        const user = await prisma.admin.findUnique({ where: { username } });
+        const user = await prisma.admin.findFirst({
+            where: {
+                username: username,
+            },
+        });
         // If user is not found, return error
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
