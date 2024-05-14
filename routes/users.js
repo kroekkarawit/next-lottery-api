@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 router.get('/get-user', async (req, res) => {
     try {
-        const users = await prisma.user.findMany({});
+        const users = await prisma.user.findUnique({
+            where: {
+                username: "user",
+            },
+        })
         if (users.length > 0) {
             res.json(users);
         } else {
