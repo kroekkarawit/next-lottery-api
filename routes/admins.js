@@ -25,8 +25,6 @@ router.post('/login', async (req, res, next) => {
     }
 
     try {
-
-        /*
         // Find user by email
         const user = await prisma.admin.findUnique({ where: { username } });
         // If user is not found, return error
@@ -35,25 +33,32 @@ router.post('/login', async (req, res, next) => {
         }
         // Verify password
         const passwordMatch = await bcrypt.compare(password, user.password);
-        // If password does not match, return error
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
-        // Generate access token
-        const accessToken = jwt.sign({ email: user.email, role: user.role }, '8W8JKqrLYZYkITPCKZszQMxv9n83Ygyv', { expiresIn: '7d' });
-        res.json({ "accessToken": "2312klsdklfsdklfkm" });
-*/
+        const accessToken = jwt.sign({ username: user.username }, '8W8JKqrLYZYkITPCKZszQMxv9n83Ygyv', { expiresIn: '7d' });
+
         res.json({
-            id: 1,
+            id: user.id,
             name: "dashtailzz",
             username: 'asdasdasdzzz',
             image: "avatar3zzz",
-            password: "passwordzzz",
+            accessToken: accessToken,
             email: "dashtailzzz@codeshaper.net",
-            resetToken: null,
-            resetTokenExpiry: null,
-            profile: null,
+
         })
+        /*
+                res.json({
+                    id: 1,
+                    name: "dashtailzz",
+                    username: 'asdasdasdzzz',
+                    image: "avatar3zzz",
+                    password: "passwordzzz",
+                    email: "dashtailzzz@codeshaper.net",
+                    resetToken: null,
+                    resetTokenExpiry: null,
+                    profile: null,
+                })*/
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
