@@ -64,6 +64,45 @@ router.get('/gen-user', async (req, res, next) => {
     }
 });
 
+router.post('/login', async (req, res, next) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                username: username,
+            },
+        });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid password' });
+        }
+        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '7d' });
+
+        res.json({
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            mobile: user.mobile,
+            credit: user.credit,
+            currency: user.currency,
+            is_open_downline: user.is_open_downline,
+            image: "avatar",
+            role: user.role,
+            accessToken: accessToken,
+        })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();

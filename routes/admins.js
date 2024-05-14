@@ -41,38 +41,32 @@ router.get('/get/:username', async (req, res) => {
 
 router.post('/login', async (req, res, next) => {
     const { username, password } = req.body;
-
-    // Check if email and password are provided
     if (!username || !password) {
         return res.status(400).json({ message: 'Username and password are required' });
     }
 
     try {
-        // Find user by email
         const user = await prisma.admin.findFirst({
             where: {
                 username: username,
             },
         });
-        // If user is not found, return error
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        // Verify password
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
-        const accessToken = jwt.sign({ username: user.username }, '8W8JKqrLYZYkITPCKZszQMxv9n83Ygyv', { expiresIn: '7d' });
+        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '7d' });
 
         res.json({
             id: user.id,
-            name: "dashtailzz",
-            username: 'asdasdasdzzz',
-            image: "avatar3zzz",
+            name: user.name,
+            username: user.username,
+            image: "avatar",
+            role: user.role,
             accessToken: accessToken,
-            email: "dashtailzzz@codeshaper.net",
-
         })
     } catch (error) {
         console.error(error);
