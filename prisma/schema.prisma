@@ -47,11 +47,7 @@ model Admin {
   name            String
   username        String
   password        String
-  credit          Decimal   @default(0)
-  remark          String?
   status          Status    @default(ACTIVE)
-  currency        Currency
-  is_open_downline Boolean   @default(true)
   updated_at      DateTime  @updatedAt
   created_at      DateTime  @default(now())
 }
