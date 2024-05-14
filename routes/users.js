@@ -108,8 +108,8 @@ router.get('/mysql-newuser', async (req, res, next) => {
 
 });
 
-router.get('/get/:username', async (req, res) => {
-    const username = req.params.username;
+router.get('/get', async (req, res) => {
+    const username = "johndoe";
 
     try {
         const user = await prisma.user.findUnique({ where: { username } });
