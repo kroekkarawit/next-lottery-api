@@ -1,4 +1,3 @@
-// routes/users.js
 const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
@@ -74,18 +73,6 @@ router.post('/login', async (req, res, next) => {
             email: "dashtailzzz@codeshaper.net",
 
         })
-        /*
-                res.json({
-                    id: 1,
-                    name: "dashtailzz",
-                    username: 'asdasdasdzzz',
-                    image: "avatar3zzz",
-                    password: "passwordzzz",
-                    email: "dashtailzzz@codeshaper.net",
-                    resetToken: null,
-                    resetTokenExpiry: null,
-                    profile: null,
-                })*/
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error', details: error.message });
