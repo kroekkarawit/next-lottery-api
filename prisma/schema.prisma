@@ -16,9 +16,9 @@ datasource db {
 model User {
   id              Int       @id @default(autoincrement())
   name            String
-  username        String
+  username        String    @unique
   password        String
-  mobile          String    @unique
+  mobile          String
   credit          Decimal   @default(0)
   remark          String?
   status          Status    @default(ACTIVE)
@@ -45,7 +45,7 @@ enum Currency {
 model Admin {
   id              Int       @id @default(autoincrement())
   name            String
-  username        String
+  username        String    @unique
   password        String
   status          Status    @default(ACTIVE)
   updated_at      DateTime  @updatedAt
