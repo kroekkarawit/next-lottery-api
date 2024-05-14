@@ -3,6 +3,7 @@ const router = express.Router();
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
