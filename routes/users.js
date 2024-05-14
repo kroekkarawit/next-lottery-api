@@ -59,7 +59,7 @@ router.get('/gen-user', async (req, res, next) => {
         res.json(createdUser);
     } catch (error) {
         console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
 
