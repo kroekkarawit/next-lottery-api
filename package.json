@@ -8,7 +8,11 @@
     "start": "node app.js",
     "clear-start": "npm run kill-node && npm start",
     "kill-node": "pkill -f 'node ./bin/www'",
-    "migrate": "npx prisma migrate dev"
+    "prisma-generate": "npx prisma generate",
+    "prisma-push": "npx prisma db push",
+    "prisma-pull": "npx prisma db pull",
+    "migrate-reset": "npx prisma migrate reset --force",
+    "migrate-deploy": "npx prisma migrate deploy"
   },
   "author": "",
   "license": "ISC",
