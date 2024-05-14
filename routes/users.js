@@ -152,10 +152,13 @@ router.get('/gen-user', async (req, res, next) => {
         .catch((error) => {
             console.error('Error creating user:', error);
             res.json(error);
-        })
-        .finally(() => {
-            prisma.$disconnect();
         });
+});
+
+// Disconnect the Prisma client when the server is shutting down
+process.on('SIGINT', async () => {
+    await prisma.$disconnect();
+    process.exit();
 });
 
 
