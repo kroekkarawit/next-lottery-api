@@ -109,20 +109,18 @@ router.get('/mysql-newuser', async (req, res, next) => {
 });
 
 router.get('/get', async (req, res) => {
-    const username = "user";
-
-    try {
-        const user = await prisma.user.findMany();
-
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+    prisma.user.findMany()
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        })
+        .catch((error) => {
+            console.error('Error fetching user:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        });
 });
 
 router.get('/gen-user', async (req, res, next) => {
