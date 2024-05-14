@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 router.get('/get-user', async (req, res) => {
     try {
-        const users = await prisma.user.findMany();
+        const users = await prisma.user.findMany({});
         if (users.length > 0) {
             res.json(users);
         } else {
@@ -16,7 +16,6 @@ router.get('/get-user', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 
 router.get('/gen-user', async (req, res, next) => {
     try {
@@ -31,7 +30,6 @@ router.get('/gen-user', async (req, res, next) => {
                 remark: 'Remark',
                 status: 'ACTIVE',
                 currency: 'USD',
-                is_open_downline: true,
             },
         });
         console.log('Created user:', createdUser);
@@ -42,11 +40,9 @@ router.get('/gen-user', async (req, res, next) => {
     }
 });
 
-// Disconnect the Prisma client when the server is shutting down
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();
 });
-
 
 module.exports = router;
