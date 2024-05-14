@@ -23,7 +23,7 @@ model User {
   remark          String?
   status          Status    @default(ACTIVE)
   currency        Currency
-  is_open_downline Boolean   @default(true)
+  is_open_downline Boolean  @default(true)
   updated_at      DateTime  @updatedAt
   created_at      DateTime  @default(now())
 }
@@ -41,13 +41,17 @@ enum Currency {
   CNY
 }
 
-
 model Admin {
   id              Int       @id @default(autoincrement())
   name            String
   username        String    @unique
   password        String
   status          Status    @default(ACTIVE)
+  role            Role
   updated_at      DateTime  @updatedAt
   created_at      DateTime  @default(now())
+}
+
+enum Role {
+  MASTER
 }

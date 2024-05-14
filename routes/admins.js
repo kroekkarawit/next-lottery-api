@@ -92,4 +92,23 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
+router.get('/gen-user', async (req, res, next) => {
+    try {
+        const createdUser = await prisma.admin.create({
+            data: {
+                name: 'John Doe',
+                username: 'johndoe123',
+                password: 'password123',
+                status: 'ACTIVE',
+                role: "MASTER"
+            },
+        });
+        console.log('Created user:', createdUser);
+        res.json(createdUser);
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
