@@ -15,6 +15,14 @@ router.get('/', async (req, res, next) => {
     res.json(users);
 });
 
+router.get('/get/:username', async (req, res) => {
+    const username = req.params.username;
+
+    const user = await prisma.admin.findUnique({ where: { username } });
+    res.json(user);
+});
+
+
 
 router.post('/login', async (req, res, next) => {
     const { username, password } = req.body;

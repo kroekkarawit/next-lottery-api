@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Home route
 router.get('/', (req, res) => {
-    res.send('Home page');
+    res.send('Home page backend');
 });
 
 module.exports = router;
