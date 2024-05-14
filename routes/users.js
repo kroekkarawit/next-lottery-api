@@ -7,7 +7,7 @@ router.get('/get/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
             where: {
                 id: 1,
                 username: username,
