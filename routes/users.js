@@ -48,7 +48,6 @@ router.get('/gen-user', async (req, res, next) => {
                 username: 'johndoe123',
                 password: 'password123',
                 mobile: '123456789',
-                email: 'john@example.com',
                 credit: 100.50,
                 remark: 'Remark',
                 status: 'ACTIVE',
