@@ -103,7 +103,6 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-const bcrypt = require('bcrypt');
 
 router.post('/change-password', async (req, res, next) => {
     const { newPassword, oldPassword } = req.body;
