@@ -7,7 +7,11 @@ router.get('/get/:username', async (req, res) => {
     const username = req.params.username;
 
     try {
-        const user = await prisma.user.findUnique({ where: { username } });
+        const user = await prisma.user.findUnique({
+            where: {
+                username: username,
+            },
+        });
 
         if (user) {
             res.json(user);
