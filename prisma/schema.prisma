@@ -57,3 +57,41 @@ model Admin {
 enum Role {
   MASTER
 }
+
+model Log {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  ip_address  String
+  action      Action
+  created_at  DateTime @default(now())
+}
+
+model Setting {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  ip_address  String
+  action      Action
+  created_at  DateTime @default(now())
+}
+
+model Receipt {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  remark      String?
+  bet_method  String?
+  bet_format  String?
+  draw_type   String?
+  status      Status
+  created_at  DateTime @default(now())
+}
+
+model Bet {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  receipt_id  String
+  number      String?
+  amount      Float?
+  type        String?
+  status      Status
+  created_at  DateTime @default(now())
+}
