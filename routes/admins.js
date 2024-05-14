@@ -10,7 +10,8 @@ router.get('/', async (req, res, next) => {
     const users = {
         username: 'John Doe',
         full_name: 'johndoe',
-        password: 'password123'
+        password: 'password123',
+        key: process.env.SECRET_KEY
     };
     res.json(users);
 });

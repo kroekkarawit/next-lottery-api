@@ -83,7 +83,7 @@ router.post('/login', async (req, res, next) => {
         if (!passwordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         }
-        const accessToken = jwt.sign({ username: user.username }, process.env.SECRET_KEY, { expiresIn: '7d' });
+        const accessToken = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY, { expiresIn: '7d' });
 
         res.json({
             id: user.id,
@@ -102,6 +102,54 @@ router.post('/login', async (req, res, next) => {
         res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
+
+const bcrypt = require('bcrypt');
+
+router.post('/change-password', async (req, res, next) => {
+    const { newPassword, oldPassword } = req.body;
+    if (!newPassword || !oldPassword) {
+        return res.status(400).json({ message: 'Old password and new password are required' });
+    }
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+        const username = decodedToken.username;
+        try {
+            const user = await prisma.user.findFirst({
+                where: {
+                    username: username,
+                },
+            });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!passwordMatch) {
+                return res.status(401).json({ message: 'Invalid password' });
+            }
+            const newPasswordEncrypted = await bcrypt.hash(newPassword, 10);
+            const updatedPassword = await prisma.user.update({
+                where: {
+                    username: username,
+                },
+                data: {
+                    password: newPasswordEncrypted,
+                },
+            })
+            res.json({
+                id: user.id,
+                message: 'User password changed'
+            })
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error', details: error.message });
+        }
+    } else {
+        res.status(500).json({ error: 'Authentication failed' });
+    }
+});
+
 
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
