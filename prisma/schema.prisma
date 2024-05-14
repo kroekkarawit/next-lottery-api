@@ -11,6 +11,8 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = "mysql://db_user:P!0h42sd5@localhost:3306/lottery"
+  shadowDatabaseUrl = "mysql://db_user:P!0h42sd5@localhost:3306/prisma_shadow"
+
 }
 
 model User {
