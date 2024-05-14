@@ -25,6 +25,22 @@ router.get('/get/:username', async (req, res) => {
     }
 });
 
+router.get('/gets', async (req, res) => {
+
+    try {
+        const user = await prisma.user.findMany({});
+
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
 router.get('/gen-user', async (req, res, next) => {
     try {
         const createdUser = await prisma.user.create({
