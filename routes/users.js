@@ -93,7 +93,7 @@ router.post('/login', async (req, res, next) => {
             credit: user.credit,
             currency: user.currency,
             is_open_downline: user.is_open_downline,
-            account_level: user.accountLevel,
+            account_level: user.account_level,
             image: "avatar",
             role: user.role,
             accessToken: accessToken,
