@@ -1,33 +1,38 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://db_user:P!0h42sd5@localhost:3306/lottery"
+  provider          = "mysql"
+  url               = "mysql://db_user:P!0h42sd5@localhost:3306/lottery"
   shadowDatabaseUrl = "mysql://db_user:P!0h42sd5@localhost:3306/prisma_shadow"
-
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
-  name            String
-  username        String    @unique
-  password        String
-  mobile          String
-  credit          Decimal   @default(0)
-  remark          String?
-  status          Status    @default(ACTIVE)
-  currency        Currency
-  is_open_downline Boolean  @default(true)
-  updated_at      DateTime  @updatedAt
-  created_at      DateTime  @default(now())
+  id               Int                @id @default(autoincrement())
+  name             String
+  username         String             @unique
+  password         String
+  mobile           String
+  credit           Decimal            @default(0.00) @db.Decimal(65, 2)
+  remark           String?
+  status           Status             @default(ACTIVE)
+  account_level    User_account_level
+  currency         String             @default("['MYR','SGD','THB']") @db.VarChar(255)
+  is_open_downline Boolean            @default(true)
+  updated_at       DateTime           @updatedAt
+  created_at       DateTime           @default(now())
+}
+
+model Admin {
+  id         Int      @id @default(autoincrement())
+  name       String
+  username   String   @unique
+  password   String
+  status     Status   @default(ACTIVE)
+  role       Role
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
 }
 
 enum Status {
@@ -35,63 +40,10 @@ enum Status {
   INACTIVE
 }
 
-enum Currency {
-  USD
-  EUR
-  GBP
-  JPY
-  CNY
-}
-
-model Admin {
-  id              Int       @id @default(autoincrement())
-  name            String
-  username        String    @unique
-  password        String
-  status          Status    @default(ACTIVE)
-  role            Role
-  updated_at      DateTime  @updatedAt
-  created_at      DateTime  @default(now())
-}
-
 enum Role {
   MASTER
 }
 
-model Log {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  ip_address  String
-  action      Action
-  created_at  DateTime @default(now())
-}
-
-model Setting {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  ip_address  String
-  action      Action
-  created_at  DateTime @default(now())
-}
-
-model Receipt {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  remark      String?
-  bet_method  String?
-  bet_format  String?
-  draw_type   String?
-  status      Status
-  created_at  DateTime @default(now())
-}
-
-model Bet {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  receipt_id  String
-  number      String?
-  amount      Float?
-  type        String?
-  status      Status
-  created_at  DateTime @default(now())
+enum User_account_level {
+  Agent
 }
