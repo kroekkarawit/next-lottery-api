@@ -67,7 +67,7 @@ router.post('/login', async (req, res, next) => {
             username: user.username,
             image: "avatar",
             role: user.role,
-            accessToken: accessToken,
+            access_token: accessToken,
         })
     } catch (error) {
         console.error(error);
