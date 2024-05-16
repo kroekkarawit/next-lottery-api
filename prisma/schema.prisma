@@ -62,13 +62,13 @@ enum User_account_level {
 
 model Bet {
   id          Int      @id @default(autoincrement())
-  userId      String   @db.VarChar(255)
-  receiptId   String   @db.VarChar(255)
+  user_id      String   @db.VarChar(255)
+  receipt_id   String   @db.VarChar(255)
   number      String?
   amount      Decimal?
-  betType     String?
-  lotteryType String?
+  bet_type     String?
+  lottery_type String?
   status      Status?
-  drawDate    DateTime? @db.Date
-  createdAt   DateTime @default(now())
+  draw_date    DateTime? @db.Date
+  created_at   DateTime @default(now())
 }
