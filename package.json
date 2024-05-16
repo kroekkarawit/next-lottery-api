@@ -4,7 +4,6 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "clear-start": "npm run kill-node && npm start",
     "kill-node": "pkill -f 'node ./bin/www'",
@@ -12,7 +11,10 @@
     "prisma-push": "npx prisma db push",
     "prisma-pull": "npx prisma db pull",
     "migrate-reset": "npx prisma migrate reset --force",
-    "migrate-deploy": "npx prisma migrate deploy"
+    "migrate-deploy": "npx prisma migrate deploy",
+    "pm2-start": "PORT=3000 pm2 start app.js --name api",
+    "pm2-restart": "pm2 restart api",
+    "pm2-stop": "pm2 stop api"
   },
   "author": "",
   "license": "ISC",
