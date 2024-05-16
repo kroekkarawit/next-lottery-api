@@ -38,6 +38,7 @@ model Admin {
 enum Status {
   ACTIVE
   INACTIVE
+  PENDING
 }
 
 enum Role {
@@ -46,4 +47,16 @@ enum Role {
 
 enum User_account_level {
   Agent
+}
+
+model Bet {
+  id          Int      @id @default(autoincrement())
+  userId      String   @db.VarChar(255)
+  receiptId   String   @db.VarChar(255)
+  number      String?
+  amount      Decimal?
+  betType     String?
+  lotteryType String?
+  status      Status?
+  createdAt   DateTime @default(now())
 }
