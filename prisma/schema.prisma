@@ -68,6 +68,7 @@ model Bet {
   amount       Decimal?
   bet_type     String?
   lottery_type String?
+  ip_address   String?
   status       Status?
   result_date  DateTime? @db.Date
   created_at   DateTime  @default(now())
