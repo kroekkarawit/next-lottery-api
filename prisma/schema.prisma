@@ -69,7 +69,7 @@ model Bet {
   bet_type     String?
   lottery_type String?
   status       Status?
-  draw_date    DateTime? @db.Date
+  result_date  DateTime? @db.Date
   created_at   DateTime  @default(now())
 }
 
@@ -79,6 +79,39 @@ model Receipt {
   remark       String?  @db.VarChar(255)
   bet_method   String?  @db.VarChar(255)
   total_amount Decimal?
+  currency     String
   status       Status
   created_at   DateTime @default(now())
+}
+
+model Round {
+  id          Int       @id @default(autoincrement())
+  lottery_id  String    @db.VarChar(255)
+  start_time  DateTime? @db.Date
+  end_time    DateTime? @db.Date
+  result_time DateTime? @db.Date
+  result      String
+  status      Status
+  created_at  DateTime  @default(now())
+}
+
+model Lottery {
+  id            Int       @id @default(autoincrement())
+  type          String
+  code          String
+  detail        Json
+  open_before   Int       @default(0)
+  open_time     DateTime?
+  close_weekday Json
+  close_extra   Json
+  off_holiday   Json
+  close_after   Int?
+  close_time    DateTime?
+  result_after  Int?
+  result_time   DateTime?
+  buy_limit     Json
+  rate_limit    Json
+  status        Int
+  updated_at    DateTime  @updatedAt
+  created_at    DateTime  @default(now())
 }

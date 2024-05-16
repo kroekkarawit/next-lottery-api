@@ -18,11 +18,13 @@ router.post('/', async (req, res, next) => {
 
     try {
         const newReceipt = await prisma.receipt.create({
-            user_id: decodedToken.id,
-            remark: "",
-            bet_method: "MULTIPLY",
-            total_amount: null, // Assuming exchange_rate is optional
-            status: "PENDING", // Assuming 'Status' is an enum defined elsewhere
+            data: {
+                user_id: decodedToken.id.toString(),
+                remark: "",
+                bet_method: "MULTIPLY",
+                total_amount: null,
+                status: "PENDING"
+            }
         });
 
 
