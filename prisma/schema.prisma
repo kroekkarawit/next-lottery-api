@@ -58,5 +58,6 @@ model Bet {
   betType     String?
   lotteryType String?
   status      Status?
+  drawDate    DateTime? @db.Date
   createdAt   DateTime @default(now())
 }
