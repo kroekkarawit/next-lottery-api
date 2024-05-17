@@ -8,23 +8,20 @@ const verifyToken = require('../utils/jwt');
 const convertBets = require('../utils/tools');
 
 router.post('/', async (req, res, next) => {
-    const { bet } = req.body;
+    const { bet, currency } = req.body;
     if (!bet) {
         return res.status(400).json({ message: 'bet detail are required' });
     }
 
     const decodedToken = verifyToken(req);
     const userId = decodedToken.id.toString();
-    const betDetail = JSON.parse(bet)
 
     try {
-
         const newReceipt = await prisma.receipt.create({
             data: {
                 user_id: userId,
                 remark: "",
-                round_id: "1",
-                currency: betDetail.currency,
+                currency: currency,
                 bet_method: "MULTIPLY",
                 total_amount: null,
                 status: "PENDING"
@@ -32,10 +29,9 @@ router.post('/', async (req, res, next) => {
         });
 
 
-        const betData = betDetail.bet
+        const betData = bet
 
         const convertedBets = convertBets(betData);
-        console.log(convertedBets);
         let betPrepared = [];
 
         convertedBets.forEach(bet => {
@@ -49,26 +45,26 @@ router.post('/', async (req, res, next) => {
 
                     Object.entries(bet.date).forEach(([date, date_value]) => {
                         if (date_value) {
-                            //console.log(`Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date}`);
+                            console.log(`Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`);
                             betPrepared.push({
                                 user_id: userId,
-                                receipt_id: newReceipt.id,
+                                receipt_id: newReceipt.id.toString(),
                                 number: bet.number,
-                                amount: bet_amount,
+                                amount: parseFloat(bet_amount).toFixed(2),
                                 bet_type: bet_type,
                                 lottery_type: lottery_type,
                                 ip_address: null,
                                 status: "PENDING",
-                                result_date: "2024-05-16 14:41:17.222"
+                                result_date: new Date(date)
                             })
                         }
                     });
                 });
             });
         });
+        //console.log("betPrepared", betPrepared)
 
-
-        const createBets = await prisma.user.createMany({
+        const createBets = await prisma.bet.createMany({
             data: betPrepared,
             skipDuplicates: false
         })
