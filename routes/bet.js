@@ -15,6 +15,7 @@ router.post('/', async (req, res, next) => {
 
     const decodedToken = verifyToken(req);
     const userId = decodedToken.id.toString();
+    const betDetail = JSON.parse(bet)
 
     try {
 
@@ -23,7 +24,7 @@ router.post('/', async (req, res, next) => {
                 user_id: userId,
                 remark: "",
                 round_id: "1",
-                currency: bet.currency,
+                currency: betDetail.currency,
                 bet_method: "MULTIPLY",
                 total_amount: null,
                 status: "PENDING"
@@ -31,7 +32,7 @@ router.post('/', async (req, res, next) => {
         });
 
 
-        const betData = bet.bet
+        const betData = betDetail.bet
 
         const convertedBets = convertBets(betData);
         console.log(convertedBets);
