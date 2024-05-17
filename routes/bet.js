@@ -30,7 +30,6 @@ router.post('/', async (req, res, next) => {
 
 
         const betData = bet
-
         const convertedBets = convertBets(betData);
         let betPrepared = [];
 
@@ -62,7 +61,6 @@ router.post('/', async (req, res, next) => {
                 });
             });
         });
-        //console.log("betPrepared", betPrepared)
 
         const createBets = await prisma.bet.createMany({
             data: betPrepared,
@@ -70,9 +68,74 @@ router.post('/', async (req, res, next) => {
         })
 
         res.json({
-            bet
-            , userId, createBets
+            detail: `240516 2046 (1)
+            kp3773
+            18/05-19/05
+            *MPT
+            8909=0.10B 0.10S 0.10A1 0.10C 0.10A 0.10EF
+            *PSBK
+            (2323)=0.10B 0.10S 0.10A1 0.10C 0.10EA
+            18/05
+            P 2323=A1(S.O)
+            K 23=EA(S.O)
+            K 2323=B(S.O)
+            K 2323=A1(S.O)
+            K 2323=S(S.O)
+            K 323=C(S.O)
+            19/05
+            K 23=EA(S.O)
+            K 2323=B(S.O)
+            K 2323=A1(S.O)
+            K 2323=S(S.O)
+            K 323=C(S.O)
+            GT=6.50 (SGD)
+            GT=22.75 (MYR)`
         })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
+
+router.post('/receipt', async (req, res, next) => {
+    const { user_id, currency, draw_date: result_date, bet_date: created_at } = req.body;
+
+
+    const decodedToken = verifyToken(req);
+    const userId = decodedToken.id.toString();
+
+    try {
+        let where = {};
+
+        if (user_id) {
+            where.user_id = user_id;
+        }
+
+        if (currency) {
+            where.currency = currency;
+        }
+
+        if (draw_date && draw_date.start && draw_date.end) {
+            where.draw_date = {
+                gte: new Date(draw_date.start),
+                lte: new Date(draw_date.end),
+            };
+        }
+
+        if (created_at && created_at.start && created_at.end) {
+            where.created_at = {
+                gte: new Date(created_at.start),
+                lte: new Date(created_at.end),
+            };
+        }
+        console.log(where)
+        const receipts = await prisma.receipt.findMany({
+            where,
+        });
+        res.json(receipts);
+
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error', details: error.message });
