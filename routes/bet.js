@@ -22,6 +22,7 @@ router.post('/', async (req, res, next) => {
             data: {
                 user_id: userId,
                 remark: "",
+                round_id:"1",
                 bet_method: "MULTIPLY",
                 total_amount: null,
                 status: "PENDING"
