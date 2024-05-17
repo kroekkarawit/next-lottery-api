@@ -75,7 +75,7 @@ router.post('/', async (req, res, next) => {
 
         res.json({
             bet
-            , user_id, createBets
+            , userId, createBets
         })
     } catch (error) {
         console.error(error);
