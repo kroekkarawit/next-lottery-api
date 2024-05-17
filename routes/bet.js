@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const verifyToken = require('../utils/jwt');
-
+const convertBets = require('../utils/tools/convertBets');
 
 router.post('/', async (req, res, next) => {
     const { bet } = req.body;
@@ -14,12 +14,13 @@ router.post('/', async (req, res, next) => {
     }
 
     const decodedToken = verifyToken(req);
-
+    const userId = decodedToken.id.toString();
 
     try {
+
         const newReceipt = await prisma.receipt.create({
             data: {
-                user_id: decodedToken.id.toString(),
+                user_id: userId,
                 remark: "",
                 bet_method: "MULTIPLY",
                 total_amount: null,
@@ -28,29 +29,50 @@ router.post('/', async (req, res, next) => {
         });
 
 
-        const betData = {
-            user_id: "user123",
-            receipt_id: "abc-123",
-            number: "1234",
-            amount: 10.00,
-            bet_type: "SINGLE",
-            lottery_type: "POWERBALL",
-            status: "PENDING",
-            draw_date: new Date("2024-05-20"),
-        };
+        const betData = bet.bet
+
+        const convertedBets = convertBets(betData);
+        console.log(convertedBets);
+        let betPrepared = [];
+
+        convertedBets.forEach(bet => {
+            if (!bet.number) return;
+
+            Object.entries(bet.bet_type).forEach(([bet_type, bet_amount]) => {
+                if (!bet_amount) return;
+
+                Object.entries(bet.lotto_type).forEach(([lottery_type, lottery_value]) => {
+                    if (!lottery_value) return;
+
+                    Object.entries(bet.date).forEach(([date, date_value]) => {
+                        if (date_value) {
+                            //console.log(`Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date}`);
+                            betPrepared.push({
+                                user_id: userId,
+                                receipt_id: newReceipt.id,
+                                number: bet.number,
+                                amount: bet_amount,
+                                bet_type: bet_type,
+                                lottery_type: lottery_type,
+                                ip_address: null,
+                                status: "PENDING",
+                                result_date: "2024-05-16 14:41:17.222"
+                            })
+                        }
+                    });
+                });
+            });
+        });
+
 
         const createBets = await prisma.user.createMany({
-            data: [
-                { name: 'Bob', email: 'bob@prisma.io' },
-                { name: 'Bobo', email: 'bob@prisma.io' }, // Duplicate unique key!
-                { name: 'Yewande', email: 'yewande@prisma.io' },
-                { name: 'Angelique', email: 'angelique@prisma.io' },
-            ],
+            data: betPrepared,
             skipDuplicates: false
         })
 
         res.json({
-            decodedToken, bet
+            bet
+            , user_id, createBets
         })
     } catch (error) {
         console.error(error);
