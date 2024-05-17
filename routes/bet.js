@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const verifyToken = require('../utils/jwt');
-const convertBets = require('../utils/tools/convertBets');
+const convertBets = require('../utils/tools');
 
 router.post('/', async (req, res, next) => {
     const { bet } = req.body;

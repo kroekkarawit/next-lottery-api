@@ -1,4 +1,4 @@
-export function convertBets(bets) {
+function convertBets(bets) {
     return bets.map(bet => {
         const { number, ...rest } = bet;
         const bet_type = {
@@ -22,3 +22,5 @@ export function convertBets(bets) {
         };
     });
 }
+
+module.exports = convertBets; 
