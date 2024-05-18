@@ -21,7 +21,7 @@ model User {
   account_level    User_account_level
   currency         String             @default("['MYR','SGD','THB']") @db.VarChar(255)
   is_open_downline Boolean            @default(true)
-  ip_address   String?
+  ip_address       String?
   updated_at       DateTime           @updatedAt
   created_at       DateTime           @default(now())
 }
@@ -89,10 +89,11 @@ model Receipt {
 model Round {
   id          Int       @id @default(autoincrement())
   lottery_id  String    @db.VarChar(255)
-  start_time  DateTime? @db.Date
-  end_time    DateTime? @db.Date
-  result_time DateTime? @db.Date
-  result      String
+  code        String
+  start_time  DateTime? 
+  close_time  DateTime? 
+  result_time DateTime? 
+  result      String?
   status      Status
   created_at  DateTime  @default(now())
 }

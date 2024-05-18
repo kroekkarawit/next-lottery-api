@@ -8,6 +8,8 @@ const indexRouter = require('./routes/index');
 const adminsRouter = require('./routes/admins');
 const usersRouter = require('./routes/users');
 const betRouter = require('./routes/bet');
+const lotteryRouter = require('./routes/lottery');
+const webServiceRouter = require('./routes/web_service');
 
 app.use(express.json());
 
@@ -16,6 +18,8 @@ app.use('/', indexRouter);
 app.use('/admins', adminsRouter);
 app.use('/users', usersRouter);
 app.use('/users/bet', betRouter);
+app.use('/lottery', lotteryRouter);
+app.use('/web-service', webServiceRouter);
 
 
 // Start the server
