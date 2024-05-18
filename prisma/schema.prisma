@@ -4,7 +4,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DEV_DATABASE_URL")
+  //url      = env("DEV_DATABASE_URL")
+  url      = "mysql://db_user:P!0h42sd5@46.250.235.56:3306/lottery"
 }
 
 model User {
@@ -60,16 +61,16 @@ enum User_account_level {
 }
 
 model Bet {
-  id           Int     @id @default(autoincrement())
-  user_id      String  @db.VarChar(255)
+  id           Int       @id @default(autoincrement())
+  user_id      String    @db.VarChar(255)
   lottery_type String?
-  receipt_id  String    @db.VarChar(255)
-  number      String?
-  amount      Decimal?
-  bet_type    String?
-  status      Status?
-  result_date DateTime? @db.Date
-  created_at  DateTime  @default(now())
+  receipt_id   String    @db.VarChar(255)
+  number       String?
+  amount       Decimal?
+  bet_type     String?
+  status       Status?
+  result_date  DateTime? @db.Date
+  created_at   DateTime  @default(now())
 }
 
 model Receipt {
@@ -79,7 +80,7 @@ model Receipt {
   bet_method   String?  @db.VarChar(255)
   total_amount Decimal?
   currency     String
-  ip_address  String?
+  ip_address   String?
   status       Status
   created_at   DateTime @default(now())
 }
@@ -96,20 +97,20 @@ model Round {
 }
 
 model Lottery {
-  id           Int      @id @default(autoincrement())
-  type         String
-  code         String
-  detail       Json     
-  open_before  Int      @default(0)
-  open_time    DateTime @db.Time
-  close_weekday Json    @default("[]")
-  close_extra  Json     @default("[]")
-  off_holiday  Json     @default("[]")
-  close_after  Int?
-  close_time   DateTime @db.Time
-  result_after Int?
-  result_time  DateTime @db.Time
-  status       Status
-  updated_at   DateTime @updatedAt
-  created_at   DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  type          String
+  code          String
+  detail        Json
+  open_before   Int      @default(0)
+  open_time     DateTime @db.Time
+  close_weekday Json     @default("[]")
+  close_extra   Json     @default("[]")
+  off_holiday   Json     @default("[]")
+  close_after   Int?
+  close_time    DateTime @db.Time
+  result_after  Int?
+  result_time   DateTime @db.Time
+  status        Status
+  updated_at    DateTime @updatedAt
+  created_at    DateTime @default(now())
 }

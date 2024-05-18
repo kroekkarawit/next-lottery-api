@@ -147,8 +147,7 @@ router.post('/receipt', async (req, res, next) => {
                         lte: new Date(result_date.end),
                     };
                 }
-        
-                */
+        */
         if (created_at && created_at.start && created_at.end) {
             where.created_at = {
                 gte: new Date(created_at.start),
@@ -162,7 +161,9 @@ router.post('/receipt', async (req, res, next) => {
 
         const preReceipts = receipts.map((i) => {
             return {
-                ...i, bet_info: `Page: 1
+                ...i,
+                accounts: ["kp3773", "xiaopang"],
+                bet_info: `Page: 1
         Currency: MYR
         Date/Time: May 18, 24 03:46:24 AM
         Bet By: kp3773 (xiaopang)
@@ -182,7 +183,9 @@ router.post('/receipt', async (req, res, next) => {
         GT=11.20 (SGD)
         GT=39.20 (MYR)
         
-        Points:0013 3601 3830 1733`}
+        Points:0013 3601 3830 1733`
+
+            }
         })
         res.json(preReceipts);
 
