@@ -96,22 +96,20 @@ model Round {
 }
 
 model Lottery {
-  id            Int       @id @default(autoincrement())
-  type          String
-  code          String
-  detail        Json
-  open_before   Int       @default(0)
-  open_time     DateTime?
-  close_weekday Json
-  close_extra   Json
-  off_holiday   Json
-  close_after   Int?
-  close_time    DateTime?
-  result_after  Int?
-  result_time   DateTime?
-  buy_limit     Json
-  rate_limit    Json
-  status        Int
-  updated_at    DateTime  @updatedAt
-  created_at    DateTime  @default(now())
+  id           Int      @id @default(autoincrement())
+  type         String
+  code         String
+  detail       Json     
+  open_before  Int      @default(0)
+  open_time    DateTime @db.Time
+  close_weekday Json    @default("[]")
+  close_extra  Json     @default("[]")
+  off_holiday  Json     @default("[]")
+  close_after  Int?
+  close_time   DateTime @db.Time
+  result_after Int?
+  result_time  DateTime @db.Time
+  status       Status
+  updated_at   DateTime @updatedAt
+  created_at   DateTime @default(now())
 }
