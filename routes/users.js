@@ -54,6 +54,7 @@ router.get('/gen-user', async (req, res, next) => {
                 remark: 'Remark',
                 status: 'ACTIVE',
                 currency: 'USD',
+                account_level: "Agent"
             },
         });
         console.log('Created user:', createdUser);
@@ -65,10 +66,11 @@ router.get('/gen-user', async (req, res, next) => {
 });
 
 router.post('/login', async (req, res, next) => {
-    const { username, password } = req.body;
+    const { username, password, ip_address } = req.body;
     if (!username || !password) {
         return res.status(400).json({ message: 'Username and password are required' });
     }
+    console.log('Login:', req.body)
 
     try {
         const user = await prisma.user.findFirst({
@@ -99,6 +101,7 @@ router.post('/login', async (req, res, next) => {
             image: "avatar",
             role: user.role,
             access_token: accessToken,
+            ip_address: ip_address
         })
     } catch (error) {
         console.error(error);
