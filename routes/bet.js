@@ -8,7 +8,7 @@ const verifyToken = require('../utils/jwt');
 const convertBets = require('../utils/tools');
 
 router.post('/', async (req, res, next) => {
-    const { bet, currency, ip_address } = req.body;
+    const { bet, currency } = req.body;
     if (!bet) {
         return res.status(400).json({ message: 'bet detail are required' });
     }
@@ -30,7 +30,7 @@ router.post('/', async (req, res, next) => {
                 currency: currency,
                 bet_method: "MULTIPLY",
                 total_amount: 0,
-                ip_address: ip_address || null,
+                ip_address: user.ip_address || null,
                 status: "PENDING"
             }
         });

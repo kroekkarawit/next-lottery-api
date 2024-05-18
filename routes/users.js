@@ -87,6 +87,15 @@ router.post('/login', async (req, res, next) => {
         }
         const accessToken = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY, { expiresIn: '7d' });
 
+        const updateUser = await prisma.user.update({
+            where: {
+                username: username,
+            },
+            data: {
+                ip_address: ip_address,
+            },
+        });
+
         res.json({
             id: user.id,
             name: user.name,

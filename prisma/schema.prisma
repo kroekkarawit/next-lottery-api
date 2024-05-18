@@ -21,6 +21,7 @@ model User {
   account_level    User_account_level
   currency         String             @default("['MYR','SGD','THB']") @db.VarChar(255)
   is_open_downline Boolean            @default(true)
+  ip_address   String?
   updated_at       DateTime           @updatedAt
   created_at       DateTime           @default(now())
 }
