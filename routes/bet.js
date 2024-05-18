@@ -16,11 +16,17 @@ router.post('/', async (req, res, next) => {
     const decodedToken = verifyToken(req);
     const userId = decodedToken.id.toString();
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
         where: {
-            id: userId,
+            id: parseInt(userId),
         }
     });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log(userId, user);
 
     try {
         const newReceipt = await prisma.receipt.create({
@@ -30,7 +36,7 @@ router.post('/', async (req, res, next) => {
                 currency: currency,
                 bet_method: "MULTIPLY",
                 total_amount: 0,
-                ip_address: user.ip_address || null,
+                ip_address: user?.ip_address || null,
                 status: "PENDING"
             }
         });
@@ -85,7 +91,7 @@ router.post('/', async (req, res, next) => {
 
         const updateUser = await prisma.user.update({
             where: {
-                id: userId,
+                id: parseInt(userId),
             },
             data: {
                 credit: user.credit - totalAmount,
@@ -124,10 +130,16 @@ router.post('/', async (req, res, next) => {
 
 
 router.post('/receipt', async (req, res, next) => {
-    const { user_id, currency, draw_date: result_date, bet_date: created_at } = req.body;
+    const { user_id, currency, draw_date: result_date, bet_date: created_at, page_number } = req.body;
 
     const decodedToken = verifyToken(req);
     const userId = decodedToken.id.toString();
+
+    const user = await prisma.user.findFirst({
+        where: {
+            id: userId,
+        }
+    });
 
     try {
         let where = {};
@@ -162,11 +174,11 @@ router.post('/receipt', async (req, res, next) => {
         const preReceipts = receipts.map((i) => {
             return {
                 ...i,
-                accounts: ["kp3773", "xiaopang"],
-                bet_info: `Page: 1
-        Currency: MYR
-        Date/Time: May 18, 24 03:46:24 AM
-        Bet By: kp3773 (xiaopang)
+                accounts: { username: "kp3773", name: "xiaopang" },
+                bet_info: `Page: ${page_number}
+        Currency: ${i.currency}
+        Date/Time: ${new Date(i.created_at).toLocaleDateString()}
+        Bet By: ${user.username} (${user.name})
         
         Draw Type: M-P-T-S-B-K-W-8-9
         Bet Method: Multiply
