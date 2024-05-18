@@ -193,6 +193,28 @@ router.get('/insert', async (req, res, next) => {
     }
 });
 
+router.get('/get-round', async (req, res, next) => {
+    try {
+        const today = new Date();
+        const rounds = await prisma.round.findMany({
+            where: {
+                start_time: {
+                    gt: today, // Filter for rounds starting after today
+                },
+                status: "ACTIVE", // Filter for active rounds
+            },
+        });
+
+        res.json({
+            status: 'success',
+            rounds
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
+
 
 
 process.on('SIGINT', async () => {
