@@ -67,7 +67,6 @@ model Bet {
   number      String?
   amount      Decimal?
   bet_type    String?
-  ip_address  String?
   status      Status?
   result_date DateTime? @db.Date
   created_at  DateTime  @default(now())
@@ -80,6 +79,7 @@ model Receipt {
   bet_method   String?  @db.VarChar(255)
   total_amount Decimal?
   currency     String
+  ip_address  String?
   status       Status
   created_at   DateTime @default(now())
 }

@@ -8,13 +8,19 @@ const verifyToken = require('../utils/jwt');
 const convertBets = require('../utils/tools');
 
 router.post('/', async (req, res, next) => {
-    const { bet, currency } = req.body;
+    const { bet, currency, ip_address } = req.body;
     if (!bet) {
         return res.status(400).json({ message: 'bet detail are required' });
     }
 
     const decodedToken = verifyToken(req);
     const userId = decodedToken.id.toString();
+
+    const user = await prisma.user.findFirst({
+        where: {
+            id: userId,
+        }
+    });
 
     try {
         const newReceipt = await prisma.receipt.create({
@@ -23,12 +29,13 @@ router.post('/', async (req, res, next) => {
                 remark: "",
                 currency: currency,
                 bet_method: "MULTIPLY",
-                total_amount: null,
+                total_amount: 0,
+                ip_address: ip_address || null,
                 status: "PENDING"
             }
         });
 
-
+        let totalAmount = 0;
         const betData = bet
         const convertedBets = convertBets(betData);
         let betPrepared = [];
@@ -45,6 +52,7 @@ router.post('/', async (req, res, next) => {
                     Object.entries(bet.date).forEach(([date, date_value]) => {
                         if (date_value) {
                             console.log(`Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`);
+                            totalAmount += parseFloat(bet_amount);
                             betPrepared.push({
                                 user_id: userId,
                                 receipt_id: newReceipt.id.toString(),
@@ -52,7 +60,6 @@ router.post('/', async (req, res, next) => {
                                 amount: parseFloat(bet_amount).toFixed(2),
                                 bet_type: bet_type,
                                 lottery_type: lottery_type,
-                                ip_address: null,
                                 status: "PENDING",
                                 result_date: new Date(date)
                             })
@@ -65,7 +72,25 @@ router.post('/', async (req, res, next) => {
         const createBets = await prisma.bet.createMany({
             data: betPrepared,
             skipDuplicates: false
-        })
+        });
+
+        const updateReceipt = await prisma.receipt.update({
+            where: {
+                id: newReceipt.id,
+            },
+            data: {
+                total_amount: totalAmount,
+            },
+        });
+
+        const updateUser = await prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                credit: user.credit - totalAmount,
+            },
+        });
 
         res.json({
             detail: `240516 2046 (1)
@@ -101,7 +126,6 @@ router.post('/', async (req, res, next) => {
 router.post('/receipt', async (req, res, next) => {
     const { user_id, currency, draw_date: result_date, bet_date: created_at } = req.body;
 
-
     const decodedToken = verifyToken(req);
     const userId = decodedToken.id.toString();
 
@@ -115,14 +139,16 @@ router.post('/receipt', async (req, res, next) => {
         if (currency) {
             where.currency = currency;
         }
-
-        if (draw_date && draw_date.start && draw_date.end) {
-            where.draw_date = {
-                gte: new Date(draw_date.start),
-                lte: new Date(draw_date.end),
-            };
-        }
-
+        //TODO: fixing this query cause result time is different
+        /*
+                if (result_date && result_date.start && result_date.end) {
+                    where.result_date = {
+                        gte: new Date(result_date.start),
+                        lte: new Date(result_date.end),
+                    };
+                }
+        
+                */
         if (created_at && created_at.start && created_at.end) {
             where.created_at = {
                 gte: new Date(created_at.start),
@@ -133,7 +159,32 @@ router.post('/receipt', async (req, res, next) => {
         const receipts = await prisma.receipt.findMany({
             where,
         });
-        res.json(receipts);
+
+        const preReceipts = receipts.map((i) => {
+            return {
+                ...i, bet_info: `Page: 1
+        Currency: MYR
+        Date/Time: May 18, 24 03:46:24 AM
+        Bet By: kp3773 (xiaopang)
+        
+        Draw Type: M-P-T-S-B-K-W-8-9
+        Bet Method: Multiply
+        Bet Type: B-S-4A-C-A
+        Bet Date: Day - D
+        Box / IBox: * / **
+        Draw Date / Day: # / ##`,
+
+                slip: `240515 1251 (4)
+        kp3773
+        15/05-18/05
+        *MSBH
+        9090=0.10B 1S 0.10A1 0.10C 0.10A
+        GT=11.20 (SGD)
+        GT=39.20 (MYR)
+        
+        Points:0013 3601 3830 1733`}
+        })
+        res.json(preReceipts);
 
 
     } catch (error) {
