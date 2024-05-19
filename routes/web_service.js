@@ -36,8 +36,8 @@ const openLottery = async () => {
                 const closeTime = new Date(`${dateOnlyString}T${lottery.close_time.toISOString().split('T')[1]}`);
                 const resultTime = new Date(`${dateOnlyString}T${lottery.result_time.toISOString().split('T')[1]}`);
 
-                await prisma.round.create({
-                    data: {
+                const checkExistingRound = await prisma.round.findFirst({
+                    where: {
                         lottery_id: lottery.id.toString(),
                         code: lottery.code,
                         start_time: startTime,
@@ -48,6 +48,19 @@ const openLottery = async () => {
                     }
                 });
 
+                if (!checkExistingRound) {
+                    await prisma.round.create({
+                        data: {
+                            lottery_id: lottery.id.toString(),
+                            code: lottery.code,
+                            start_time: startTime,
+                            close_time: closeTime,
+                            result_time: resultTime,
+                            result: null,
+                            status: "ACTIVE",
+                        }
+                    });
+                }
             }
         }
     });

@@ -141,10 +141,10 @@ router.post('/receipt', async (req, res, next) => {
 
     const user = await prisma.user.findFirst({
         where: {
-            id: userId,
+            id: parseInt(userId),
         }
     });
-
+    console.log("user", user);
     try {
         let where = {};
 
