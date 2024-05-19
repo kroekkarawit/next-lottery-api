@@ -74,6 +74,9 @@ router.post('/', async (req, res, next) => {
                 });
             });
         });
+        if (betPrepared.length <= 0) {
+            return res.status(400).json({ message: 'bet is empty' });
+        }
 
         const createBets = await prisma.bet.createMany({
             data: betPrepared,

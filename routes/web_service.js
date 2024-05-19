@@ -18,9 +18,7 @@ const openLottery = async () => {
             status: 'ACTIVE'
         }
     });
-    console.log(`lotteries: `, lotteries);
 
-    //console.log(`lotteries`, lotteries);
     lotteries.forEach(async (lottery) => {
         const openBefore = parseInt(lottery.open_before);
         const closeWeekDay = lottery.close_weekday
@@ -37,7 +35,7 @@ const openLottery = async () => {
                 const startTime = new Date(`${dateOnlyString}T${lottery.open_time.toISOString().split('T')[1]}`);
                 const closeTime = new Date(`${dateOnlyString}T${lottery.close_time.toISOString().split('T')[1]}`);
                 const resultTime = new Date(`${dateOnlyString}T${lottery.result_time.toISOString().split('T')[1]}`);
-                
+
                 await prisma.round.create({
                     data: {
                         lottery_id: lottery.id.toString(),
