@@ -118,7 +118,6 @@ router.post('/login', async (req, res, next) => {
     }
 });
 
-
 router.post('/change-password', async (req, res, next) => {
     const { newPassword, oldPassword } = req.body;
     if (!newPassword || !oldPassword) {
@@ -184,6 +183,75 @@ router.get('/get-credit', async (req, res, next) => {
             res.json({
                 id: user.id,
                 credit: user.credit
+            })
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error', details: error.message });
+        }
+    } else {
+        res.status(500).json({ error: 'Authentication failed' });
+    }
+});
+
+router.post('/add-user', async (req, res, next) => {
+    const { account_detail, prize_package, settings } = req.body;
+
+    if (!account_detail || !prize_package || !settings) {
+        return res.status(400).json({ message: 'account_detail, prize_package, settings are required' });
+    }
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+        const username = decodedToken.username;
+        try {
+            const user = await prisma.user.findFirst({
+                where: {
+                    username: username,
+                },
+            });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            const hashedPassword = await bcrypt.hash(account_detail.password, 10);
+            /*
+                        const currencyObject = account_detail.currency
+            
+                        // Convert to array of strings
+                        const resultArray = Object.keys(currencyObject)
+                            .filter(key => currencyObject[key])
+                            .map(key => key.toUpperCase());
+                        const currencyString = JSON.stringify(resultArray).replace(/"/g, "'");
+            */
+            const currencyString = []
+            const newUser = await prisma.user.create({
+                data: {
+                    name: account_detail.fullname,
+                    username: account_detail.username,
+                    password: hashedPassword,
+                    mobile: account_detail.mobile,
+                    credit: 0,
+                    credit_limit: account_detail.credit_limit || 0,
+                    remark: account_detail.remark,
+                    status: 'ACTIVE',
+                    account_level: 'User',
+                    currency: currencyString,
+                    is_open_downline: account_detail.open_downline,
+                    referral: user.id,
+                    sub_user_setting: null,
+                    position_taking: account_detail.position_taking,
+                    position_taking_9Lotto: account_detail.position_taking_9Lotto,
+                    position_taking_GD: account_detail.position_taking_GD,
+                    auto_transfer: "",
+                    manual_transfer: "",
+                    ip_address: ''
+                }
+            })
+
+
+
+            res.json({
+                newUser
             })
         } catch (error) {
             console.error(error);

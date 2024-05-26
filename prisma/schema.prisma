@@ -4,26 +4,60 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  //url      = env("DEV_DATABASE_URL")
   url      = "mysql://db_user:P!0h42sd5@46.250.235.56:3306/lottery"
 }
 
 model User {
-  id               Int                @id @default(autoincrement())
-  name             String
-  username         String             @unique
-  password         String
-  mobile           String
-  credit           Decimal            @default(0.00) @db.Decimal(65, 2)
-  credit_limit     Decimal            @default(0.00) @db.Decimal(65, 2)
-  remark           String?
-  status           User_status        @default(ACTIVE)
-  account_level    User_account_level
-  currency         String             @default("['MYR','SGD','THB']") @db.VarChar(255)
-  is_open_downline Boolean            @default(true)
-  ip_address       String?
-  updated_at       DateTime           @updatedAt
-  created_at       DateTime           @default(now())
+  id                     Int                @id @default(autoincrement())
+  name                   String
+  username               String             @unique
+  password               String
+  mobile                 String
+  credit                 Decimal            @default(0.00) @db.Decimal(65, 2)
+  credit_limit           Decimal            @default(0.00) @db.Decimal(65, 2)
+  remark                 String?
+  status                 User_status        @default(ACTIVE)
+  account_level          User_account_level
+  currency               String             @default("['MYR','SGD','THB']") @db.VarChar(255)
+  is_open_downline       Boolean            @default(true)
+  referral               String             @default("")
+  sub_user_setting       String             @default("")
+  position_taking        Json               @default("{}")
+  position_taking_9Lotto Json               @default("{}")
+  position_taking_GD     Json               @default("{}")
+  auto_transfer          Json               @default("{}")
+  manual_transfer        Json               @default("{}")
+  ip_address             String?
+  updated_at             DateTime           @updatedAt
+  created_at             DateTime           @default(now())
+}
+
+model User_setting {
+  id              Int      @id @default(autoincrement())
+  user_id         Int
+  sms_service     Boolean
+  bet_method      String
+  bet_1000_number Boolean
+  bet_setting     Boolean
+  box_ibox        String
+  bet_date        String
+  bet_type        String
+  draw_date       String
+  draw_type       Json
+  intake          Json
+  created_at      DateTime @default(now())
+}
+
+model User_prize_package {
+  id                 Int      @id @default(autoincrement())
+  user_id            Int
+  betting_package    Json
+  ibox               Json
+  gd_package         Json
+  gd_ibox            Json
+  nine_lotto_package Json
+  nine_lotto_ibox    Json
+  created_at         DateTime @default(now())
 }
 
 model Admin {
@@ -59,6 +93,8 @@ enum Role {
 
 enum User_account_level {
   Agent
+  User
+  Sub_user
 }
 
 model Bet {
@@ -90,9 +126,9 @@ model Round {
   id          Int       @id @default(autoincrement())
   lottery_id  String    @db.VarChar(255)
   code        String
-  start_time  DateTime? 
-  close_time  DateTime? 
-  result_time DateTime? 
+  start_time  DateTime?
+  close_time  DateTime?
+  result_time DateTime?
   result      String?
   status      Status
   created_at  DateTime  @default(now())
@@ -117,20 +153,53 @@ model Lottery {
   created_at    DateTime @default(now())
 }
 
+model Package {
+  id         Int      @id @default(autoincrement())
+  name       String
+  bet_type   String
+  detail     Json
+  status     Status
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+}
+
+model Fight_eat_credit {
+  id         Int      @id @default(autoincrement())
+  magnum     Json
+  pmp        Json
+  toto       Json
+  singapore  Json
+  sabah      Json
+  sandakan   Json
+  sarawak    Json
+  gd         Json
+  nine_lotto Json
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+}
+
+model Hot_special_number {
+  id         Int      @id @default(autoincrement())
+  number     String
+  draw_type  String
+  bet_type   String
+  amount     Decimal
+  created_at DateTime @default(now())
+}
 
 model LotteryResult {
-  id           Int         @id @default(autoincrement())
-  drawDate     DateTime
-  lotteryType  LotteryType
-  category     Category
-  numbers      LotteryNumber[]
+  id          Int             @id @default(autoincrement())
+  drawDate    DateTime
+  lotteryType LotteryType
+  category    Category
+  numbers     LotteryNumber[]
 }
 
 model LotteryNumber {
-  id              Int            @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   lotteryResultId Int
   number          String
-  lotteryResult   LotteryResult  @relation(fields: [lotteryResultId], references: [id], onDelete: Cascade)
+  lotteryResult   LotteryResult @relation(fields: [lotteryResultId], references: [id], onDelete: Cascade)
 }
 
 enum LotteryType {

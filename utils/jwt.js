@@ -19,7 +19,7 @@ function verifyToken(req) {
     } catch (err) {
         throw new Error('Invalid token signature');
     }
-    return decodedToken; // Return the decoded (and verified) payload
+    return decodedToken; //Return the decoded (and verified) payload
 }
 
-module.exports = verifyToken; // Export the verifyToken function
+module.exports = verifyToken; //Export the verifyToken function
