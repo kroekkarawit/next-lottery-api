@@ -116,3 +116,42 @@ model Lottery {
   updated_at    DateTime @updatedAt
   created_at    DateTime @default(now())
 }
+
+
+model LotteryResult {
+  id           Int         @id @default(autoincrement())
+  drawDate     DateTime
+  lotteryType  LotteryType
+  category     Category
+  numbers      LotteryNumber[]
+}
+
+model LotteryNumber {
+  id              Int            @id @default(autoincrement())
+  lotteryResultId Int
+  number          String
+  lotteryResult   LotteryResult  @relation(fields: [lotteryResultId], references: [id], onDelete: Cascade)
+}
+
+enum LotteryType {
+  MagnumMAGNUM
+  PMPPMP
+  TotoTOTO
+  TOTO_5D
+  TOTO_6D
+  SingaporeSINGAPORE
+  SabahSABAH
+  SandakanSANDAKAN
+  SarawakSARAWAK
+  GDLottoGD
+  GDLottoDRAGON
+  GDLotto_9LOTTO
+}
+
+enum Category {
+  FIRST
+  SECOND
+  THIRD
+  STARTERS
+  CONSOLATIONS
+}
