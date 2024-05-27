@@ -186,3 +186,14 @@ enum User_account_level {
   User
   Sub_user
 }
+
+model Transfer {
+  id               Int      @id @default(autoincrement())
+  user_id          String   @db.VarChar(255)
+  to_user_id       String   @db.VarChar(255)
+  remark           String?
+  previous_balance Decimal
+  amount           Decimal
+  balance          Decimal
+  created_at       DateTime @default(now())
+}
