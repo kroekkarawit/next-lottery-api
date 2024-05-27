@@ -96,6 +96,19 @@ router.post('/login', async (req, res, next) => {
             },
         });
 
+        const getDownlineUser = await prisma.user.findMany({
+            where: {
+                referral: user.id.toString(),
+            },
+            select: {
+                id: true,
+                username: true,
+                name: true,
+                credit: true,
+                currency: true
+            },
+        })
+
         res.json({
             id: user.id,
             name: user.name,
@@ -110,6 +123,7 @@ router.post('/login', async (req, res, next) => {
             image: "avatar",
             role: user.role,
             access_token: accessToken,
+            downline_user: getDownlineUser,
             ip_address: ip_address
         })
     } catch (error) {
@@ -214,20 +228,18 @@ router.post('/add-user', async (req, res, next) => {
                 return res.status(404).json({ message: 'User not found' });
             }
             const hashedPassword = await bcrypt.hash(account_detail.password, 10);
-            /*
-                        const currencyObject = account_detail.currency
-            
-                        // Convert to array of strings
-                        const resultArray = Object.keys(currencyObject)
-                            .filter(key => currencyObject[key])
-                            .map(key => key.toUpperCase());
-                        const currencyString = JSON.stringify(resultArray).replace(/"/g, "'");
-            */
-            const currencyString = []
+            const currencyObject = account_detail.currency
+            // Convert to array of strings
+            const resultArray = Object.keys(currencyObject)
+                .filter(key => currencyObject[key])
+                .map(key => key.toUpperCase());
+            const currencyString = JSON.stringify(resultArray).replace(/"/g, "'");
+
+            //const currencyString = []
             const newUser = await prisma.user.create({
                 data: {
-                    name: account_detail.fullname,
-                    username: account_detail.username,
+                    name: account_detail.full_name,
+                    username: account_detail.login_id,
                     password: hashedPassword,
                     mobile: account_detail.mobile,
                     credit: 0,
@@ -237,18 +249,16 @@ router.post('/add-user', async (req, res, next) => {
                     account_level: 'User',
                     currency: currencyString,
                     is_open_downline: account_detail.open_downline,
-                    referral: user.id,
-                    sub_user_setting: null,
-                    position_taking: account_detail.position_taking,
-                    position_taking_9Lotto: account_detail.position_taking_9Lotto,
-                    position_taking_GD: account_detail.position_taking_GD,
+                    referral: user.id.toString(),
+                    sub_user_setting: "",
+                    position_taking: JSON.stringify(account_detail.position_taking),
+                    position_taking_9Lotto: JSON.stringify(account_detail.position_taking_9Lotto),
+                    position_taking_GD: JSON.stringify(account_detail.position_taking_GD),
                     auto_transfer: "",
                     manual_transfer: "",
                     ip_address: ''
                 }
             })
-
-
 
             res.json({
                 newUser
