@@ -20,16 +20,16 @@ model User {
   account_level          User_account_level
   currency               String             @default("['MYR','SGD','THB']") @db.VarChar(255)
   is_open_downline       Boolean            @default(true)
-  referral               String             @default("")
-  sub_user_setting       String             @default("")
-  position_taking        Json               @default("{}")
-  position_taking_9Lotto Json               @default("{}")
-  position_taking_GD     Json               @default("{}")
-  auto_transfer          Json               @default("{}")
-  manual_transfer        Json               @default("{}")
-  ip_address             String?
   updated_at             DateTime           @updatedAt
   created_at             DateTime           @default(now())
+  ip_address             String?
+  auto_transfer          String             @default("") @db.LongText
+  manual_transfer        String             @default("") @db.LongText
+  position_taking        String             @default("") @db.LongText
+  position_taking_9Lotto String             @default("") @db.LongText
+  position_taking_GD     String             @default("") @db.LongText
+  referral               String             @default("")
+  sub_user_setting       String             @default("")
 }
 
 model User_setting {
@@ -43,20 +43,20 @@ model User_setting {
   bet_date        String
   bet_type        String
   draw_date       String
-  draw_type       Json
-  intake          Json
+  draw_type       String   @db.LongText
+  intake          String   @db.LongText
   created_at      DateTime @default(now())
 }
 
 model User_prize_package {
   id                 Int      @id @default(autoincrement())
   user_id            Int
-  betting_package    Json
-  ibox               Json
-  gd_package         Json
-  gd_ibox            Json
-  nine_lotto_package Json
-  nine_lotto_ibox    Json
+  betting_package    String   @db.LongText
+  ibox               String   @db.LongText
+  gd_package         String   @db.LongText
+  gd_ibox            String   @db.LongText
+  nine_lotto_package String   @db.LongText
+  nine_lotto_ibox    String   @db.LongText
   created_at         DateTime @default(now())
 }
 
@@ -69,6 +69,96 @@ model Admin {
   role       Role
   updated_at DateTime     @updatedAt
   created_at DateTime     @default(now())
+}
+
+model Bet {
+  id           Int       @id @default(autoincrement())
+  user_id      String    @db.VarChar(255)
+  lottery_type String?
+  receipt_id   String    @db.VarChar(255)
+  number       String?
+  amount       Decimal?
+  bet_type     String?
+  status       Status?
+  result_date  DateTime? @db.Date
+  created_at   DateTime  @default(now())
+}
+
+model Receipt {
+  id           Int      @id @default(autoincrement())
+  user_id      String   @db.VarChar(255)
+  remark       String?  @db.VarChar(255)
+  bet_method   String?  @db.VarChar(255)
+  total_amount Decimal?
+  currency     String
+  status       Status
+  created_at   DateTime @default(now())
+  ip_address   String?
+}
+
+model Round {
+  id          Int       @id @default(autoincrement())
+  lottery_id  String    @db.VarChar(255)
+  start_time  DateTime?
+  result_time DateTime?
+  result      String?
+  status      Status
+  created_at  DateTime  @default(now())
+  code        String
+  close_time  DateTime?
+}
+
+model Lottery {
+  id            Int      @id @default(autoincrement())
+  type          String
+  code          String
+  detail        String   @db.LongText
+  open_before   Int      @default(0)
+  open_time     DateTime @db.Time(0)
+  close_weekday String   @db.LongText
+  close_extra   String   @db.LongText
+  off_holiday   String   @db.LongText
+  close_after   Int?
+  close_time    DateTime @db.Time(0)
+  result_after  Int?
+  result_time   DateTime @db.Time(0)
+  status        Status
+  updated_at    DateTime @updatedAt
+  created_at    DateTime @default(now())
+}
+
+model Package {
+  id         Int      @id @default(autoincrement())
+  name       String
+  bet_type   String
+  detail     String   @db.LongText
+  status     Status
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+}
+
+model Fight_eat_credit {
+  id         Int      @id @default(autoincrement())
+  magnum     String   @db.LongText
+  pmp        String   @db.LongText
+  toto       String   @db.LongText
+  singapore  String   @db.LongText
+  sabah      String   @db.LongText
+  sandakan   String   @db.LongText
+  sarawak    String   @db.LongText
+  gd         String   @db.LongText
+  nine_lotto String   @db.LongText
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
+}
+
+model Hot_special_number {
+  id         Int      @id @default(autoincrement())
+  number     String
+  draw_type  String
+  bet_type   String
+  amount     Decimal
+  created_at DateTime @default(now())
 }
 
 enum Admin_status {
@@ -95,132 +185,4 @@ enum User_account_level {
   Agent
   User
   Sub_user
-}
-
-model Bet {
-  id           Int       @id @default(autoincrement())
-  user_id      String    @db.VarChar(255)
-  lottery_type String?
-  receipt_id   String    @db.VarChar(255)
-  number       String?
-  amount       Decimal?
-  bet_type     String?
-  status       Status?
-  result_date  DateTime? @db.Date
-  created_at   DateTime  @default(now())
-}
-
-model Receipt {
-  id           Int      @id @default(autoincrement())
-  user_id      String   @db.VarChar(255)
-  remark       String?  @db.VarChar(255)
-  bet_method   String?  @db.VarChar(255)
-  total_amount Decimal?
-  currency     String
-  ip_address   String?
-  status       Status
-  created_at   DateTime @default(now())
-}
-
-model Round {
-  id          Int       @id @default(autoincrement())
-  lottery_id  String    @db.VarChar(255)
-  code        String
-  start_time  DateTime?
-  close_time  DateTime?
-  result_time DateTime?
-  result      String?
-  status      Status
-  created_at  DateTime  @default(now())
-}
-
-model Lottery {
-  id            Int      @id @default(autoincrement())
-  type          String
-  code          String
-  detail        Json
-  open_before   Int      @default(0)
-  open_time     DateTime @db.Time
-  close_weekday Json     @default("[]")
-  close_extra   Json     @default("[]")
-  off_holiday   Json     @default("[]")
-  close_after   Int?
-  close_time    DateTime @db.Time
-  result_after  Int?
-  result_time   DateTime @db.Time
-  status        Status
-  updated_at    DateTime @updatedAt
-  created_at    DateTime @default(now())
-}
-
-model Package {
-  id         Int      @id @default(autoincrement())
-  name       String
-  bet_type   String
-  detail     Json
-  status     Status
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
-}
-
-model Fight_eat_credit {
-  id         Int      @id @default(autoincrement())
-  magnum     Json
-  pmp        Json
-  toto       Json
-  singapore  Json
-  sabah      Json
-  sandakan   Json
-  sarawak    Json
-  gd         Json
-  nine_lotto Json
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
-}
-
-model Hot_special_number {
-  id         Int      @id @default(autoincrement())
-  number     String
-  draw_type  String
-  bet_type   String
-  amount     Decimal
-  created_at DateTime @default(now())
-}
-
-model LotteryResult {
-  id          Int             @id @default(autoincrement())
-  drawDate    DateTime
-  lotteryType LotteryType
-  category    Category
-  numbers     LotteryNumber[]
-}
-
-model LotteryNumber {
-  id              Int           @id @default(autoincrement())
-  lotteryResultId Int
-  number          String
-  lotteryResult   LotteryResult @relation(fields: [lotteryResultId], references: [id], onDelete: Cascade)
-}
-
-enum LotteryType {
-  MagnumMAGNUM
-  PMPPMP
-  TotoTOTO
-  TOTO_5D
-  TOTO_6D
-  SingaporeSINGAPORE
-  SabahSABAH
-  SandakanSANDAKAN
-  SarawakSARAWAK
-  GDLottoGD
-  GDLottoDRAGON
-  GDLotto_9LOTTO
-}
-
-enum Category {
-  FIRST
-  SECOND
-  THIRD
-  STARTERS
-  CONSOLATIONS
 }
