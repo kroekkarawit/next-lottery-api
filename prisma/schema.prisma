@@ -141,6 +141,7 @@ model Package {
 
 model Fight_eat_credit {
   id         Int      @id @default(autoincrement())
+  user_id    Int
   magnum     String   @db.LongText
   pmp        String   @db.LongText
   toto       String   @db.LongText
@@ -156,6 +157,7 @@ model Fight_eat_credit {
 
 model Hot_special_number {
   id         Int      @id @default(autoincrement())
+  user_id    Int
   number     String
   draw_type  String
   bet_type   String
@@ -191,8 +193,8 @@ enum User_account_level {
 
 model Transfer {
   id               Int      @id @default(autoincrement())
-  user_id          Int    
-  to_user_id       Int   
+  user_id          Int
+  to_user_id       Int
   remark           String?
   previous_balance Decimal
   amount           Decimal
