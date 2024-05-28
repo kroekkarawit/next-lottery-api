@@ -973,24 +973,40 @@ router.post("/fight-eat-credit", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const updatedFightEat = await prisma.fight_eat_credit.update({
+      const existingRecord = await prisma.fight_eat_credit.findUnique({
         where: {
           user_id: parseInt(user.id),
         },
-        data: {
-          magnum: JSON.stringify(data.M),
-          pmp: JSON.stringify(data.P),
-          toto: JSON.stringify(data.T),
-          singapore: JSON.stringify(data.S),
-          sabah: JSON.stringify(data.B),
-          sandakan: JSON.stringify(data.K),
-          sarawak: JSON.stringify(data.W),
-          gd: JSON.stringify(data.H),
-          nine_lotto: JSON.stringify(data.E),
-        },
       });
+      
+      if (existingRecord) {
+        const updatedFightEat = await prisma.fight_eat_credit.update({
+          where: {
+            id: existingRecord.id,
+          },
+          data: {
+            magnum: JSON.stringify(data.M),
+            pmp: JSON.stringify(data.P),
+            toto: JSON.stringify(data.T),
+            singapore: JSON.stringify(data.S),
+            sabah: JSON.stringify(data.B),
+            sandakan: JSON.stringify(data.K),
+            sarawak: JSON.stringify(data.W),
+            gd: JSON.stringify(data.H),
+            nine_lotto: JSON.stringify(data.E),
+          },
+        });
+        res.json({ status: "success", data: updatedFightEat });
 
-      res.json({ data: updatedFightEat });
+      } else {
+        // Handle the case where the record doesn't exist
+        console.error('Record not found for user_id:', user.id);
+        res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+
+      }
+      
     } catch (error) {
       console.error(error);
       res
@@ -1022,8 +1038,8 @@ router.get("/hot-special-number", async (req, res, next) => {
       const getHotSpecialNumber = await prisma.hot_special_number.findMany({
         where: {
           user_id: parseInt(user.id),
-          status: "ACTIVE"
-        }
+          status: "ACTIVE",
+        },
       });
       res.json({ data: getHotSpecialNumber });
     } catch (error) {
@@ -1061,9 +1077,9 @@ router.post("/hot-special-number", async (req, res, next) => {
         }
         const drawType = data.draw_type; //["M","P"]
         const betType = data.bet_type; //["B","4A"]
-        
+
         const promises = [];
-        
+
         for (let i = 0; i < drawType.length; i++) {
           for (let j = 0; j < betType.length; j++) {
             promises.push(
@@ -1077,18 +1093,27 @@ router.post("/hot-special-number", async (req, res, next) => {
                 },
               })
             );
-            
           }
         }
-        
-        await Promise.all(promises);
 
+        await Promise.all(promises);
+      } else if (action === "search") {
+        const searchHotSpecialNumber = await prisma.hot_special_number.findMany(
+          {
+            where: {
+              number: data.number,
+              user_id: parseInt(user.id),
+              status: "ACTIVE",
+            },
+          }
+        );
+        res.json({ status: "success", data: searchHotSpecialNumber });
       } else if (action === "edit") {
         const updatedHotSpecialNumber = await prisma.hot_special_number.update({
           where: {
             id: parseInt(data.id),
             user_id: parseInt(user.id),
-            status: "ACTIVE"
+            status: "ACTIVE",
           },
           data: {
             amount: parseFloat(data.amount >= 0 ? data.amount : 0),
@@ -1100,7 +1125,7 @@ router.post("/hot-special-number", async (req, res, next) => {
             id: parseInt(data.id),
             id: parseInt(data.id),
             user_id: parseInt(user.id),
-            status: "ACTIVE"
+            status: "ACTIVE",
           },
           data: {
             status: "INACTIVE",
