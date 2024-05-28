@@ -198,6 +198,103 @@ router.post('/detailed-win-loss', async (req, res) => {
         res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
+
+
+router.post('/group-sales', async (req, res) => {
+    const {  currency, draw_date: result_date } = req.body;
+    try {
+        res.json({
+            "data": [
+              {
+                "account": {
+                  "username": "kb1602",
+                  "name": "Fuzhen"
+                },
+                "bet": {
+                  "B": "0.20",
+                  "S": "0",
+                  "4A": "0",
+                  "4B": "0",
+                  "4C": "0",
+                  "4D": "0",
+                  "4E": "0",
+                  "4F": "0",
+                  "A": "0",
+                  "ABC": "0",
+                  "3B": "0",
+                  "3C": "0",
+                  "3D": "0",
+                  "3E": "0",
+                  "6D": "0",
+                  "2A": "0",
+                  "2F": "0",
+                  "2B": "0",
+                  "2C": "0",
+                  "2D": "0",
+                  "2E": "0",
+                  "total": "0.20"
+                }
+              },{
+                "account": {
+                  "username": "kp3773",
+                  "name": "xiaopang"
+                },
+                "bet": {
+                  "B": "0.20",
+                  "S": "0.20",
+                  "4A": "0",
+                  "4B": "0",
+                  "4C": "0",
+                  "4D": "0",
+                  "4E": "0",
+                  "4F": "0",
+                  "A": "0",
+                  "ABC": "0",
+                  "3B": "0",
+                  "3C": "0",
+                  "3D": "0",
+                  "3E": "0",
+                  "6D": "0",
+                  "2A": "0",
+                  "2F": "0",
+                  "2B": "0.20",
+                  "2C": "0",
+                  "2D": "0",
+                  "2E": "0",
+                  "total": "0.60"
+                }
+              }
+            ],
+            "grand_total": {
+              "B": "0.4",
+              "S": "0.2",
+              "4A": "0",
+              "4B": "0",
+              "4C": "0",
+              "4D": "0",
+              "4E": "0",
+              "4F": "0",
+              "A": "0",
+              "ABC": "0",
+              "3B": "0",
+              "3C": "0",
+              "3D": "0",
+              "3E": "0",
+              "6D": "0",
+              "2A": "0",
+              "2F": "0",
+              "2B": "0.2",
+              "2C": "0",
+              "2D": "0",
+              "2E": "0",
+              "total": "0.8"
+            }
+          });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();
