@@ -295,6 +295,80 @@ router.post('/group-sales', async (req, res) => {
         res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
+
+
+router.post('/bet-draw-record', async (req, res) => {
+    const {  currency, draw_date: result_date } = req.body;
+    try {
+        res.json({
+            "data": [
+              {
+                "account": {
+                  "username": "kp3773",
+                  "name": "xiaopang"
+                },
+                "bet_detail": {
+                "id": "35265121453",
+                "date_time": "May 29, 24 02:58:42 AM"
+                },
+                "page": "1",
+                "number": "9320",
+                "bet": {
+                  "B": "1",
+                  "S": "0",
+                  "4A": "0",
+                  "4B": "0",
+                  "4C": "0",
+                  "4D": "0",
+                  "4E": "0",
+                  "4F": "0",
+                  "A": "0",
+                  "ABC": "0",
+                  "3B": "0",
+                  "3C": "0",
+                  "3D": "0",
+                  "3E": "0",
+                  "6D": "0",
+                  "2A": "0",
+                  "2F": "0",
+                  "2B": "0",
+                  "2C": "0",
+                  "2D": "0",
+                  "2E": "0",
+                  "total": "1"
+                }
+              }
+            ],
+            "total": {
+              "B": "1",
+              "S": "0",
+              "4A": "0",
+              "4B": "0",
+              "4C": "0",
+              "4D": "0",
+              "4E": "0",
+              "4F": "0",
+              "A": "0",
+              "ABC": "0",
+              "3B": "0",
+              "3C": "0",
+              "3D": "0",
+              "3E": "0",
+              "6D": "0",
+              "2A": "0",
+              "2F": "0",
+              "2B": "0",
+              "2C": "0",
+              "2D": "0",
+              "2E": "0",
+              "total": "1"
+            }
+          });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();
