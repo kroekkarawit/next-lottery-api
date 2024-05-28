@@ -98,7 +98,7 @@ router.post('/login', async (req, res, next) => {
 
         const getDownlineUser = await prisma.user.findMany({
             where: {
-                referral: user.id.toString(),
+                referral: parseInt(user.id),
             },
             select: {
                 id: true,
@@ -249,7 +249,7 @@ router.post('/add-user', async (req, res, next) => {
                     account_level: 'User',
                     currency: currencyString,
                     is_open_downline: account_detail.open_downline,
-                    referral: user.id.toString(),
+                    referral: parseInt(user.id),
                     sub_user_setting: "",
                     position_taking: JSON.stringify(account_detail.position_taking),
                     position_taking_9Lotto: JSON.stringify(account_detail.position_taking_9Lotto),
@@ -296,7 +296,7 @@ router.post('/transfer', async (req, res, next) => {
             const ToUser = await prisma.user.findFirst({
                 where: {
                     id: parseInt(to_user_id),
-                    referral: user.id.toString(),
+                    referral: parseInt(user.id),
                 },
             });
             if (!ToUser) {
