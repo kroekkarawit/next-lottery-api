@@ -544,6 +544,10 @@ router.post("/bet-draw-record", async (req, res) => {
             id: "35265121453",
             date_time: "May 29, 24 02:58:42 AM",
           },
+          draw: {
+            type: "E",
+            date: "May 31, 24",
+          },
           page: "1",
           number: "9320",
           bet: {
@@ -1015,10 +1019,10 @@ router.post("/fight-number-statistics", async (req, res) => {
               SABAH: 0.0,
               SANDAKAN: 0.0,
               SARAWAK: 0.0,
-              GD: 0.1,
-              "9_Lotto": 0.1,
-              TOTAL: 0.2,
-              PERCENTAGE: "40.00%",
+              GD: 0,
+              "9_Lotto": 0,
+              TOTAL: 0,
+              PERCENTAGE: "0.00%",
             },
           },
           {
@@ -1048,9 +1052,9 @@ router.post("/fight-number-statistics", async (req, res) => {
               SANDAKAN: 0.0,
               SARAWAK: 0.0,
               GD: 0.0,
-              "9_Lotto": 0.3,
-              TOTAL: 0.3,
-              PERCENTAGE: "60.00%",
+              "9_Lotto": 0.0,
+              TOTAL: 0.0,
+              PERCENTAGE: "0.00%",
             },
           },
           {
@@ -1350,10 +1354,60 @@ router.post("/fight-number-statistics", async (req, res) => {
           SABAH: 0.0,
           SANDAKAN: 0.0,
           SARAWAK: 0.0,
-          GD: 0.1,
-          "9_Lotto": 0.4,
-          TOTAL: 0.5,
+          GD: 0.0,
+          "9_Lotto": 0.0,
+          TOTAL: 0.0,
         },
+      });
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  });
+
+  router.post("/win-loss-preview", async (req, res) => {
+    const { draw_type, bet_type, account, currency, draw_date, price } = req.body;
+    try {
+      res.json({
+        "data": {
+          "username": "KP3773",
+          "name": "xiaopang",
+          "member_turnover": "1",
+          "player_total": {
+            "turn_over": "1.00",
+            "commission": "0.27",
+            "total": "-0.73"
+          },
+          "user_id": {
+            "turn_over": "",
+            "commission": "",
+            "total": ""
+          },
+          "company": {
+            "turn_over": "1.00",
+            "commission": "-0.27",
+            "total": "0.73"
+          }
+        },
+       "total": {
+          "player_total": {
+            "turn_over": "1.00",
+            "commission": "0.27",
+            "total": "-0.73"
+          },
+          "user_id": {
+            "turn_over": "",
+            "commission": "",
+            "total": ""
+          },
+          "company": {
+            "turn_over": "1.00",
+            "commission": "-0.27",
+            "total": "0.73"
+          }
+      }
       });
     } catch (error) {
       console.error("Error fetching user:", error);
