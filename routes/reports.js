@@ -445,6 +445,7 @@ router.post("/group-sales", async (req, res) => {
             "3C": "0",
             "3D": "0",
             "3E": "0",
+            "5D": "0",
             "6D": "0",
             "2A": "0",
             "2F": "0",
