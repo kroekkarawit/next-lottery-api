@@ -1019,7 +1019,96 @@ router.get("/hot-special-number", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      res.json({ package });
+      const getHotSpecialNumber = await prisma.hot_special_number.findMany({
+        where: {
+          user_id: parseInt(user.id),
+          status: "ACTIVE"
+        }
+      });
+      res.json({ data: getHotSpecialNumber });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
+router.post("/hot-special-number", async (req, res, next) => {
+  const { action, data } = req.body;
+
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (action === "insert") {
+        if (data?.bet_position) {
+          console.log(data?.bet_position);
+        }
+        const drawType = data.draw_type; //["M","P"]
+        const betType = data.bet_type; //["B","4A"]
+        
+        const promises = [];
+        
+        for (let i = 0; i < drawType.length; i++) {
+          for (let j = 0; j < betType.length; j++) {
+            promises.push(
+              prisma.hot_special_number.create({
+                data: {
+                  user_id: parseInt(user.id),
+                  number: data.number,
+                  draw_type: drawType[i],
+                  bet_type: betType[j],
+                  amount: parseFloat(data.amount >= 0 ? data.amount : 0),
+                },
+              })
+            );
+            
+          }
+        }
+        
+        await Promise.all(promises);
+
+      } else if (action === "edit") {
+        const updatedHotSpecialNumber = await prisma.hot_special_number.update({
+          where: {
+            id: parseInt(data.id),
+            user_id: parseInt(user.id),
+            status: "ACTIVE"
+          },
+          data: {
+            amount: parseFloat(data.amount >= 0 ? data.amount : 0),
+          },
+        });
+      } else {
+        const updatedHotSpecialNumber = await prisma.hot_special_number.update({
+          where: {
+            id: parseInt(data.id),
+            id: parseInt(data.id),
+            user_id: parseInt(user.id),
+            status: "ACTIVE"
+          },
+          data: {
+            status: "INACTIVE",
+          },
+        });
+      }
+
+      res.json({ status: "success" });
     } catch (error) {
       console.error(error);
       res

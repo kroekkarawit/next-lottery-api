@@ -156,13 +156,19 @@ model Fight_eat_credit {
 }
 
 model Hot_special_number {
-  id         Int      @id @default(autoincrement())
-  user_id    Int
+  id         Int                       @id @default(autoincrement())
+  user_id    Int                    
   number     String
   draw_type  String
   bet_type   String
   amount     Decimal
-  created_at DateTime @default(now())
+  status     Hot_special_number_status @default(value: ACTIVE)
+  created_at DateTime                  @default(now())
+}
+
+enum Hot_special_number_status {
+  ACTIVE
+  INACTIVE
 }
 
 enum Admin_status {
