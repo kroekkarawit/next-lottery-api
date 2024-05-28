@@ -141,7 +141,7 @@ model Package {
 
 model Fight_eat_credit {
   id         Int      @id @default(autoincrement())
-  user_id    Int
+  user_id    Int      @unique
   magnum     String   @db.LongText
   pmp        String   @db.LongText
   toto       String   @db.LongText
