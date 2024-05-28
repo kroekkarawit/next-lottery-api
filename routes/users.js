@@ -275,7 +275,7 @@ router.post('/add-user', async (req, res, next) => {
 router.post('/transfer', async (req, res, next) => {
     const { to_user_id, amount, remark } = req.body;
 
-    if (!to_user_id || !amount || !remark) {
+    if (!to_user_id || !amount) {
         return res.status(400).json({ message: 'to_user_id, amount, remark are required' });
     }
     const accessToken = req.headers.authorization.split(' ')[1];
@@ -292,12 +292,264 @@ router.post('/transfer', async (req, res, next) => {
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
             }
-            
 
-            
-            res.json({
-                newUser
+            const ToUser = await prisma.user.findFirst({
+                where: {
+                    id: parseInt(to_user_id),
+                    referral: user.id.toString(),
+                },
+            });
+            if (!ToUser) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const createTransfer = await prisma.transfer.create({
+                data: {
+                    user_id: parseInt(user.id),
+                    to_user_id: parseInt(user.id),
+                    remark: remark || "",
+                    previous_balance: ToUser,
+                    amount: 0,
+                    balance: 0
+                }
             })
+
+            res.json({
+                user, ToUser
+            })
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error', details: error.message });
+        }
+    } else {
+        res.status(500).json({ error: 'Authentication failed' });
+    }
+});
+
+router.post('/package-list', async (req, res, next) => {
+    const { bet_type } = req.body;
+
+
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+        const username = decodedToken.username;
+        try {
+            const user = await prisma.user.findFirst({
+                where: {
+                    username: username,
+                },
+            });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            let package = []
+
+            if (bet_type === '2') {
+                package = {
+                    "name": "2",
+                    "bet_type": "2D",
+                    data: [{
+                        "2A": {
+                            "Price": 1.00,
+                            "Commission": 0.00,
+                            "Prizes": {
+                                "Prize 1": 63.00,
+                                "Prize 2": null,
+                                "Prize 3": null
+                            }
+                        },
+                        "2F": {
+                            "Price": 1.00,
+                            "Commission": 0.00,
+                            "Prizes": {
+                                "Prize 1": 21.00,
+                                "Prize 2": 21.00,
+                                "Prize 3": 21.00
+                            }
+                        }
+                    }
+
+
+                    ]
+                }
+            } else if (bet_type === '56') {
+                package = {
+                    "name": "6D",
+                    "bet_type": "5D/6D",
+                    data: [{
+                        "5D": {
+                            "Price": 1.00,
+                            "Commission": 29.00,
+                            "Prizes": {
+                                "Prize 1": 16500.00,
+                                "Prize 2": 5500.00,
+                                "Prize 3": 3300.00,
+                                "Prize 4": 550.00,
+                                "Prize 5": 22.00
+                            }
+                        },
+                        "6D": {
+                            "Price": 1.00,
+                            "Commission": 29.00,
+                            "Prizes": {
+                                "Prize 1": 110000.00,
+                                "Prize 2": 3300.00,
+                                "Prize 3": 330.00,
+                                "Prize 4": 33.00,
+                                "Prize 5": 4.40,
+                                "Prize 6": 5.50
+                            }
+                        }
+                    }
+
+                    ]
+                }
+            } else {
+                package = {
+                    "name": "184",
+                    "bet_type": "4D/3D",
+                    data: [{
+                        "Big": {
+                            "Price": "1.00",
+                            "Commission": "27.00",
+                            "Prize 1": "2,730.00",
+                            "Prize 2": "1,050.00",
+                            "Prize 3": "525.00",
+                            "Prize 4": "210.00",
+                            "Prize 5": "63.00"
+                        },
+                        "Small": {
+                            "Price": "1.00",
+                            "Commission": "27.00",
+                            "Prize 1": "3,780.00",
+                            "Prize 2": "2,100.00",
+                            "Prize 3": "1,050.00",
+                            "Prize 4": "4D: 661.50",
+                            "Prize 5": "4E: 661.50"
+                        },
+                        "4A": {
+                            "Price": "1.00",
+                            "Commission": "27.00",
+                            "Prize 1": "6,615.00",
+                            "Prize 2": "4B: 6,615.00",
+                            "Prize 3": "4C: 6,615.00",
+                            "Prize 4": "4D: 661.50",
+                            "Prize 5": "4F: 2,205.00"
+                        },
+                        "A": {
+                            "Price": "1.00",
+                            "Commission": "27.00",
+                            "Prize 1": "693.00",
+                            "Prize 2": "3B: 693.00",
+                            "Prize 3": "3C: 693.00",
+                            "Prize 4": "3D: 69.30",
+                            "Prize 5": "3E: 69.30"
+                        },
+                        "ABC": {
+                            "Price": "1.00",
+                            "Commission": "27.00",
+                            "Prize 1": "231.00",
+                            "Prize 2": "231.00",
+                            "Prize 3": "231.00"
+                        }
+                    }, {
+                        "BIG": {
+                            "IBox 24": {
+                                "Prize 1": 113.75,
+                                "Prize 2": 43.75,
+                                "Prize 3": 21.88,
+                                "Starters": 8.75,
+                                "Consolation": 2.63
+                            },
+                            "IBox 12": {
+                                "Prize 1": 227.50,
+                                "Prize 2": 87.50,
+                                "Prize 3": 43.75,
+                                "Starters": 17.50,
+                                "Consolation": 5.25
+                            },
+                            "IBox 6": {
+                                "Prize 1": 455.00,
+                                "Prize 2": 175.00,
+                                "Prize 3": 87.50,
+                                "Starters": 35.00,
+                                "Consolation": 10.50
+                            },
+                            "IBox 4": {
+                                "Prize 1": 682.50,
+                                "Prize 2": 262.50,
+                                "Prize 3": 131.25,
+                                "Starters": 52.50,
+                                "Consolation": 15.75
+                            }
+                        },
+                        "SMALL": {
+                            "IBox 24": {
+                                "Prize 1": 157.50,
+                                "Prize 2": 87.50,
+                                "Prize 3": 43.75
+                            },
+                            "IBox 12": {
+                                "Prize 1": 315.00,
+                                "Prize 2": 175.00,
+                                "Prize 3": 87.50
+                            },
+                            "IBox 6": {
+                                "Prize 1": 630.00,
+                                "Prize 2": 350.00,
+                                "Prize 3": 175.00
+                            },
+                            "IBox 4": {
+                                "Prize 1": 945.00,
+                                "Prize 2": 525.00,
+                                "Prize 3": 262.50
+                            }
+                        },
+                        "4A": {
+                            "IBox 24": 275.63,
+                            "IBox 12": 551.25,
+                            "IBox 6": 1102.50,
+                            "IBox 4": 1653.75
+                        },
+                        "4B": {
+                            "IBox 24": 275.63,
+                            "IBox 12": 551.25,
+                            "IBox 6": 1102.50,
+                            "IBox 4": 1653.75
+                        },
+                        "4C": {
+                            "IBox 24": 275.63,
+                            "IBox 12": 551.25,
+                            "IBox 6": 1102.50,
+                            "IBox 4": 1653.75
+                        },
+                        "4D": {
+                            "IBox 24": 27.56,
+                            "IBox 12": 55.13,
+                            "IBox 6": 110.25,
+                            "IBox 4": 165.38
+                        },
+                        "4E": {
+                            "IBox 24": 27.56,
+                            "IBox 12": 55.13,
+                            "IBox 6": 110.25,
+                            "IBox 4": 165.38
+                        },
+                        "4F": {
+                            "IBox 24": 91.88,
+                            "IBox 12": 183.75,
+                            "IBox 6": 367.50,
+                            "IBox 4": 551.25
+                        }
+                    }
+
+                    ]
+                }
+            }
+
+            res.json({ package })
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal server error', details: error.message });

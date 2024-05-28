@@ -10,6 +10,7 @@ const usersRouter = require('./routes/users');
 const betRouter = require('./routes/bet');
 const lotteryRouter = require('./routes/lottery');
 const webServiceRouter = require('./routes/web_service');
+const reportsRouter = require('./routes/reports');
 
 app.use(express.json());
 
@@ -20,6 +21,7 @@ app.use('/users', usersRouter);
 app.use('/users/bet', betRouter);
 app.use('/lottery', lotteryRouter);
 app.use('/web-service', webServiceRouter);
+app.use('/reports', reportsRouter);
 
 
 // Start the server

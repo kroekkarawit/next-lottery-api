@@ -149,7 +149,7 @@ router.post('/receipt', async (req, res, next) => {
         let where = {};
 
         if (user_id) {
-            where.user_id = user_id;
+            where.user_id = parseInt(user_id);
         }
 
         if (currency) {
