@@ -672,6 +672,34 @@ router.get('/package-list', async (req, res, next) => {
 });
 
 
+// Todo: refactor this route
+router.get('/hot-special-number', async (req, res, next) => {
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+        const username = decodedToken.username;
+        try {
+            const user = await prisma.user.findFirst({
+                where: {
+                    username: username,
+                },
+            });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+
+            res.json({package})
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error', details: error.message });
+        }
+    } else {
+        res.status(500).json({ error: 'Authentication failed' });
+    }
+});
+
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();
