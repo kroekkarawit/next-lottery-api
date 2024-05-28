@@ -315,7 +315,7 @@ router.post('/transfer', async (req, res, next) => {
             })
 
             res.json({
-                user, ToUser
+                createTransfer
             })
         } catch (error) {
             console.error(error);
@@ -326,6 +326,7 @@ router.post('/transfer', async (req, res, next) => {
     }
 });
 
+// Todo: refactor this route
 router.get('/package-list', async (req, res, next) => {
     const accessToken = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.decode(accessToken);
@@ -349,21 +350,21 @@ router.get('/package-list', async (req, res, next) => {
                     "data": [
                         {
                             "2A": {
-                                "Price": 1.00,
-                                "Commission": 0.00,
+                                "Price": 1,
+                                "Commission": 0,
                                 "Prizes": {
-                                    "Prize 1": 63.00,
+                                    "Prize 1": 63,
                                     "Prize 2": null,
                                     "Prize 3": null
                                 }
                             },
                             "2F": {
-                                "Price": 1.00,
-                                "Commission": 0.00,
+                                "Price": 1,
+                                "Commission": 0,
                                 "Prizes": {
-                                    "Prize 1": 21.00,
-                                    "Prize 2": 21.00,
-                                    "Prize 3": 21.00
+                                    "Prize 1": 21,
+                                    "Prize 2": 21,
+                                    "Prize 3": 21
                                 }
                             }
                         }
@@ -375,26 +376,26 @@ router.get('/package-list', async (req, res, next) => {
                     "data": [
                         {
                             "5D": {
-                                "Price": 1.00,
-                                "Commission": 29.00,
+                                "Price": 1,
+                                "Commission": 29,
                                 "Prizes": {
-                                    "Prize 1": 16500.00,
-                                    "Prize 2": 5500.00,
-                                    "Prize 3": 3300.00,
-                                    "Prize 4": 550.00,
-                                    "Prize 5": 22.00
+                                    "Prize 1": 16500,
+                                    "Prize 2": 5500,
+                                    "Prize 3": 3300,
+                                    "Prize 4": 550,
+                                    "Prize 5": 22
                                 }
                             },
                             "6D": {
-                                "Price": 1.00,
-                                "Commission": 29.00,
+                                "Price": 1,
+                                "Commission": 29,
                                 "Prizes": {
-                                    "Prize 1": 110000.00,
-                                    "Prize 2": 3300.00,
-                                    "Prize 3": 330.00,
-                                    "Prize 4": 33.00,
-                                    "Prize 5": 4.40,
-                                    "Prize 6": 5.50
+                                    "Prize 1": 110000,
+                                    "Prize 2": 3300,
+                                    "Prize 3": 330,
+                                    "Prize 4": 33,
+                                    "Prize 5": 4.4,
+                                    "Prize 6": 5.5
                                 }
                             }
                         }
@@ -406,32 +407,32 @@ router.get('/package-list', async (req, res, next) => {
                     "data": [
                         {
                             "Big": {
-                                "Price": 1.00,
-                                "Commission": 27.00,
+                                "Price": 1,
+                                "Commission": 27,
                                 "Prizes": {
-                                    "Prize 1": 2730.00,
-                                    "Prize 2": 1050.00,
-                                    "Prize 3": 525.00,
-                                    "Prize 4": 210.00,
-                                    "Prize 5": 63.00
+                                    "Prize 1": 2730,
+                                    "Prize 2": 1050,
+                                    "Prize 3": 525,
+                                    "Prize 4": 210,
+                                    "Prize 5": 63
                                 }
                             },
                             "Small": {
-                                "Price": 1.00,
-                                "Commission": 27.00,
+                                "Price": 1,
+                                "Commission": 27,
                                 "Prizes": {
-                                    "Prize 1": 3780.00,
-                                    "Prize 2": 2100.00,
-                                    "Prize 3": 1050.00,
+                                    "Prize 1": 3780,
+                                    "Prize 2": 2100,
+                                    "Prize 3": 1050,
                                     "Prize 4": "4D: 661.50",
                                     "Prize 5": "4E: 661.50"
                                 }
                             },
                             "4A": {
-                                "Price": 1.00,
-                                "Commission": 27.00,
+                                "Price": 1,
+                                "Commission": 27,
                                 "Prizes": {
-                                    "Prize 1": 6615.00,
+                                    "Prize 1": 6615,
                                     "Prize 2": "4B: 6615.00",
                                     "Prize 3": "4C: 6615.00",
                                     "Prize 4": "4D: 661.50",
@@ -439,10 +440,10 @@ router.get('/package-list', async (req, res, next) => {
                                 }
                             },
                             "A": {
-                                "Price": 1.00,
-                                "Commission": 27.00,
+                                "Price": 1,
+                                "Commission": 27,
                                 "Prizes": {
-                                    "Prize 1": 693.00,
+                                    "Prize 1": 693,
                                     "Prize 2": "3B: 693.00",
                                     "Prize 3": "3C: 693.00",
                                     "Prize 4": "3D: 69.30",
@@ -450,12 +451,12 @@ router.get('/package-list', async (req, res, next) => {
                                 }
                             },
                             "ABC": {
-                                "Price": 1.00,
-                                "Commission": 27.00,
+                                "Price": 1,
+                                "Commission": 27,
                                 "Prizes": {
-                                    "Prize 1": 231.00,
-                                    "Prize 2": 231.00,
-                                    "Prize 3": 231.00
+                                    "Prize 1": 231,
+                                    "Prize 2": 231,
+                                    "Prize 3": 231
                                 }
                             }
                         },
@@ -469,65 +470,65 @@ router.get('/package-list', async (req, res, next) => {
                                     "Consolation": 2.63
                                 },
                                 "IBox 12": {
-                                    "Prize 1": 227.50,
-                                    "Prize 2": 87.50,
+                                    "Prize 1": 227.5,
+                                    "Prize 2": 87.5,
                                     "Prize 3": 43.75,
-                                    "Starters": 17.50,
+                                    "Starters": 17.5,
                                     "Consolation": 5.25
                                 },
                                 "IBox 6": {
-                                    "Prize 1": 455.00,
-                                    "Prize 2": 175.00,
-                                    "Prize 3": 87.50,
-                                    "Starters": 35.00,
-                                    "Consolation": 10.50
+                                    "Prize 1": 455,
+                                    "Prize 2": 175,
+                                    "Prize 3": 87.5,
+                                    "Starters": 35,
+                                    "Consolation": 10.5
                                 },
                                 "IBox 4": {
-                                    "Prize 1": 682.50,
-                                    "Prize 2": 262.50,
+                                    "Prize 1": 682.5,
+                                    "Prize 2": 262.5,
                                     "Prize 3": 131.25,
-                                    "Starters": 52.50,
+                                    "Starters": 52.5,
                                     "Consolation": 15.75
                                 }
                             },
                             "SMALL": {
                                 "IBox 24": {
-                                    "Prize 1": 157.50,
-                                    "Prize 2": 87.50,
+                                    "Prize 1": 157.5,
+                                    "Prize 2": 87.5,
                                     "Prize 3": 43.75
                                 },
                                 "IBox 12": {
-                                    "Prize 1": 315.00,
-                                    "Prize 2": 175.00,
-                                    "Prize 3": 87.50
+                                    "Prize 1": 315,
+                                    "Prize 2": 175,
+                                    "Prize 3": 87.5
                                 },
                                 "IBox 6": {
-                                    "Prize 1": 630.00,
-                                    "Prize 2": 350.00,
-                                    "Prize 3": 175.00
+                                    "Prize 1": 630,
+                                    "Prize 2": 350,
+                                    "Prize 3": 175
                                 },
                                 "IBox 4": {
-                                    "Prize 1": 945.00,
-                                    "Prize 2": 525.00,
-                                    "Prize 3": 262.50
+                                    "Prize 1": 945,
+                                    "Prize 2": 525,
+                                    "Prize 3": 262.5
                                 }
                             },
                             "4A": {
                                 "IBox 24": 275.63,
                                 "IBox 12": 551.25,
-                                "IBox 6": 1102.50,
+                                "IBox 6": 1102.5,
                                 "IBox 4": 1653.75
                             },
                             "4B": {
                                 "IBox 24": 275.63,
                                 "IBox 12": 551.25,
-                                "IBox 6": 1102.50,
+                                "IBox 6": 1102.5,
                                 "IBox 4": 1653.75
                             },
                             "4C": {
                                 "IBox 24": 275.63,
                                 "IBox 12": 551.25,
-                                "IBox 6": 1102.50,
+                                "IBox 6": 1102.5,
                                 "IBox 4": 1653.75
                             },
                             "4D": {
@@ -545,7 +546,7 @@ router.get('/package-list', async (req, res, next) => {
                             "4F": {
                                 "IBox 24": 91.88,
                                 "IBox 12": 183.75,
-                                "IBox 6": 367.50,
+                                "IBox 6": 367.5,
                                 "IBox 4": 551.25
                             }
                         }
@@ -554,10 +555,10 @@ router.get('/package-list', async (req, res, next) => {
                 "main": {
                     "2": {
                         "2A": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "0.00%",
                             "Prizes": {
-                                "Prize 1": 63.00,
+                                "Prize 1": 63,
                                 "Prize 2": "2B: 63.00",
                                 "Prize 3": "2C: 63.00",
                                 "Prize 4": "2D: 6.30",
@@ -565,45 +566,70 @@ router.get('/package-list', async (req, res, next) => {
                             }
                         },
                         "2F": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "0.00%",
                             "Prizes": {
-                                "Prize 1": 21.00,
-                                "Prize 2": 21.00,
-                                "Prize 3": 21.00,
+                                "Prize 1": 21,
+                                "Prize 2": 21,
+                                "Prize 3": 21,
                                 "Prize 4": null,
                                 "Prize 5": null
                             }
                         }
                     },
+                    "56": {
+                        "5D": {
+                            "Price": 1,
+                            "Commission": "29.00%",
+                            "Prizes": {
+                                "Prize 1": 16500,
+                                "Prize 2": 5500,
+                                "Prize 3": 3300,
+                                "Prize 4": 550,
+                                "Prize 5": 22,
+                                "Prize 6": 5.5
+                            }
+                        },
+                        "6D": {
+                            "Price": 1,
+                            "Commission": "29.00%",
+                            "Prizes": {
+                                "Prize 1": 110000,
+                                "Prize 2": 3300,
+                                "Prize 3": 330,
+                                "Prize 4": 33,
+                                "Prize 5": 4.4,
+                            }
+                        }
+                    },
                     "184": {
                         "Big": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "27.00%",
                             "Prizes": {
-                                "Prize 1": 2730.00,
-                                "Prize 2": 1050.00,
-                                "Prize 3": 525.00,
-                                "Prize 4": 210.00,
-                                "Prize 5": 63.00
+                                "Prize 1": 2730,
+                                "Prize 2": 1050,
+                                "Prize 3": 525,
+                                "Prize 4": 210,
+                                "Prize 5": 63
                             }
                         },
                         "Small": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "27.00%",
                             "Prizes": {
-                                "Prize 1": 3780.00,
-                                "Prize 2": 2100.00,
-                                "Prize 3": 1050.00,
+                                "Prize 1": 3780,
+                                "Prize 2": 2100,
+                                "Prize 3": 1050,
                                 "Prize 4": "4D: 661.50",
                                 "Prize 5": "4E: 661.50"
                             }
                         },
                         "4A": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "27.00%",
                             "Prizes": {
-                                "Prize 1": 6615.00,
+                                "Prize 1": 6615,
                                 "Prize 2": "4B: 6615.00",
                                 "Prize 3": "4C: 6615.00",
                                 "Prize 4": "4D: 661.50",
@@ -611,10 +637,10 @@ router.get('/package-list', async (req, res, next) => {
                             }
                         },
                         "A": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "27.00%",
                             "Prizes": {
-                                "Prize 1": 693.00,
+                                "Prize 1": 693,
                                 "Prize 2": "3B: 693.00",
                                 "Prize 3": "3C: 693.00",
                                 "Prize 4": "3D: 69.30",
@@ -622,37 +648,12 @@ router.get('/package-list', async (req, res, next) => {
                             }
                         },
                         "ABC": {
-                            "Price": 1.00,
+                            "Price": 1,
                             "Commission": "27.00%",
                             "Prizes": {
-                                "Prize 1": 231.00,
-                                "Prize 2": 231.00,
-                                "Prize 3": 231.00
-                            }
-                        }
-                    },
-                    "56": {
-                        "5D": {
-                            "Price": 1.00,
-                            "Commission": "29.00%",
-                            "Prizes": {
-                                "Prize 1": 16500.00,
-                                "Prize 2": 5500.00,
-                                "Prize 3": 3300.00,
-                                "Prize 4": 550.00,
-                                "Prize 5": 22.00
-                            }
-                        },
-                        "6D": {
-                            "Price": 1.00,
-                            "Commission": "29.00%",
-                            "Prizes": {
-                                "Prize 1": 110000.00,
-                                "Prize 2": 3300.00,
-                                "Prize 3": 330.00,
-                                "Prize 4": 33.00,
-                                "Prize 5": 4.40,
-                                "Prize 6": 5.50
+                                "Prize 1": 231,
+                                "Prize 2": 231,
+                                "Prize 3": 231
                             }
                         }
                     }
