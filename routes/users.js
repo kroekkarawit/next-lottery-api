@@ -689,7 +689,6 @@ router.get('/hot-special-number', async (req, res, next) => {
                 return res.status(404).json({ message: 'User not found' });
             }
 
-
             res.json({package})
         } catch (error) {
             console.error(error);

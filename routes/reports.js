@@ -139,7 +139,6 @@ router.get('/draw-result', async (req, res) => {
 
 router.post('/draw-winning-number', async (req, res) => {
     const { user_id, currency, draw_date: result_date, bet_date: created_at, page_number } = req.body;
-
     try {
         res.json({
             "data": [
@@ -178,6 +177,27 @@ router.post('/draw-winning-number', async (req, res) => {
     }
 });
 
+
+router.post('/fight-winning-number', async (req, res) => {
+    const { user_id, currency, draw_date: result_date, bet_date: created_at, page_number } = req.body;
+    try {
+        res.json({});
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
+
+router.post('/detailed-win-loss', async (req, res) => {
+    const { user_id, currency, draw_date: result_date, bet_date: created_at, page_number } = req.body;
+    try {
+        res.json({});
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();

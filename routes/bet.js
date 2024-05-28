@@ -31,7 +31,7 @@ router.post('/', async (req, res, next) => {
     try {
         const newReceipt = await prisma.receipt.create({
             data: {
-                user_id: userId,
+                user_id: parseInt(userId),
                 remark: "",
                 currency: currency,
                 bet_method: "MULTIPLY",
@@ -60,7 +60,7 @@ router.post('/', async (req, res, next) => {
                             console.log(`Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`);
                             totalAmount += parseFloat(bet_amount);
                             betPrepared.push({
-                                user_id: userId,
+                                user_id: parseInt(userId),
                                 receipt_id: newReceipt.id.toString(),
                                 number: bet.number,
                                 amount: parseFloat(bet_amount).toFixed(2),
