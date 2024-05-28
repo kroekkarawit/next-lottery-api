@@ -137,6 +137,47 @@ router.get('/draw-result', async (req, res) => {
     }
 });
 
+router.post('/draw-winning-number', async (req, res) => {
+    const { user_id, currency, draw_date: result_date, bet_date: created_at, page_number } = req.body;
+
+    try {
+        res.json({
+            "data": [
+                {
+                    "account": {
+                        "user": "kp3773",
+                        "name": "xiaopang"
+                    },
+                    "bet": {
+                        "id": "32779144970",
+                        "date_time": "Jan 01, 00 12:00:00 AM"
+                    },
+                    "draw": {
+                        "type": "H",
+                        "date": "Jan 30, 24"
+                    },
+                    "page": null,
+                    "number": "212",
+                    "prize": "#2 (GD) 246.75",
+                    "bet_detail": "1.00 (C)",
+                    "amount": "1.00 (C)",
+                    "strike": "246.75 (C)",
+                    "remark": ""
+                }
+            ],
+            "total": {
+                "bet_detail": "1.00 (C)",
+                "amount": 1.00,
+                "strike": 1.00
+            }
+        }
+        );
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
+
 process.on('SIGINT', async () => {
     await prisma.$disconnect();
     process.exit();
