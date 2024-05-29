@@ -989,434 +989,524 @@ router.post("/bet-draw-statistics", async (req, res) => {
 });
 
 router.post("/fight-number-statistics", async (req, res) => {
-    const { draw_type, bet_type, account, currency, draw_date, price } = req.body;
-    try {
+  const { draw_type, bet_type, account, currency, draw_date, price } = req.body;
+  try {
+    res.json({
+      data: [
+        {
+          draw_type: "B",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "S",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0,
+            "9_Lotto": 0,
+            TOTAL: 0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "4A",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "A",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "ABC",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "5D",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "6D",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "4B",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "4C",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "4D",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "4E",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "4F",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "3B",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "3C",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "3D",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "3E",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "2A",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "2B",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "2C",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "2D",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "2E",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+        {
+          draw_type: "2F",
+          values: {
+            MAGNUM: 0.0,
+            PMP: 0.0,
+            TOTO: 0.0,
+            SINGAPORE: 0.0,
+            SABAH: 0.0,
+            SANDAKAN: 0.0,
+            SARAWAK: 0.0,
+            GD: 0.0,
+            "9_Lotto": 0.0,
+            TOTAL: 0.0,
+            PERCENTAGE: "0.00%",
+          },
+        },
+      ],
+      total: {
+        MAGNUM: 0.0,
+        PMP: 0.0,
+        TOTO: 0.0,
+        SINGAPORE: 0.0,
+        SABAH: 0.0,
+        SANDAKAN: 0.0,
+        SARAWAK: 0.0,
+        GD: 0.0,
+        "9_Lotto": 0.0,
+        TOTAL: 0.0,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.post("/win-loss-preview", async (req, res) => {
+  const { draw_type, bet_type, account, currency, draw_date, price } = req.body;
+  try {
+    res.json({
+      data: [
+        {
+          username: "KP3773",
+          name: "xiaopang",
+          member_turnover: "1",
+          player_total: {
+            turn_over: "1.00",
+            commission: "0.27",
+            total: "-0.73",
+          },
+          user_id: {
+            turn_over: "",
+            commission: "",
+            total: "",
+          },
+          company: {
+            turn_over: "1.00",
+            commission: "-0.27",
+            total: "0.73",
+          },
+        },
+      ],
+      total: {
+        member_turnover: "1",
+        player_total: {
+          turn_over: "1.00",
+          commission: "0.27",
+          total: "-0.73",
+        },
+        user_id: {
+          turn_over: "",
+          commission: "",
+          total: "",
+        },
+        company: {
+          turn_over: "1.00",
+          commission: "-0.27",
+          total: "0.73",
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.post("/sms-report", async (req, res) => {
+  const { user_id, draw_date } = req.body;
+  try {
+    if (user_id) {
       res.json({
         data: [
           {
-            draw_type: "B",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
+            account: {
+              username: "kp3773",
+              name: "xiaopang",
             },
+            date_time: "Jan 30, 24 06:45:30 PM",
+            sms_number: "60149090369",
+            sms: `240130 1845 (2)
+          kp3773
+          30/01
+          *HE
+          9338=1B 1S 1A1 1C 1A (Box)
+          GT=120
+          DRAGON JP 6+1D
+          30Jan
+          3706515 3712678 3754700
+          3769064 3788459
+          
+          Points:0013 3601 7872 9741
+          
+          NINE 6+1D
+          30Jan
+          6011252 1315598 2493521
+          4510208 9163398 2819932
+          1899205 6643545 4065204
+          2861212 8491282 3018368`,
+            sms_cost: "0.35",
           },
           {
-            draw_type: "S",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0,
-              "9_Lotto": 0,
-              TOTAL: 0,
-              PERCENTAGE: "0.00%",
+            account: {
+              username: "kp3773",
+              name: "xiaopang",
             },
-          },
-          {
-            draw_type: "4A",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "A",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "ABC",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "5D",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "6D",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "4B",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "4C",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "4D",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "4E",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "4F",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "3B",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "3C",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "3D",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "3E",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "2A",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "2B",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "2C",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "2D",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "2E",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
-          },
-          {
-            draw_type: "2F",
-            values: {
-              MAGNUM: 0.0,
-              PMP: 0.0,
-              TOTO: 0.0,
-              SINGAPORE: 0.0,
-              SABAH: 0.0,
-              SANDAKAN: 0.0,
-              SARAWAK: 0.0,
-              GD: 0.0,
-              "9_Lotto": 0.0,
-              TOTAL: 0.0,
-              PERCENTAGE: "0.00%",
-            },
+            date_time: "Jan 30, 24 06:33:23 PM",
+            sms_number: "60149090369",
+            sms: `240130 1845 (2)
+          kp3773
+          30/01
+          *HE
+          9338=1B 1S 1A1 1C 1A (Box)
+          GT=120
+          DRAGON JP 6+1D
+          30Jan
+          3706515 3712678 3754700
+          3769064 3788459
+          
+          Points:0013 3601 7872 9741
+          
+          NINE 6+1D
+          30Jan
+          6011252 1315598 2493521
+          4510208 9163398 2819932
+          1899205 6643545 4065204
+          2861212 8491282 3018368`,
+            sms_cost: "0.35",
           },
         ],
         total: {
-          MAGNUM: 0.0,
-          PMP: 0.0,
-          TOTO: 0.0,
-          SINGAPORE: 0.0,
-          SABAH: 0.0,
-          SANDAKAN: 0.0,
-          SARAWAK: 0.0,
-          GD: 0.0,
-          "9_Lotto": 0.0,
-          TOTAL: 0.0,
+          cost: "0.35",
         },
       });
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res
-        .status(500)
-        .json({ error: "Internal server error", details: error.message });
-    }
-  });
-
-  router.post("/win-loss-preview", async (req, res) => {
-    const { draw_type, bet_type, account, currency, draw_date, price } = req.body;
-    try {
+    } else {
       res.json({
-        "data": [{
-          "username": "KP3773",
-          "name": "xiaopang",
-          "member_turnover": "1",
-          "player_total": {
-            "turn_over": "1.00",
-            "commission": "0.27",
-            "total": "-0.73"
+        data: [
+          {
+            username: "kp3773",
+            sms_cost: "0.35",
           },
-          "user_id": {
-            "turn_over": "",
-            "commission": "",
-            "total": ""
-          },
-          "company": {
-            "turn_over": "1.00",
-            "commission": "-0.27",
-            "total": "0.73"
-          }
-        }],
-       "total": {
-        "member_turnover": "1",
-          "player_total": {
-            "turn_over": "1.00",
-            "commission": "0.27",
-            "total": "-0.73"
-          },
-          "user_id": {
-            "turn_over": "",
-            "commission": "",
-            "total": ""
-          },
-          "company": {
-            "turn_over": "1.00",
-            "commission": "-0.27",
-            "total": "0.73"
-          }
-      }
+        ],
+        total: {
+          cost: "0.35",
+        },
       });
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res
-        .status(500)
-        .json({ error: "Internal server error", details: error.message });
     }
-  });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
