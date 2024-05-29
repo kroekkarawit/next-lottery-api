@@ -144,6 +144,41 @@ router.post("/login", async (req, res, next) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+router.get("/main-data", async (req, res, next) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const accountDetails = {};
+      const positionTaking = {};
+      const userPackage = {};
+
+      res.json({
+        account_details: accountDetails,
+        position_taking: positionTaking,
+        user_package: userPackage,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
 
 router.post("/change-password", async (req, res, next) => {
   const { newPassword, oldPassword } = req.body;
@@ -978,7 +1013,7 @@ router.post("/fight-eat-credit", async (req, res, next) => {
           user_id: parseInt(user.id),
         },
       });
-      
+
       if (existingRecord) {
         const updatedFightEat = await prisma.fight_eat_credit.update({
           where: {
@@ -997,16 +1032,13 @@ router.post("/fight-eat-credit", async (req, res, next) => {
           },
         });
         res.json({ status: "success", data: updatedFightEat });
-
       } else {
         // Handle the case where the record doesn't exist
-        console.error('Record not found for user_id:', user.id);
+        console.error("Record not found for user_id:", user.id);
         res
-        .status(500)
-        .json({ error: "Internal server error", details: error.message });
-
+          .status(500)
+          .json({ error: "Internal server error", details: error.message });
       }
-      
     } catch (error) {
       console.error(error);
       res
