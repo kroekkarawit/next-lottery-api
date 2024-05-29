@@ -1392,6 +1392,7 @@ router.post("/fight-number-statistics", async (req, res) => {
           }
         }],
        "total": {
+        "member_turnover": "1",
           "player_total": {
             "turn_over": "1.00",
             "commission": "0.27",
