@@ -1507,6 +1507,158 @@ router.post("/sms-report", async (req, res) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+
+router.post("/profit-sharing", async (req, res) => {
+  const { user_id, draw_date } = req.body;
+  try {
+    res.json({
+      data: [
+        {
+          account: "kp3773",
+          dates: [
+            {
+              date: "Apr 27, 24",
+              value: 7.04,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "Apr 29, 24",
+              value: 0.35,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 05, 24",
+              value: 10.04,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 09, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 14, 24",
+              value: 7.0,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 15, 24",
+              value: 121.9,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 18, 24",
+              value: 31.8,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 19, 24",
+              value: 11.55,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 28, 24",
+              value: 3.49,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+          ],
+          total: 0.0,
+        },
+        {
+          account: "kb1602",
+          dates: [
+            {
+              date: "Apr 27, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "Apr 29, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 05, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 09, 24",
+              value: 28.0,
+              percentage: "100.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 14, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 15, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 18, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 19, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+            {
+              date: "May 28, 24",
+              value: 0.0,
+              percentage: "0.0000%",
+              amount: 0.0,
+            },
+          ],
+          total: 0.0,
+        },
+      ],
+
+      grand_total: {
+        dates: [
+          { date: "Apr 27, 24", value: 7.04, percentage: "100%", amount: 0.0 },
+          { date: "Apr 29, 24", value: 0.35, percentage: "100%", amount: 0.0 },
+          { date: "May 05, 24", value: 10.04, percentage: "100%", amount: 0.0 },
+          { date: "May 09, 24", value: 28.0, percentage: "100%", amount: 0.0 },
+          { date: "May 14, 24", value: 7.0, percentage: "100%", amount: 0.0 },
+          { date: "May 15, 24", value: 121.9, percentage: "100%", amount: 0.0 },
+          { date: "May 18, 24", value: 31.8, percentage: "100%", amount: 0.0 },
+          { date: "May 19, 24", value: 11.55, percentage: "100%", amount: 0.0 },
+          { date: "May 28, 24", value: 3.49, percentage: "100%", amount: 0.0 },
+        ],
+        total: 0.0,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
