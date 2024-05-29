@@ -1371,7 +1371,7 @@ router.post("/fight-number-statistics", async (req, res) => {
     const { draw_type, bet_type, account, currency, draw_date, price } = req.body;
     try {
       res.json({
-        "data": {
+        "data": [{
           "username": "KP3773",
           "name": "xiaopang",
           "member_turnover": "1",
@@ -1390,7 +1390,7 @@ router.post("/fight-number-statistics", async (req, res) => {
             "commission": "-0.27",
             "total": "0.73"
           }
-        },
+        }],
        "total": {
           "player_total": {
             "turn_over": "1.00",
