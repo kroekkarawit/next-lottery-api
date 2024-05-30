@@ -160,14 +160,23 @@ router.get("/main-data", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
+      const getUserPackage = await prisma.package.findFirst({
+        where: {
+          user_id: parseInt(user.id),
+        },
+      });
+
       const accountDetails = user;
-      const positionTaking = {};
-      const userPackage = {};
+      const positionTaking = {
+        position_taking: user.position_taking,
+        position_taking_gd: user.position_taking_GD,
+      };
+      const userPackage = 
 
       res.json({
         account_details: accountDetails,
         position_taking: positionTaking,
-        user_package: userPackage,
+        user_package: getUserPackage,
       });
     } catch (error) {
       console.error(error);

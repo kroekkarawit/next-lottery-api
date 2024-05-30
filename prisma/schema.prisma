@@ -130,7 +130,8 @@ model Lottery {
 }
 
 model Package {
-  id         Int      @id @default(autoincrement())
+  id      Int @id @default(autoincrement())
+  user_id Int
   name       String
   bet_type   String
   detail     String   @db.LongText
@@ -157,7 +158,7 @@ model Fight_eat_credit {
 
 model Hot_special_number {
   id         Int                       @id @default(autoincrement())
-  user_id    Int                    
+  user_id    Int
   number     String
   draw_type  String
   bet_type   String
