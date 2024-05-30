@@ -160,7 +160,7 @@ router.get("/main-data", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const accountDetails = {};
+      const accountDetails = user;
       const positionTaking = {};
       const userPackage = {};
 
@@ -180,6 +180,64 @@ router.get("/main-data", async (req, res, next) => {
   }
 });
 
+router.get("/refresh-sesion", async (req, res, next) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+  const username = decodedToken.username;
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.SECRET_KEY,
+      { expiresIn: "7d" }
+    );
+
+    const getDownlineUser = await prisma.user.findMany({
+      where: {
+        referral: parseInt(user.id),
+      },
+      select: {
+        id: true,
+        username: true,
+        name: true,
+        credit: true,
+        currency: true,
+      },
+    });
+
+    res.json({
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      mobile: user.mobile,
+      credit: user.credit,
+      credit_limit: user.credit_limit,
+      currency: user.currency,
+      is_open_downline: user.is_open_downline,
+      account_level: user.account_level,
+      status: user.status,
+      image: "avatar",
+      role: user.role,
+      access_token: accessToken,
+      downline_user: getDownlineUser,
+      ip_address: ip_address,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
 router.post("/change-password", async (req, res, next) => {
   const { newPassword, oldPassword } = req.body;
   if (!newPassword || !oldPassword) {
