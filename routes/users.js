@@ -189,7 +189,7 @@ router.get("/main-data", async (req, res, next) => {
   }
 });
 
-router.get("/refresh-sesion", async (req, res, next) => {
+router.get("/refresh-session", async (req, res, next) => {
   const accessToken = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.decode(accessToken);
   const username = decodedToken.username;
