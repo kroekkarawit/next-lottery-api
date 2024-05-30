@@ -238,7 +238,6 @@ router.get("/refresh-session", async (req, res, next) => {
       role: user.role,
       access_token: accessToken,
       downline_user: getDownlineUser,
-      ip_address: ip_address,
     });
   } catch (error) {
     console.error(error);
