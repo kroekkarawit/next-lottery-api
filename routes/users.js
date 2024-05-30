@@ -144,6 +144,7 @@ router.post("/login", async (req, res, next) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+
 router.get("/main-data", async (req, res, next) => {
   const accessToken = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.decode(accessToken);
@@ -171,9 +172,7 @@ router.get("/main-data", async (req, res, next) => {
         position_taking: user.position_taking,
         position_taking_gd: user.position_taking_GD,
       };
-      const userPackage = 
-
-      res.json({
+      const userPackage = res.json({
         account_details: accountDetails,
         position_taking: positionTaking,
         user_package: getUserPackage,
@@ -246,6 +245,7 @@ router.get("/refresh-session", async (req, res, next) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+
 router.post("/change-password", async (req, res, next) => {
   const { newPassword, oldPassword } = req.body;
   if (!newPassword || !oldPassword) {
