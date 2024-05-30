@@ -403,15 +403,123 @@ router.post("/fight-winning-number", async (req, res) => {
 });
 
 router.post("/detailed-win-loss", async (req, res) => {
-  const {
-    user_id,
-    currency,
-    draw_date: result_date,
-    bet_date: created_at,
-    page_number,
-  } = req.body;
+  const { account, page_number, bet_type, draw_date, bet_date, currency } =
+    req.body;
   try {
-    res.json({});
+    res.json({
+      data: [
+        {
+          username: "KP3773",
+          name: "xiaopang",
+          member_turnover: "1",
+          player_total: {
+            turn_over: "1.00",
+            commission: "0.27",
+            strike: "0.00",
+            total: "-0.73",
+          },
+          user_id: {
+            turn_over: "",
+            commission: "",
+            strike: "0.00",
+            total: "",
+          },
+          company: {
+            turn_over: "1.00",
+            commission: "-0.27",
+            strike: "0.00",
+            total: "0.73",
+          },
+        },
+      ],
+      total: {
+        member_turnover: "1",
+        player_total: {
+          turn_over: "1.00",
+          commission: "0.27",
+          strike: "0.00",
+
+          total: "-0.73",
+        },
+        user_id: {
+          turn_over: "",
+          commission: "",
+          strike: "0.00",
+
+          total: "",
+        },
+        company: {
+          turn_over: "1.00",
+          commission: "-0.27",
+          strike: "0.00",
+
+          total: "0.73",
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.post("/win-loss", async (req, res) => {
+  const { account, page_number, bet_type, draw_date, bet_date, currency } =
+    req.body;
+  try {
+    res.json({
+      data: [
+        {
+          username: "KP3773",
+          name: "xiaopang",
+          member_turnover: "1",
+          player_total: {
+            turn_over: "1.00",
+            commission: "0.27",
+            strike: "0.00",
+            total: "-0.73",
+          },
+          user_id: {
+            turn_over: "",
+            commission: "",
+            strike: "0.00",
+            total: "",
+          },
+          company: {
+            turn_over: "1.00",
+            commission: "-0.27",
+            strike: "0.00",
+            total: "0.73",
+          },
+        },
+      ],
+      total: {
+        member_turnover: "1",
+        player_total: {
+          turn_over: "1.00",
+          commission: "0.27",
+          strike: "0.00",
+
+          total: "-0.73",
+        },
+        user_id: {
+          turn_over: "",
+          commission: "",
+          strike: "0.00",
+
+          total: "",
+        },
+        company: {
+          turn_over: "1.00",
+          commission: "-0.27",
+          strike: "0.00",
+
+          total: "0.73",
+        },
+      },
+    });
   } catch (error) {
     console.error("Error fetching user:", error);
     res
@@ -1657,7 +1765,6 @@ router.post("/profit-sharing", async (req, res) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
-
 
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
