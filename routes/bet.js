@@ -103,7 +103,7 @@ router.post('/', async (req, res, next) => {
         });
 
         res.json({
-            detail: convertToSlipFormat(bet, new Date(), user.username)
+            detail: convertToSlipFormat(req.body, new Date(), user.username)
         })
     } catch (error) {
         console.error(error);
