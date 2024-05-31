@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const verifyToken = require('../utils/jwt');
 const convertBets = require('../utils/tools');
+const convertToSlipFormat = require('../utils/slip-gen');
 
 router.post('/', async (req, res, next) => {
     const { bet, currency } = req.body;
@@ -41,8 +42,6 @@ router.post('/', async (req, res, next) => {
             }
         });
 
-        let dateList = []
-
         let totalAmount = 0;
         const betData = bet
         const convertedBets = convertBets(betData);
@@ -71,7 +70,6 @@ router.post('/', async (req, res, next) => {
                                 status: "PENDING",
                                 result_date: new Date(date)
                             })
-                            dateList.push(new Date(date));
                         }
                     });
                 });
@@ -104,66 +102,8 @@ router.post('/', async (req, res, next) => {
             },
         });
 
-
-        function formatDate(date) {
-            const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month (1-based and padded with 0)
-            const day = date.getDate().toString().padStart(2, '0'); // Day of the month padded with 0
-            const hours = date.getHours().toString().padStart(2, '0'); // Hours padded with 0
-            const minutes = date.getMinutes().toString().padStart(2, '0'); // Minutes padded with 0
-          
-            return `${year}${month}${day} ${hours}${minutes}`;
-          }
-          function formatMinMaxDates(dates) {
-            // Parse the date strings into Date objects
-            const parsedDates = dates.map(date => new Date(date));
-          
-            // Find the minimum and maximum dates
-            const minDate = new Date(Math.min(...parsedDates));
-            const maxDate = new Date(Math.max(...parsedDates));
-          
-            // Function to format a date as DD/MM
-            const formatDate = date => {
-              const day = date.getDate().toString().padStart(2, '0');
-              const month = (date.getMonth() + 1).toString().padStart(2, '0');
-              return `${day}/${month}`;
-            };
-          
-            // Format the min and max dates
-            const formattedMinDate = formatDate(minDate);
-            const formattedMaxDate = formatDate(maxDate);
-          
-            // Combine the formatted dates into the desired format
-            return `${formattedMinDate}-${formattedMaxDate}`;
-          }
-          
-          const date = formatDate(new Date());
-          const formatedDate = formatMinMaxDates(dateList)
-          
-
         res.json({
-            detail: `${date}
-            ${username}
-            ${formatedDate}
-            *MPT
-            8909=0.10B 0.10S 0.10A1 0.10C 0.10A 0.10EF
-            *PSBK
-            (2323)=0.10B 0.10S 0.10A1 0.10C 0.10EA
-            18/05
-            P 2323=A1(S.O)
-            K 23=EA(S.O)
-            K 2323=B(S.O)
-            K 2323=A1(S.O)
-            K 2323=S(S.O)
-            K 323=C(S.O)
-            19/05
-            K 23=EA(S.O)
-            K 2323=B(S.O)
-            K 2323=A1(S.O)
-            K 2323=S(S.O)
-            K 323=C(S.O)
-            GT=6.50 (SGD)
-            GT=22.75 (MYR)`
+            detail: convertToSlipFormat(bet, new Date(), user.username)
         })
     } catch (error) {
         console.error(error);
