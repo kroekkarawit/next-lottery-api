@@ -452,13 +452,12 @@ router.get("/get-user", async (req, res, next) => {
 });
 
 router.post("/transfer", async (req, res, next) => {
-  const { to_user_id, amount, remark } = req.body;
+  const transfers = req.body;
 
-  if (!to_user_id || !amount) {
-    return res
-      .status(400)
-      .json({ message: "to_user_id, amount, remark are required" });
+  if (!Array.isArray(transfers) || transfers.length === 0) {
+    return res.status(400).json({ message: "Transfers array is required and cannot be empty" });
   }
+
   const accessToken = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.decode(accessToken);
 
@@ -470,52 +469,63 @@ router.post("/transfer", async (req, res, next) => {
           username: username,
         },
       });
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const ToUser = await prisma.user.findFirst({
-        where: {
-          id: parseInt(to_user_id),
-          referral: parseInt(user.id),
-        },
-      });
-      if (!ToUser) {
-        return res.status(404).json({ message: "User not found" });
+      const results = [];
+      for (const transfer of transfers) {
+        const { to_user_id, amount, remark } = transfer;
+
+        if (!to_user_id || !amount) {
+          return res.status(400).json({ message: "to_user_id and amount are required for each transfer" });
+        }
+
+        const ToUser = await prisma.user.findFirst({
+          where: {
+            id: parseInt(to_user_id),
+            referral: parseInt(user.id),
+          },
+        });
+
+        if (!ToUser) {
+          return res.status(404).json({ message: `User not found for to_user_id: ${to_user_id}` });
+        }
+
+        const updateUser = await prisma.user.update({
+          where: {
+            id: parseInt(to_user_id),
+            referral: parseInt(user.id),
+          },
+          data: {
+            balance: ToUser.balance + amount,
+          },
+        });
+
+        const createTransfer = await prisma.transfer.create({
+          data: {
+            user_id: parseInt(user.id),
+            to_user_id: parseInt(to_user_id),
+            remark: remark || "",
+            previous_balance: ToUser.balance,
+            amount: amount,
+            balance: ToUser.balance + amount,
+          },
+        });
+
+        results.push(createTransfer);
       }
 
-      const updateUser = await prisma.user.update({
-        where: {
-          id: parseInt(to_user_id),
-          referral: parseInt(user.id),
-        },
-        data: {
-          balance: ToUser.balance + amount,
-        },
-      });
-
-      const createTransfer = await prisma.transfer.create({
-        data: {
-          user_id: parseInt(user.id),
-          to_user_id: parseInt(user.id),
-          remark: remark || "",
-          previous_balance: ToUser.balance,
-          amount: amount,
-          balance: ToUser.balance + amount,
-        },
-      });
-
       res.json({
-        createTransfer,
+        transfers: results,
       });
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .json({ error: "Internal server error", details: error.message });
+      res.status(500).json({ error: "Internal server error", details: error.message });
     }
   } else {
-    res.status(500).json({ error: "Authentication failed" });
+    res.status(401).json({ error: "Authentication failed" });
   }
 });
 
