@@ -8,6 +8,16 @@ const verifyToken = require("../utils/jwt");
 const convertBets = require("../utils/tools");
 const convertToSlipFormat = require("../utils/slip-gen");
 
+function formatDate(date) {
+  const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month (1-based and padded with 0)
+  const day = date.getDate().toString().padStart(2, "0"); // Day of the month padded with 0
+  const hours = date.getHours().toString().padStart(2, "0"); // Hours padded with 0
+  const minutes = date.getMinutes().toString().padStart(2, "0"); // Minutes padded with 0
+
+  return `${year}${month}${day} ${hours}${minutes}`;
+}
+
 router.post("/", async (req, res, next) => {
   const { bet, currency } = req.body;
   if (!bet) {
@@ -94,6 +104,11 @@ router.post("/", async (req, res, next) => {
       },
       data: {
         total_amount: totalAmount,
+        slip: convertToSlipFormat(
+          req.body,
+          formatDate(new Date()),
+          user.username
+        ),
       },
     });
 
@@ -105,15 +120,7 @@ router.post("/", async (req, res, next) => {
         credit: user.credit - totalAmount,
       },
     });
-    function formatDate(date) {
-      const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
-      const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month (1-based and padded with 0)
-      const day = date.getDate().toString().padStart(2, "0"); // Day of the month padded with 0
-      const hours = date.getHours().toString().padStart(2, "0"); // Hours padded with 0
-      const minutes = date.getMinutes().toString().padStart(2, "0"); // Minutes padded with 0
 
-      return `${year}${month}${day} ${hours}${minutes}`;
-    }
     res.json({
       detail: convertToSlipFormat(
         req.body,
@@ -159,13 +166,13 @@ router.post("/receipt", async (req, res, next) => {
     }
     //TODO: fixing this query cause result time is different
     /*
-                if (result_date && result_date.start && result_date.end) {
-                    where.result_date = {
-                        gte: new Date(result_date.start),
-                        lte: new Date(result_date.end),
-                    };
-                }
-        */
+        if (result_date && result_date.start && result_date.end) {
+            where.result_date = {
+                gte: new Date(result_date.start),
+                lte: new Date(result_date.end),
+            };
+        }
+    */
     if (created_at && created_at.start && created_at.end) {
       where.created_at = {
         gte: new Date(created_at.start),
@@ -175,36 +182,12 @@ router.post("/receipt", async (req, res, next) => {
     console.log(where);
     const receipts = await prisma.receipt.findMany({
       where,
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
-    const preReceipts = receipts.map((i) => {
-      return {
-        ...i,
-        accounts: { username: "kp3773", name: "xiaopang" },
-        bet_info: `Page: ${page_number}
-        Currency: ${i.currency}
-        Date/Time: ${new Date(i.created_at).toLocaleDateString()}
-        Bet By: ${user.username} (${user.name})
-        
-        Draw Type: M-P-T-S-B-K-W-8-9
-        Bet Method: Multiply
-        Bet Type: B-S-4A-C-A
-        Bet Date: Day - D
-        Box / IBox: * / **
-        Draw Date / Day: # / ##`,
-
-        slip: `240515 1251 (4)
-        kp3773
-        15/05-18/05
-        *MSBH
-        9090=0.10B 1S 0.10A1 0.10C 0.10A
-        GT=11.20 (SGD)
-        GT=39.20 (MYR)
-        
-        Points:0013 3601 3830 1733`,
-      };
-    });
-    res.json(preReceipts);
+    res.json(receipts);
   } catch (error) {
     console.error(error);
     res

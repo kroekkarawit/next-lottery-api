@@ -94,9 +94,10 @@ model Receipt {
   bet_method   String?  @db.VarChar(255)
   total_amount Decimal?
   currency     String
-  status       Status
-  created_at   DateTime @default(now())
-  ip_address   String?
+  slip         String?
+  status     Status
+  created_at DateTime @default(now())
+  ip_address String?
 }
 
 model Round {
