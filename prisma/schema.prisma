@@ -12,7 +12,8 @@ model User {
   name                   String
   username               String             @unique
   password               String
-  mobile                 String
+  mobile                 String?
+  email                  String?
   credit                 Decimal            @default(0.00) @db.Decimal(65, 2)
   credit_limit           Decimal            @default(0.00) @db.Decimal(65, 2)
   outstanding            Decimal            @default(0.00) @db.Decimal(65, 2)
@@ -20,18 +21,18 @@ model User {
   remark                 String?
   status                 User_status        @default(ACTIVE)
   account_level          User_account_level
-  currency               String             @default("['MYR','SGD','THB']") @db.VarChar(255)
+  currency               String?            @default("['MYR','SGD','THB']") @db.VarChar(255)
   is_open_downline       Boolean            @default(true)
   updated_at             DateTime           @updatedAt
   created_at             DateTime           @default(now())
   ip_address             String?
-  auto_transfer          String             @default("") @db.LongText
-  manual_transfer        String             @default("") @db.LongText
-  position_taking        String             @default("") @db.LongText
-  position_taking_9Lotto String             @default("") @db.LongText
-  position_taking_GD     String             @default("") @db.LongText
-  referral               Int
-  sub_user_setting       String             @default("")
+  auto_transfer          String?            @default("") @db.LongText
+  manual_transfer        String?            @default("") @db.LongText
+  position_taking        String?            @default("") @db.LongText
+  position_taking_9Lotto String?            @default("") @db.LongText
+  position_taking_GD     String?            @default("") @db.LongText
+  referral               Int?
+  sub_user_setting       String?            @default("")
 }
 
 model User_setting {
@@ -130,8 +131,8 @@ model Lottery {
 }
 
 model Package {
-  id      Int @id @default(autoincrement())
-  user_id Int
+  id         Int      @id @default(autoincrement())
+  user_id    Int
   name       String
   bet_type   String
   detail     String   @db.LongText

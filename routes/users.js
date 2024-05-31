@@ -430,19 +430,172 @@ router.post("/transfer", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
+      const updateUser = await prisma.user.update({
+        where: {
+          id: parseInt(to_user_id),
+          referral: parseInt(user.id),
+        },
+        data: {
+          balance: ToUser.balance + amount,
+        },
+      });
+
       const createTransfer = await prisma.transfer.create({
         data: {
           user_id: parseInt(user.id),
           to_user_id: parseInt(user.id),
           remark: remark || "",
-          previous_balance: ToUser,
-          amount: 0,
-          balance: 0,
+          previous_balance: ToUser.balance,
+          amount: amount,
+          balance: ToUser.balance + amount,
         },
       });
 
       res.json({
         createTransfer,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
+router.post("/sub-user", async (req, res, next) => {
+  const {
+    loginId: subuser_username,
+    password,
+    mobile,
+    email,
+    remark,
+    name,
+    account_status: status,
+    is_account,
+    transfer_check,
+    intake_check,
+    voidbet_check,
+    report_view,
+  } = req.body;
+
+  if (!subuser_username || !password) {
+    return res.status(400).json({ message: "username, password are required" });
+  }
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          username: subuser_username,
+        },
+      });
+
+      if (existingUser) {
+        return res.status(400).json({ error: "Username already taken" });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const createSubUser = await prisma.user.create({
+        data: {
+          name: name,
+          username: subuser_username,
+          password: hashedPassword,
+          email: email,
+          mobile: mobile,
+          credit: 0,
+          credit_limit: 0,
+          outstanding: 0,
+          balance: 0,
+          remark: remark || "",
+          status: status,
+          account_level: "Sub_user",
+          currency: null,
+          is_open_downline: false,
+          ip_address: null,
+          auto_transfer: null,
+          manual_transfer: null,
+          position_taking: null,
+          position_taking_9Lotto: null,
+          position_taking_GD: null,
+          referral: parseInt(user.id),
+          sub_user_setting: JSON.stringify({
+            reports_view: report_view,
+            transfer: transfer_check,
+            intake: intake_check,
+            void_bet: voidbet_check,
+            is_account: is_account,
+          }),
+        },
+      });
+
+      res.json({
+        status: "success",
+        data: createSubUser,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
+router.get("/sub-user", async (req, res, next) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const getAllSubUser = await prisma.user.findMany({
+        where: {
+          referral: parseInt(user.id),
+          status: "ACTIVE",
+        },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          email: true,
+          status: true,
+          ip_address: true,
+          remark: true,
+          account_level: true,
+          referral: true,
+          sub_user_setting: true,
+          created_at: true
+        },
+      });
+
+      res.json({
+        data: getAllSubUser,
       });
     } catch (error) {
       console.error(error);
