@@ -397,6 +397,60 @@ router.post("/add-user", async (req, res, next) => {
   }
 });
 
+router.get("/get-user", async (req, res, next) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const getAllRefUser = await prisma.user.findMany({
+        where: {
+          referral: parseInt(user.id),
+          account_level: "User",
+          status: "ACTIVE",
+        },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          email: true,
+          status: true,
+          ip_address: true,
+          remark: true,
+          account_level: true,
+          referral: true,
+          credit:true,
+          credit_limit: true,
+          outstanding: true,
+          balance: true,
+          created_at: true
+        },
+      });
+
+      res.json({
+        data: getAllRefUser,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
 router.post("/transfer", async (req, res, next) => {
   const { to_user_id, amount, remark } = req.body;
 
@@ -577,6 +631,7 @@ router.get("/sub-user", async (req, res, next) => {
       const getAllSubUser = await prisma.user.findMany({
         where: {
           referral: parseInt(user.id),
+          account_level: "Sub_user",
           status: "ACTIVE",
         },
         select: {
