@@ -110,6 +110,8 @@ router.post("/login", async (req, res, next) => {
     const getDownlineUser = await prisma.user.findMany({
       where: {
         referral: parseInt(user.id),
+        account_level: "User",
+        status: "ACTIVE"
       },
       select: {
         id: true,
@@ -429,11 +431,11 @@ router.get("/get-user", async (req, res, next) => {
           remark: true,
           account_level: true,
           referral: true,
-          credit:true,
+          credit: true,
           credit_limit: true,
           outstanding: true,
           balance: true,
-          created_at: true
+          created_at: true,
         },
       });
 
@@ -451,11 +453,70 @@ router.get("/get-user", async (req, res, next) => {
   }
 });
 
+router.post("/agent", async (req, res, next) => {
+  const { user_id } = req.body;
+
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const getRefUser = await prisma.user.findFirst({
+        where: {
+          id: parseInt(user_id),
+          referral: parseInt(user.id),
+          account_level: "User",
+          status: "ACTIVE",
+        },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          email: true,
+          status: true,
+          ip_address: true,
+          remark: true,
+          account_level: true,
+          referral: true,
+          credit: true,
+          credit_limit: true,
+          outstanding: true,
+          balance: true,
+          created_at: true,
+        },
+      });
+
+      res.json({
+        data: getRefUser,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
 router.post("/transfer", async (req, res, next) => {
   const transfers = req.body;
 
   if (!Array.isArray(transfers) || transfers.length === 0) {
-    return res.status(400).json({ message: "Transfers array is required and cannot be empty" });
+    return res
+      .status(400)
+      .json({ message: "Transfers array is required and cannot be empty" });
   }
 
   const accessToken = req.headers.authorization.split(" ")[1];
@@ -479,7 +540,11 @@ router.post("/transfer", async (req, res, next) => {
         const { to_user_id, amount, remark } = transfer;
 
         if (!to_user_id || !amount) {
-          return res.status(400).json({ message: "to_user_id and amount are required for each transfer" });
+          return res
+            .status(400)
+            .json({
+              message: "to_user_id and amount are required for each transfer",
+            });
         }
 
         const ToUser = await prisma.user.findFirst({
@@ -490,7 +555,9 @@ router.post("/transfer", async (req, res, next) => {
         });
 
         if (!ToUser) {
-          return res.status(404).json({ message: `User not found for to_user_id: ${to_user_id}` });
+          return res
+            .status(404)
+            .json({ message: `User not found for to_user_id: ${to_user_id}` });
         }
 
         const updateUser = await prisma.user.update({
@@ -522,7 +589,9 @@ router.post("/transfer", async (req, res, next) => {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error", details: error.message });
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
     }
   } else {
     res.status(401).json({ error: "Authentication failed" });
@@ -655,7 +724,7 @@ router.get("/sub-user", async (req, res, next) => {
           account_level: true,
           referral: true,
           sub_user_setting: true,
-          created_at: true
+          created_at: true,
         },
       });
 
