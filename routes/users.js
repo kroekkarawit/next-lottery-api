@@ -214,6 +214,8 @@ router.get("/refresh-session", async (req, res, next) => {
     const getDownlineUser = await prisma.user.findMany({
       where: {
         referral: parseInt(user.id),
+        account_level: "User",
+        status: "ACTIVE"
       },
       select: {
         id: true,
