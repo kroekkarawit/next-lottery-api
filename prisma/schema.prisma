@@ -95,9 +95,9 @@ model Receipt {
   total_amount Decimal?
   currency     String
   slip         String?
-  status     Status
-  created_at DateTime @default(now())
-  ip_address String?
+  status       Status
+  created_at   DateTime @default(now())
+  ip_address   String?
 }
 
 model Round {
@@ -131,12 +131,26 @@ model Lottery {
   created_at    DateTime @default(now())
 }
 
+// model Package {
+//   id         Int      @id @default(autoincrement())
+//   user_id    Int
+//   name       String
+//   bet_type   String
+//   detail     String   @db.LongText
+//   status     Status
+//   updated_at DateTime @updatedAt
+//   created_at DateTime @default(now())
+// }
+
 model Package {
-  id         Int      @id @default(autoincrement())
-  user_id    Int
-  name       String
-  bet_type   String
-  detail     String   @db.LongText
+  id                 Int    @id @default(autoincrement())
+  user_id            Int
+  detail             String @db.LongText
+  ibox               String @db.LongText
+  gd_package         String @db.LongText
+  gd_ibox            String @db.LongText
+  nine_lotto_package String @db.LongText
+  nine_lotto_ibox String @db.LongText
   status     Status
   updated_at DateTime @updatedAt
   created_at DateTime @default(now())

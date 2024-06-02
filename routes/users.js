@@ -163,11 +163,416 @@ router.get("/main-data", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const getUserPackage = await prisma.package.findFirst({
-        where: {
-          user_id: parseInt(user.id),
+      // const getUserPackage = await prisma.package.findFirst({
+      //   where: {
+      //     user_id: parseInt(user.id),
+      //   },
+      // });
+
+      const getUserPackage = {
+        "details": {
+          "big": {
+            "price": "1.00",
+            "commission": "27.00%",
+            "prize_1": "2,730.00",
+            "prize_2": "1,050.00",
+            "prize_3": "525.00",
+            "prize_4": "210.00",
+            "priz_5": "63.00",
+            "priz_6": ""
+          },
+          "small": {
+            "price": "1.00",
+            "commission": "27.00%",
+            "prize_1": "3,780.00",
+            "prize_2": "2,100.00",
+            "prize_3": "1,050.00",
+            "prize_4": "",
+            "priz_5": "",
+            "priz_6": ""
+          },
+          "4A": {
+            "price": "1.00",
+            "commission": "27.00%",
+            "prize_1": "6,615.00",
+            "prize_2": "6,615.00 (4B)",
+            "prize_3": "6,615.00 (4C)",
+            "prize_4": "661.50 (4D)",
+            "priz_5": "661.50 (4E)",
+            "priz_6": "2,205.00 (4F)"
+          },
+          "A": {
+            "price": "1.00",
+            "commission": "27.00%",
+            "prize_1": "693.00",
+            "prize_2": "693.00 (3B)",
+            "prize_3": "693.00 (3C)",
+            "prize_4": "69.30 (3D)",
+            "priz_5": "69.30 (3E)",
+            "priz_6": ""
+          },
+          "ABC": {
+            "price": "1.00",
+            "commission": "27.00%",
+            "prize_1": "231.00",
+            "prize_2": "231.00",
+            "prize_3": "231.00",
+            "prize_4": "",
+            "priz_5": "",
+            "priz_6": ""
+          },
+          "5D": {
+            "price": "1.00",
+            "commission": "29.00%",
+            "prize_1": "16,500.00",
+            "prize_2": "5,500.00",
+            "prize_3": "3,300.00",
+            "prize_4": "550.00",
+            "priz_5": "22.00",
+            "priz_6": "5.50"
+          },
+          "6D": {
+            "price": "1.00",
+            "commission": "29.00%",
+            "prize_1": "110,000.00",
+            "prize_2": "3,300.00",
+            "prize_3": "330.00",
+            "prize_4": "33.00",
+            "priz_5": "4.40",
+            "priz_6": ""
+          },
+          "2A": {
+            "price": "1.00",
+            "commission": "0.00%",
+            "prize_1": "63.00",
+            "prize_2": "63.00 (2B)",
+            "prize_3": "63.00 (2C)",
+            "prize_4": "6.30 (2D)",
+            "priz_5": "6.30 (2E)",
+            "priz_6": ""
+          },
+          "2F": {
+            "price": "1.00",
+            "commission": "0.00%",
+            "prize_1": "21.00",
+            "prize_2": "21.00",
+            "prize_3": "21.00",
+            "prize_4": "",
+            "priz_5": "",
+            "priz_6": ""
+          }
         },
-      });
+        "ibox": {
+          "big": {
+            "ibox_24": {
+              "prize_1": "113.75",
+              "prize_2": "43.75",
+              "starters": "8.75",
+              "consolation": "2.63"
+            },
+            "ibox_12": {
+              "prize_1": "227.50",
+              "prize_2": "87.50",
+              "starters": "17.50",
+              "consolation": "5.25"
+            },
+            "ibox_6": {
+              "prize_1": "455.00",
+              "prize_2": "175.00",
+              "starters": "35.00",
+              "consolation": "10.50"
+            },
+            "ibox_4": {
+              "prize_1": "682.50",
+              "prize_2": "262.50",
+              "starters": "52.50",
+              "consolation": "15.75"
+            }
+          },
+          "small": {
+            "ibox_24": {
+              "prize_1": "157.50",
+              "prize_2": "87.50",
+              "prize_3": "43.75"
+            },
+            "ibox_12": {
+              "prize_1": "315.00",
+              "prize_2": "175.00",
+              "prize_3": "87.50"
+            },
+            "ibox_6": {
+              "prize_1": "630.00",
+              "prize_2": "350.00",
+              "prize_3": "175.00"
+            },
+            "ibox_4": {
+              "prize_1": "945.00",
+              "prize_2": "525.00",
+              "prize_3": "262.50"
+            }
+          },
+          "4A": {
+            "ibox_24": {
+              "prize": "275.63",
+              "4B": "275.63",
+              "4C": "275.63",
+              "4D": "27.56",
+              "4E": "27.56",
+              "4F": "91.88"
+            },
+            "ibox_12": {
+              "prize": "551.25",
+              "4B": "551.25",
+              "4C": "551.25",
+              "4D": "55.13",
+              "4E": "55.13",
+              "4F": "183.75"
+            },
+            "ibox_6": {
+              "prize": "1,102.50",
+              "4B": "1,102.50",
+              "4C": "1,102.50",
+              "4D": "110.25",
+              "4E": "110.25",
+              "4F": "367.50"
+            },
+            "ibox_4": {
+              "prize": "1,653.75",
+              "4B": "1,653.75",
+              "4C": "1,653.75",
+              "4D": "165.38",
+              "4E": "165.38",
+              "4F": "551.25"
+            }
+          }
+        },
+        "gd_package": {
+          "big": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "3,045.00",
+            "prize_2": "1,050.00",
+            "prize_3": "525.00",
+            "starters": "210.00",
+            "consolation": "63.00"
+          },
+          "small": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "4,095.00",
+            "prize_2": "2,100.00",
+            "prize_3": "1,050.00"
+          },
+          "4A": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "7,140.00",
+            "prize_2": "7,140.00",
+            "prize_3": "7,140.00",
+            "starters": "714.00",
+            "consolation": "714.00",
+            "prize_6": "2,380.00"
+          },
+          "A": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "740.25",
+            "prize_2": "740.25",
+            "prize_3": "740.25",
+            "starters": "74.03",
+            "consolation": "74.03"
+          },
+          "ABC": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "246.75",
+            "prize_2": "246.75",
+            "prize_3": "246.75"
+          },
+          "6D": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "157,500.00",
+            "prize_2": "5,250.00",
+            "prize_3": "525.00",
+            "starters": "52.50",
+            "consolation": "5.25"
+          },
+          "2A": {
+            "price": "1.00",
+            "commission": "3.00%",
+            "prize_1": "91.80",
+            "prize_2": "91.80",
+            "prize_3": "91.80",
+            "starters": "9.18",
+            "consolation": "9.18"
+          },
+          "2F": {
+            "price": "1.00",
+            "commission": "3.00%",
+            "prize_1": "30.60",
+            "prize_2": "30.60",
+            "prize_3": "30.60"
+          }
+        },
+        "nine_lotto_package": {
+          "big": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "3,150.00",
+            "prize_2": "1,050.00",
+            "prize_3": "525.00",
+            "starters": "210.00",
+            "consolation": "63.00"
+          },
+          "small": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "4,200.00",
+            "prize_2": "2,100.00",
+            "prize_3": "1,050.00"
+          },
+          "4A": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "7,350.00",
+            "prize_2": "7,350.00",
+            "prize_3": "7,350.00",
+            "starters": "735.00",
+            "consolation": "735.00",
+            "prize_6": "2,450.00"
+          },
+          "A": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "756.00",
+            "prize_2": "756.00",
+            "prize_3": "756.00",
+            "starters": "75.60",
+            "consolation": "75.60"
+          },
+          "ABC": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "252.00",
+            "prize_2": "252.00",
+            "prize_3": "252.00"
+          },
+          "2D": {
+            "price": "1.00",
+            "commission": "4.00%",
+            "prize_1": "91.80",
+            "prize_2": "",
+            "prize_3": "",
+            "starters": "",
+            "consolation": ""
+          },
+          "2C": {
+            "price": "1.00",
+            "commission": "4.00%",
+            "prize_1": "30.60",
+            "prize_2": "30.60",
+            "prize_3": "30.60"
+          },
+          "6D": {
+            "price": "1.00",
+            "commission": "19.00%",
+            "prize_1": "105,000.00",
+            "prize_2": "3,150.00",
+            "prize_3": "315.00",
+            "starters": "31.50",
+            "consolation": "4.20"
+          }
+        },
+        "nine_lotto_ibox": {
+          "big": {
+            "ibox_24": {
+              "prize_1": "131.25",
+              "prize_2": "43.75",
+              "prize_3": "21.88",
+              "starters": "8.75",
+              "consolation": "2.63"
+            },
+            "ibox_12": {
+              "prize_1": "262.50",
+              "prize_2": "87.50",
+              "prize_3": "43.75",
+              "starters": "17.50",
+              "consolation": "5.25"
+            },
+            "ibox_6": {
+              "prize_1": "525.00",
+              "prize_2": "175.00",
+              "prize_3": "87.50",
+              "starters": "35.00",
+              "consolation": "10.50"
+            },
+            "ibox_4": {
+              "prize_1": "787.50",
+              "prize_2": "262.50",
+              "prize_3": "131.25",
+              "starters": "52.50",
+              "consolation": "15.75"
+            }
+          },
+          "small": {
+            "ibox_24": {
+              "prize_1": "175.00",
+              "prize_2": "87.50",
+              "prize_3": "43.75"
+            },
+            "ibox_12": {
+              "prize_1": "350.00",
+              "prize_2": "175.00",
+              "prize_3": "87.50"
+            },
+            "ibox_6": {
+              "prize_1": "700.00",
+              "prize_2": "350.00",
+              "prize_3": "175.00"
+            },
+            "ibox_4": {
+              "prize_1": "1,050.00",
+              "prize_2": "525.00",
+              "prize_3": "262.50"
+            }
+          },
+          "4A": {
+            "ibox_24": {
+              "prize": "306.25",
+              "4B": "306.25",
+              "4C": "306.25",
+              "4D": "30.63",
+              "4E": "30.63",
+              "4F": "102.08"
+            },
+            "ibox_12": {
+              "prize": "612.50",
+              "4B": "612.50",
+              "4C": "612.50",
+              "4D": "61.25",
+              "4E": "61.25",
+              "4F": "204.17"
+            },
+            "ibox_6": {
+              "prize": "1,225.00",
+              "4B": "1,225.00",
+              "4C": "1,225.00",
+              "4D": "122.50",
+              "4E": "122.50",
+              "4F": "408.33"
+            },
+            "ibox_4": {
+              "prize": "1,837.50",
+              "4B": "1,837.50",
+              "4C": "1,837.50",
+              "4D": "183.75",
+              "4E": "183.75",
+              "4F": "612.50"
+            }
+          }
+        }
+      }
 
       const accountDetails = user;
       const positionTaking = {
