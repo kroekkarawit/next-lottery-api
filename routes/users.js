@@ -1067,7 +1067,7 @@ router.post("/transfer", async (req, res, next) => {
             referral: parseInt(user.id),
           },
           data: {
-            balance: ToUser.balance + amount,
+            balance: parseFloat(ToUser.balance) + parseFloat(amount),
           },
         });
 
@@ -1078,7 +1078,7 @@ router.post("/transfer", async (req, res, next) => {
             remark: remark || "",
             previous_balance: ToUser.balance,
             amount: amount,
-            balance: ToUser.balance + amount,
+            balance: parseFloat(ToUser.balance) + parseFloat(amount),
           },
         });
 
