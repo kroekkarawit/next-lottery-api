@@ -186,7 +186,7 @@ router.post("/receipt", async (req, res, next) => {
         created_at: "desc",
       },
     });
-
+    
     res.json(receipts);
   } catch (error) {
     console.error(error);
