@@ -172,13 +172,13 @@ router.post("/receipt", async (req, res, next) => {
                 lte: new Date(result_date.end),
             };
         }
-    */
+  */
     if (created_at && created_at.start && created_at.end) {
       where.created_at = {
         gte: new Date(created_at.start),
         lte: new Date(created_at.end),
       };
-    }
+    }  
     console.log(where);
     const receipts = await prisma.receipt.findMany({
       where,
@@ -186,8 +186,37 @@ router.post("/receipt", async (req, res, next) => {
         created_at: "desc",
       },
     });
+
+    const results = await Promise.all(receipts.map(async (i) => {
+      const userData = await prisma.user.findUnique({
+        where: {
+          id: parseInt(i.user_id),
+        },
+      });
     
-    res.json(receipts);
+      return {
+        account: { username: userData.username, name: userData.name },
+        bet_info: `Page: 1
+        Currency: ${i.currency}
+        Date/Time: ${new Date(i.created_at).toLocaleString()}
+        Bet By: ${userData.username} (${userData.name})
+        
+        Draw Type: M-P-T-S-B-K-W-8-9
+        Bet Method: Multiply
+        Bet Type: B-S-4A-C-A
+        Bet Date: Day - D
+        Box / IBox: * / **
+        Draw Date / Day: # / ##`,
+        re_buy: {
+          orderEntry: "#18|+1|1234#1#0#0#0#0#0#0",
+          buyType: "B-S-4A-C-A",
+          ibox: "**",
+        },
+        slip: i.slip,
+        ip_address: i.ip_address,
+      };
+    }));
+    res.json(results);
   } catch (error) {
     console.error(error);
     res

@@ -891,7 +891,7 @@ router.post("/add-user", async (req, res, next) => {
 
       const addPackageUser = await prisma.package.create({
         data: {
-          user_id : newUser.id,
+          user_id : parseInt(newUser.id),
           detail: JSON.stringify({
             big: {
               price: "1.00",
