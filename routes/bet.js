@@ -188,18 +188,20 @@ router.post("/receipt", async (req, res, next) => {
     });
 
     const results = await Promise.all(receipts.map(async (i) => {
+
       const userData = await prisma.user.findUnique({
         where: {
           id: parseInt(i.user_id),
         },
       });
-    
+
+      
       return {
-        account: { username: userData.username, name: userData.name },
+        account: { username: userData?.username, name: userData?.name },
         bet_info: `Page: 1
         Currency: ${i.currency}
         Date/Time: ${new Date(i.created_at).toLocaleString()}
-        Bet By: ${userData.username} (${userData.name})
+        Bet By: ${userData?.username} (${userData?.name})
         
         Draw Type: M-P-T-S-B-K-W-8-9
         Bet Method: Multiply
