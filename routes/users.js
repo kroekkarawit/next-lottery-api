@@ -4,6 +4,7 @@ const { PrismaClient, Status } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { update } = require("lodash");
 
 router.get("/get/:username", async (req, res) => {
   const username = req.params.username;
@@ -566,7 +567,7 @@ router.get("/main-data", async (req, res, next) => {
             prize_2: "252.00",
             prize_3: "252.00",
           },
-          "2D": {
+          "2A": {
             price: "1.00",
             commission: "4.00%",
             prize_1: "91.80",
@@ -575,7 +576,7 @@ router.get("/main-data", async (req, res, next) => {
             starters: "",
             consolation: "",
           },
-          "2C": {
+          "2F": {
             price: "1.00",
             commission: "4.00%",
             prize_1: "30.60",
@@ -1644,9 +1645,6 @@ router.post("/transfer", async (req, res, next) => {
 router.post("/sub-user", async (req, res, next) => {
   const { data, action } = req.body;
 
-
-
-
   const {
     loginId: subuser_username,
     password,
@@ -1662,81 +1660,138 @@ router.post("/sub-user", async (req, res, next) => {
     report_view,
   } = data;
 
-  if(action == "update") return; // Todo: fix this
-  if (!subuser_username || !password) {
-    return res.status(400).json({ message: "username, password are required" });
-  }
-  const accessToken = req.headers.authorization.split(" ")[1];
-  const decodedToken = jwt.decode(accessToken);
-
-  if (decodedToken) {
-    const username = decodedToken.username;
-    try {
-      const user = await prisma.user.findFirst({
-        where: {
-          username: username,
-        },
-      });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const existingUser = await prisma.user.findUnique({
-        where: {
-          username: subuser_username,
-        },
-      });
-
-      if (existingUser) {
-        return res.status(400).json({ error: "Username already taken" });
-      }
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const createSubUser = await prisma.user.create({
-        data: {
-          name: name,
-          username: subuser_username,
-          password: hashedPassword,
-          email: email,
-          mobile: mobile,
-          credit: 0,
-          credit_limit: 0,
-          outstanding: 0,
-          balance: 0,
-          remark: remark || "",
-          status: status,
-          account_level: "Sub_user",
-          currency: null,
-          is_open_downline: false,
-          ip_address: null,
-          auto_transfer: null,
-          manual_transfer: null,
-          position_taking: null,
-          position_taking_9Lotto: null,
-          position_taking_GD: null,
-          referral: parseInt(user.id),
-          sub_user_setting: JSON.stringify({
-            reports_view: report_view,
-            transfer: transfer_check,
-            intake: intake_check,
-            void_bet: voidbet_check,
-            is_account: is_account,
-          }),
-        },
-      });
-
-      res.json({
-        status: "success",
-        data: createSubUser,
-      });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ error: "Internal server error", details: error.message });
+  if (action == "update") {
+    if (!subuser_username || !password) {
+      return res
+        .status(400)
+        .json({ message: "username, password are required" });
     }
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+      const username = decodedToken.username;
+      try {
+        const user = await prisma.user.findFirst({
+          where: {
+            username: username,
+          },
+        });
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const updateUser = await prisma.user.update({
+          where: {
+              username: subuser_username
+          },
+          data: 
+          {
+            name: name,
+            username: subuser_username,
+            password: hashedPassword,
+            email: email,
+            mobile: mobile,
+            credit: 0,
+            credit_limit: 0,
+            outstanding: 0,
+            balance: 0,
+            remark: remark || "",
+            status: status,
+            account_level: "Sub_user",
+            currency: null,
+            is_open_downline: false,
+
+          }
+        })
+
+
+
+
+      } catch (error) {
+        res.status(500).json({ error: "Internal server error", details: error.message });
+      }
+
   } else {
-    res.status(500).json({ error: "Authentication failed" });
+    if (!subuser_username || !password) {
+      return res
+        .status(400)
+        .json({ message: "username, password are required" });
+    }
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+      const username = decodedToken.username;
+      try {
+        const user = await prisma.user.findFirst({
+          where: {
+            username: username,
+          },
+        });
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            username: subuser_username,
+          },
+        });
+
+        if (existingUser) {
+          return res.status(400).json({ error: "Username already taken" });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const createSubUser = await prisma.user.create({
+          data: {
+            name: name,
+            username: subuser_username,
+            password: hashedPassword,
+            email: email,
+            mobile: mobile,
+            credit: 0,
+            credit_limit: 0,
+            outstanding: 0,
+            balance: 0,
+            remark: remark || "",
+            status: status,
+            account_level: "Sub_user",
+            currency: null,
+            is_open_downline: false,
+            ip_address: null,
+            auto_transfer: null,
+            manual_transfer: null,
+            position_taking: null,
+            position_taking_9Lotto: null,
+            position_taking_GD: null,
+            referral: parseInt(user.id),
+            sub_user_setting: JSON.stringify({
+              reports_view: report_view,
+              transfer: transfer_check,
+              intake: intake_check,
+              void_bet: voidbet_check,
+              is_account: is_account,
+            }),
+          },
+        });
+
+        res.json({
+          status: "success",
+          data: createSubUser,
+        });
+      } catch (error) {
+        console.error(error);
+        res
+          .status(500)
+          .json({ error: "Internal server error", details: error.message });
+      }
+    } else {
+      res.status(500).json({ error: "Authentication failed" });
+    }
   }
 });
 
