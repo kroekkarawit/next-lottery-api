@@ -906,7 +906,8 @@ router.post("/add-user", async (req, res, next) => {
           detail: JSON.stringify({
             big: {
               price: "1.00",
-              commission: "27.00%",
+              commission: "27.00",
+              rebate: "27.00",
               prize_1: "2,730.00",
               prize_2: "1,050.00",
               prize_3: "525.00",
@@ -916,7 +917,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             small: {
               price: "1.00",
-              commission: "27.00%",
+              commission: "27.00",
+              rebate: "27.00",
               prize_1: "3,780.00",
               prize_2: "2,100.00",
               prize_3: "1,050.00",
@@ -926,7 +928,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "4A": {
               price: "1.00",
-              commission: "27.00%",
+              commission: "27.00",
+              rebate: "27.00",
               prize_1: "6,615.00",
               prize_2: "6,615.00 (4B)",
               prize_3: "6,615.00 (4C)",
@@ -936,7 +939,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             A: {
               price: "1.00",
-              commission: "27.00%",
+              commission: "27.00",
+              rebate: "27.00",
               prize_1: "693.00",
               prize_2: "693.00 (3B)",
               prize_3: "693.00 (3C)",
@@ -946,7 +950,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             ABC: {
               price: "1.00",
-              commission: "27.00%",
+              commission: "27.00",
+              rebate: "27.00",
               prize_1: "231.00",
               prize_2: "231.00",
               prize_3: "231.00",
@@ -956,7 +961,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "5D": {
               price: "1.00",
-              commission: "29.00%",
+              commission: "29.00",
+              rebate: "29.00",
               prize_1: "16,500.00",
               prize_2: "5,500.00",
               prize_3: "3,300.00",
@@ -966,7 +972,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "6D": {
               price: "1.00",
-              commission: "29.00%",
+              commission: "29.00",
+              rebate: "29.00",
               prize_1: "110,000.00",
               prize_2: "3,300.00",
               prize_3: "330.00",
@@ -976,7 +983,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "2A": {
               price: "1.00",
-              commission: "0.00%",
+              commission: "0.00",
+              rebate: "00.00",
               prize_1: "63.00",
               prize_2: "63.00 (2B)",
               prize_3: "63.00 (2C)",
@@ -986,7 +994,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "2F": {
               price: "1.00",
-              commission: "0.00%",
+              commission: "0.00",
+              rebate: "00.00",
               prize_1: "21.00",
               prize_2: "21.00",
               prize_3: "21.00",
@@ -1086,7 +1095,8 @@ router.post("/add-user", async (req, res, next) => {
           gd_package: JSON.stringify({
             big: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "3,045.00",
               prize_2: "1,050.00",
               prize_3: "525.00",
@@ -1095,14 +1105,16 @@ router.post("/add-user", async (req, res, next) => {
             },
             small: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "4,095.00",
               prize_2: "2,100.00",
               prize_3: "1,050.00",
             },
             "4A": {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "7,140.00",
               prize_2: "7,140.00",
               prize_3: "7,140.00",
@@ -1112,7 +1124,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             A: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "740.25",
               prize_2: "740.25",
               prize_3: "740.25",
@@ -1121,14 +1134,16 @@ router.post("/add-user", async (req, res, next) => {
             },
             ABC: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "246.75",
               prize_2: "246.75",
               prize_3: "246.75",
             },
             "6D": {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "157,500.00",
               prize_2: "5,250.00",
               prize_3: "525.00",
@@ -1137,7 +1152,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "2A": {
               price: "1.00",
-              commission: "3.00%",
+              commission: "3.00",
+              rebate: "3.00",
               prize_1: "91.80",
               prize_2: "91.80",
               prize_3: "91.80",
@@ -1146,7 +1162,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             "2F": {
               price: "1.00",
-              commission: "3.00%",
+              commission: "3.00",
+              rebate: "3.00",
               prize_1: "30.60",
               prize_2: "30.60",
               prize_3: "30.60",
@@ -1247,7 +1264,8 @@ router.post("/add-user", async (req, res, next) => {
           nine_lotto_package: JSON.stringify({
             big: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "3,150.00",
               prize_2: "1,050.00",
               prize_3: "525.00",
@@ -1256,14 +1274,16 @@ router.post("/add-user", async (req, res, next) => {
             },
             small: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "4,200.00",
               prize_2: "2,100.00",
               prize_3: "1,050.00",
             },
             "4A": {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "7,350.00",
               prize_2: "7,350.00",
               prize_3: "7,350.00",
@@ -1273,7 +1293,8 @@ router.post("/add-user", async (req, res, next) => {
             },
             A: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "756.00",
               prize_2: "756.00",
               prize_3: "756.00",
@@ -1282,30 +1303,34 @@ router.post("/add-user", async (req, res, next) => {
             },
             ABC: {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "252.00",
               prize_2: "252.00",
               prize_3: "252.00",
             },
-            "2D": {
+            "2A": {
               price: "1.00",
-              commission: "4.00%",
+              commission: "4.00",
+              rebate: "4.00",
               prize_1: "91.80",
               prize_2: "",
               prize_3: "",
               starters: "",
               consolation: "",
             },
-            "2C": {
+            "2F": {
               price: "1.00",
-              commission: "4.00%",
+              commission: "4.00",
+              rebate: "4.00",
               prize_1: "30.60",
               prize_2: "30.60",
               prize_3: "30.60",
             },
             "6D": {
               price: "1.00",
-              commission: "19.00%",
+              commission: "19.00",
+              rebate: "19.00",
               prize_1: "105,000.00",
               prize_2: "3,150.00",
               prize_3: "315.00",
