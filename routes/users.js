@@ -176,12 +176,13 @@ router.get("/main-data", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // const getUserPackage = await prisma.package.findFirst({
-      //   where: {
-      //     user_id: parseInt(user.id),
-      //   },
-      // });
+       const getUserPackage = await prisma.package.findFirst({
+         where: {
+           user_id: parseInt(user.id),
+        },
+      });
 
+      /*
       const getUserPackage = {
         details: {
           big: {
@@ -682,7 +683,7 @@ router.get("/main-data", async (req, res, next) => {
           },
         },
       };
-
+      */
       const accountDetails = user;
       const positionTaking = {
         position_taking: user.position_taking,
@@ -866,6 +867,12 @@ router.post("/add-user", async (req, res, next) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      if(parseFloat(user.credit) < parseFloat(account_detail.credit_limit)){
+        return res.status(404).json({ message: "User credit is insufficient" });
+      }
+
+
       const hashedPassword = await bcrypt.hash(account_detail.password, 10);
       const currencyObject = account_detail.currency;
       // Convert to array of strings
@@ -882,7 +889,7 @@ router.post("/add-user", async (req, res, next) => {
           password: hashedPassword,
           mobile: account_detail.mobile,
           credit: 0,
-          credit_limit: account_detail.credit_limit || 0,
+          credit_limit: parseFloat(account_detail.credit_limit) || 0,
           remark: account_detail.remark,
           status: "ACTIVE",
           account_level: "User",
@@ -932,21 +939,21 @@ router.post("/add-user", async (req, res, next) => {
               commission: "27.00",
               rebate: "27.00",
               prize_1: "6,615.00",
-              prize_2: "6,615.00 (4B)",
-              prize_3: "6,615.00 (4C)",
-              prize_4: "661.50 (4D)",
-              prize_5: "661.50 (4E)",
-              prize_6: "2,205.00 (4F)",
+              prize_2: "6,615.00",
+              prize_3: "6,615.00",
+              prize_4: "661.50",
+              prize_5: "661.50",
+              prize_6: "2,205.00",
             },
             A: {
               price: "1.00",
               commission: "27.00",
               rebate: "27.00",
               prize_1: "693.00",
-              prize_2: "693.00 (3B)",
-              prize_3: "693.00 (3C)",
-              prize_4: "69.30 (3D)",
-              prize_5: "69.30 (3E)",
+              prize_2: "693.00",
+              prize_3: "693.00",
+              prize_4: "69.30",
+              prize_5: "69.30",
               prize_6: "",
             },
             ABC: {
@@ -987,10 +994,10 @@ router.post("/add-user", async (req, res, next) => {
               commission: "0.00",
               rebate: "00.00",
               prize_1: "63.00",
-              prize_2: "63.00 (2B)",
-              prize_3: "63.00 (2C)",
-              prize_4: "6.30 (2D)",
-              prize_5: "6.30 (2E)",
+              prize_2: "63.00",
+              prize_3: "63.00",
+              prize_4: "6.30",
+              prize_5: "6.30",
               prize_6: "",
             },
             "2F": {
@@ -1430,6 +1437,15 @@ router.post("/add-user", async (req, res, next) => {
           status: "ACTIVE",
         },
       });
+
+      const adjustUplineCredit = await prisma.user.update({
+        where:{
+          id: parseInt(user.id)
+        },
+        data: {
+          credit: parseFloat(user.credit) - parseFloat(account_detail.credit_limit)
+        }
+      })
 
       res.json({
         newUser,
