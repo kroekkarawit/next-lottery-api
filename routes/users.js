@@ -15,8 +15,20 @@ router.get("/get/:username", async (req, res) => {
       },
     });
 
+    const totalAgent = await prisma.user.count({
+      where: {
+        referral: parseInt(user.id),
+      },
+    });
+
+    const package = await prisma.package.findFirst({
+      where: {
+        user_id: parseInt(user.id),
+      },
+    });
+
     if (user) {
-      res.json(user);
+      res.json({ ...user, total_agents: totalAgent, package: package });
     } else {
       res.status(404).json({ error: "User not found" });
     }
@@ -888,10 +900,9 @@ router.post("/add-user", async (req, res, next) => {
         },
       });
 
-
       const addPackageUser = await prisma.package.create({
         data: {
-          user_id : parseInt(newUser.id),
+          user_id: parseInt(newUser.id),
           detail: JSON.stringify({
             big: {
               price: "1.00",
@@ -984,7 +995,7 @@ router.post("/add-user", async (req, res, next) => {
               prize_6: "",
             },
           }),
-          ibox:JSON.stringify({
+          ibox: JSON.stringify({
             big: {
               ibox_24: {
                 prize_1: "113.75",
@@ -1072,7 +1083,7 @@ router.post("/add-user", async (req, res, next) => {
               },
             },
           }),
-          gd_package:JSON.stringify({
+          gd_package: JSON.stringify({
             big: {
               price: "1.00",
               commission: "19.00%",
@@ -1141,7 +1152,7 @@ router.post("/add-user", async (req, res, next) => {
               prize_3: "30.60",
             },
           }),
-          gd_ibox:JSON.stringify({
+          gd_ibox: JSON.stringify({
             big: {
               prize_1: {
                 ibox_24: "126.88",
@@ -1233,7 +1244,7 @@ router.post("/add-user", async (req, res, next) => {
               },
             },
           }),
-          nine_lotto_package:JSON.stringify({
+          nine_lotto_package: JSON.stringify({
             big: {
               price: "1.00",
               commission: "19.00%",
@@ -1302,7 +1313,7 @@ router.post("/add-user", async (req, res, next) => {
               consolation: "4.20",
             },
           }),
-          nine_lotto_ibox:JSON.stringify({
+          nine_lotto_ibox: JSON.stringify({
             big: {
               ibox_24: {
                 prize_1: "131.25",
@@ -1390,9 +1401,9 @@ router.post("/add-user", async (req, res, next) => {
               },
             },
           }),
-          status: "ACTIVE"
-        }
-      })
+          status: "ACTIVE",
+        },
+      });
 
       res.json({
         newUser,
