@@ -1642,6 +1642,11 @@ router.post("/transfer", async (req, res, next) => {
 });
 
 router.post("/sub-user", async (req, res, next) => {
+  const { data, action } = req.body;
+
+
+
+
   const {
     loginId: subuser_username,
     password,
@@ -1655,8 +1660,9 @@ router.post("/sub-user", async (req, res, next) => {
     intake_check,
     voidbet_check,
     report_view,
-  } = req.body;
+  } = data;
 
+  if(action == "update") return; // Todo: fix this
   if (!subuser_username || !password) {
     return res.status(400).json({ message: "username, password are required" });
   }
