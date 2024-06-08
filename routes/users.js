@@ -176,9 +176,9 @@ router.get("/main-data", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-       const getUserPackage = await prisma.package.findFirst({
-         where: {
-           user_id: parseInt(user.id),
+      const getUserPackage = await prisma.package.findFirst({
+        where: {
+          user_id: parseInt(user.id),
         },
       });
 
@@ -689,10 +689,27 @@ router.get("/main-data", async (req, res, next) => {
         position_taking: user.position_taking,
         position_taking_gd: user.position_taking_GD,
       };
+
+      const {
+        detail,
+        gd_ibox,
+        gd_package,
+        ibox,
+        nine_lotto_ibox,
+        nine_lotto_package,
+      } = getUserPackage;
       const userPackage = res.json({
         account_details: accountDetails,
         position_taking: positionTaking,
-        user_package: getUserPackage,
+        user_package: {
+          ...getUserPackage,
+          detail: JSON.parse(detail),
+          gd_ibox: JSON.parse(gd_ibox),
+          gd_package: JSON.parse(gd_package),
+          ibox: JSON.parse(ibox),
+          nine_lotto_ibox: JSON.parse(nine_lotto_ibox),
+          nine_lotto_package: JSON.parse(nine_lotto_package)
+        },
       });
     } catch (error) {
       console.error(error);
@@ -868,10 +885,9 @@ router.post("/add-user", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      if(parseFloat(user.credit) < parseFloat(account_detail.credit_limit)){
+      if (parseFloat(user.credit) < parseFloat(account_detail.credit_limit)) {
         return res.status(404).json({ message: "User credit is insufficient" });
       }
-
 
       const hashedPassword = await bcrypt.hash(account_detail.password, 10);
       const currencyObject = account_detail.currency;
@@ -1439,13 +1455,14 @@ router.post("/add-user", async (req, res, next) => {
       });
 
       const adjustUplineCredit = await prisma.user.update({
-        where:{
-          id: parseInt(user.id)
+        where: {
+          id: parseInt(user.id),
         },
         data: {
-          credit: parseFloat(user.credit) - parseFloat(account_detail.credit_limit)
-        }
-      })
+          credit:
+            parseFloat(user.credit) - parseFloat(account_detail.credit_limit),
+        },
+      });
 
       res.json({
         newUser,
