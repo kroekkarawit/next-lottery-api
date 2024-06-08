@@ -88,6 +88,19 @@ router.get('/cronjob', async (req, res, next) => {
     }
 });
 
+router.get('/exchange', async (req, res, next) => {
+    try {
+
+        res.json({
+            MRY: '0.32',
+            SGD: '0.32',
+            THB: '0.32',
+
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+});
 
 
 process.on('SIGINT', async () => {
