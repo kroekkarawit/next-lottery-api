@@ -29,40 +29,29 @@ router.get("/get/:username", async (req, res) => {
     });
 
     const userSetting = {
-      "draw_type": {
-        "include": [
-          "M",
-          "P",
-          "T",
-          "S",
-          "B",
-          "K",
-          "W"
-        ],
-        "remove": [
-          "H",
-          "E"
-        ]
+      draw_type: {
+        include: ["M", "P", "T", "S", "B", "K", "W"],
+        remove: ["H", "E"],
       },
-      "bet_method": "mutiply",
-      "bet_type": "B-S-4A-A-C",
-      "bet_date": "D",
-      "draw_date": "#",
-      "bet_1000_number": true,
-      "sms_service": true,
-      "box_ibox": "**",
-      "bet_setting": true,
-      "intake": {
-        "M": {
-          "big": 0,
-          "small": 0,
+      bet_method: "mutiply",
+      bet_type: "B-S-4A-A-C",
+      bet_date: "D",
+      draw_date: "#",
+      bet_1000_number: true,
+      sms_service: true,
+      box_ibox: "**",
+      bet_setting: true,
+      intake: {
+        M: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -72,18 +61,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "P": {
-          "big": 0,
-          "small": 0,
+        P: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -93,18 +82,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "T": {
-          "big": 0,
-          "small": 0,
+        T: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -116,18 +105,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "S": {
-          "big": 0,
-          "small": 0,
+        S: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -137,18 +126,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "B": {
-          "big": 0,
-          "small": 0,
+        B: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -158,18 +147,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "K": {
-          "big": 0,
-          "small": 0,
+        K: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -179,18 +168,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "W": {
-          "big": 0,
-          "small": 0,
+        W: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -200,40 +189,18 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
+          "2E": 0,
         },
-        "H": {
-          "big": 0,
-          "small": 0,
+        H: {
+          big: 0,
+          small: 0,
           "4A": 0,
           "4B": 0,
           "4C": 0,
           "4E": 0,
           "4F": 0,
-          "A": 0,
-          "ABC": 0,
-          "3B": 0,
-          "3C": 0,
-          "3D": 0,
-          "3E": 0,
-          "6D": 0,
-          "2A": 0,
-          "2F": 0,
-          "2B": 0,
-          "2C": 0,
-          "2D": 0,
-          "2E": 0
-        },
-        "E": {
-          "big": 0,
-          "small": 0,
-          "4A": 0,
-          "4B": 0,
-          "4C": 0,
-          "4E": 0,
-          "4F": 0,
-          "A": 0,
-          "ABC": 0,
+          A: 0,
+          ABC: 0,
           "3B": 0,
           "3C": 0,
           "3D": 0,
@@ -244,13 +211,40 @@ router.get("/get/:username", async (req, res) => {
           "2B": 0,
           "2C": 0,
           "2D": 0,
-          "2E": 0
-        }
-      }
-    }
+          "2E": 0,
+        },
+        E: {
+          big: 0,
+          small: 0,
+          "4A": 0,
+          "4B": 0,
+          "4C": 0,
+          "4E": 0,
+          "4F": 0,
+          A: 0,
+          ABC: 0,
+          "3B": 0,
+          "3C": 0,
+          "3D": 0,
+          "3E": 0,
+          "6D": 0,
+          "2A": 0,
+          "2F": 0,
+          "2B": 0,
+          "2C": 0,
+          "2D": 0,
+          "2E": 0,
+        },
+      },
+    };
 
     if (user) {
-      res.json({ ...user, total_agents: totalAgent, package: package, setting: userSetting });
+      res.json({
+        ...user,
+        total_agents: totalAgent,
+        package: package,
+        setting: userSetting,
+      });
     } else {
       res.status(404).json({ error: "User not found" });
     }
@@ -1675,6 +1669,23 @@ router.post("/add-user", async (req, res, next) => {
         },
       });
 
+      const addUserSetting = await prisma.user_setting.create({
+        data: {
+          user_id: parseInt(newUser.id),
+
+          sms_service: settings.sms_service,
+          bet_method: settings.bet_method,
+          bet_1000_number: settings.bet_1000_number,
+          bet_setting: settings.bet_setting,
+          box_ibox: settings.box_ibox,
+          bet_date: settings.bet_date,
+          bet_type: settings.bet_type,
+          draw_date: settings.draw_date,
+          draw_type: settings.draw_type,
+          intake: JSON.stringify(settings.intake),
+        },
+      });
+
       const adjustUplineCredit = await prisma.user.update({
         where: {
           id: parseInt(user.id),
@@ -1739,8 +1750,6 @@ router.post("/edit-user", async (req, res, next) => {
         },
         data: {
           name: account_detail.full_name,
-          username: account_detail.login_id,
-          password: hashedPassword,
           mobile: account_detail.mobile,
           credit: 0,
           credit_limit: parseFloat(account_detail.credit_limit) || 0,
