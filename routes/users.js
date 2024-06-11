@@ -1672,14 +1672,13 @@ router.post("/add-user", async (req, res, next) => {
       const addUserSetting = await prisma.user_setting.create({
         data: {
           user_id: parseInt(newUser.id),
-
           sms_service: settings.sms_service,
           bet_method: settings.bet_method,
           bet_1000_number: settings.bet_1000_number,
           bet_setting: settings.bet_setting,
           box_ibox: settings.box_ibox,
-          bet_date: settings.bet_date,
-          bet_type: settings.bet_type,
+          bet_date: settings.buy_format,
+          bet_type: settings.bet_type || settings.buy_type,
           draw_date: settings.draw_date,
           draw_type: settings.draw_type,
           intake: JSON.stringify(settings.intake),
@@ -1696,6 +1695,7 @@ router.post("/add-user", async (req, res, next) => {
         },
       });
 
+
       res.json({
         newUser,
       });
@@ -1709,6 +1709,7 @@ router.post("/add-user", async (req, res, next) => {
     res.status(500).json({ error: "Authentication failed" });
   }
 });
+
 router.post("/edit-user", async (req, res, next) => {
   const { user_id, account_detail, prize_package, settings } = req.body;
 
