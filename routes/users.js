@@ -33,7 +33,7 @@ router.get("/get/:username", async (req, res) => {
         include: ["M", "P", "T", "S", "B", "K", "W"],
         remove: ["H", "E"],
       },
-      bet_method: "mutiply",
+      bet_method: "multiply",
       bet_type: "B-S-4A-A-C",
       bet_date: "D",
       draw_date: "#",
