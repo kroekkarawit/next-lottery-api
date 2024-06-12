@@ -2004,14 +2004,7 @@ router.post("/transfer", async (req, res, next) => {
 });
 
 router.post("/sub-user", async (req, res, next) => {
-  const { action, data, id: user_id } = req.body;
-
-  let insert, update;
-  if (!isEmpty(data?.insert)) {
-    insert = data.insert;
-  } else if (!isEmpty(data?.update)) {
-    update = data.update;
-  }
+  const { action, update, insert, id: user_id } = req.body;
 
   const accessToken = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.decode(accessToken);
@@ -2093,6 +2086,7 @@ router.post("/sub-user", async (req, res, next) => {
     console.log("update",update)
 
     const {
+      id: user_id,
       name,
       email,
       remark,
@@ -2128,7 +2122,7 @@ router.post("/sub-user", async (req, res, next) => {
 
     const updateSubUser = await prisma.user.update({
       where: {
-        user_id: parseInt(user_id),
+        id: parseInt(user_id),
       },
       data: dataToUpdate,
     });
