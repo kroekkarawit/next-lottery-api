@@ -27,7 +27,7 @@ router.get("/get/:username", async (req, res) => {
         user_id: parseInt(user.id),
       },
     });
-
+    /*
     const userSetting = {
       draw_type: {
         include: ["M", "P", "T", "S", "B", "K", "W"],
@@ -237,6 +237,13 @@ router.get("/get/:username", async (req, res) => {
         },
       },
     };
+    */
+
+    const userSetting = await prisma.user_setting.findFirst({
+      where: {
+        user_id: parseInt(user.id),
+      }
+    })
 
     if (user) {
       res.json({
@@ -1112,6 +1119,19 @@ router.post("/add-user", async (req, res, next) => {
         .map((key) => key.toUpperCase());
       const currencyString = JSON.stringify(resultArray).replace(/"/g, "'");
 
+      const intake = {
+        "gd" : settings.gd,
+        "magnum" : settings.magnum,
+        "pmp" : settings.pmp,
+        "sabah" : settings.sabah,
+        "sandakan" : settings.sandakan,
+        "sarawak" : settings.sarawak,
+        "singapore" : settings.singapore,
+        "toto" : settings.toto,
+        "_9lotto" : settings._9lotto,
+
+      }
+
       //const currencyString = []
       await prisma.$transaction(async (prisma) => {
         const newUser = await prisma.user.create({
@@ -1675,16 +1695,16 @@ router.post("/add-user", async (req, res, next) => {
         const addUserSetting = await prisma.user_setting.create({
           data: {
             user_id: parseInt(newUser.id),
-            sms_service: settings.sms_service,
+            sms_service: settings.sms_service === "true" ? true : false,
             bet_method: settings.bet_method,
-            bet_1000_number: settings.bet_1000_number,
-            bet_setting: settings.bet_setting,
+            bet_1000_number: settings.bet_1000_number === "true" ? true : false,
+            bet_setting: settings.bet_setting === "true" ? true : false,
             box_ibox: settings.box_ibox,
             bet_date: settings.buy_format,
             bet_type: settings.bet_type || settings.buy_type,
             draw_date: settings.draw_date,
-            draw_type: settings.draw_type,
-            intake: JSON.stringify(settings.intake),
+            draw_type: JSON.stringify(settings.draw_type),
+            intake: JSON.stringify(intake),
           },
         });
       });
