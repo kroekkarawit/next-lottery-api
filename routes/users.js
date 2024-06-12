@@ -4,7 +4,7 @@ const { PrismaClient, Status } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { update } = require("lodash");
+const { update, isEmpty } = require("lodash");
 
 router.get("/get/:username", async (req, res) => {
   const username = req.params.username;
@@ -2003,9 +2003,15 @@ router.post("/transfer", async (req, res, next) => {
   }
 });
 
-
 router.post("/sub-user", async (req, res, next) => {
-  const { action, insert, update, user_id } = req.body;
+  const { action, data, id: user_id } = req.body;
+
+  let insert, update;
+  if (!isEmpty(data?.insert)) {
+    insert = data.insert;
+  } else if (!isEmpty(data?.update)) {
+    update = data.update;
+  }
 
   const accessToken = req.headers.authorization.split(" ")[1];
   const decodedToken = jwt.decode(accessToken);
@@ -2024,7 +2030,7 @@ router.post("/sub-user", async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  if (insert) {
+  if (action === "insert") {
     const {
       loginId: subuser_username,
       password,
@@ -2083,58 +2089,52 @@ router.post("/sub-user", async (req, res, next) => {
     });
 
     res.json({ status: "success" });
-  } else if (update) {
+  } else if (action == "update") {
+    console.log("update",update)
+
     const {
-      loginId: subuser_username,
-      password,
-      mobile,
+      name,
       email,
       remark,
-      name,
+      password,
       account_status: status,
       is_account,
-      transfer_check,
-      intake_check,
-      voidbet_check,
+      transfer: transfer_check,
+      intake: intake_check,
+      void_bet: voidbet_check,
       report_view,
     } = update;
 
+
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const dataToUpdate = {
+      name: name,
+      email: email,
+      remark: remark || "",
+      status: status,
+      sub_user_setting: JSON.stringify({
+        reports_view: report_view,
+        transfer: transfer_check,
+        intake: intake_check,
+        void_bet: voidbet_check,
+        is_account: is_account,
+      }),
+    };
+
+    if (password != null || password != "*****") {
+      dataToUpdate.password = hashedPassword;
+    }
 
     const updateSubUser = await prisma.user.update({
       where: {
         user_id: parseInt(user_id),
       },
-      data: {
-        name: name,
-        username: subuser_username,
-        password: hashedPassword,
-        email: email,
-        mobile: mobile,
-        credit: 0,
-        credit_limit: 0,
-        outstanding: 0,
-        balance: 0,
-        remark: remark || "",
-        status: status,
-        account_level: "Sub_user",
-        currency: null,
-        is_open_downline: false,
-        ip_address: null,
-        auto_transfer: null,
-        manual_transfer: null,
-        position_taking: null,
-        position_taking_9Lotto: null,
-        position_taking_GD: null,
-        referral: parseInt(user.id),
-        sub_user_setting: JSON.stringify({
-          reports_view: report_view,
-          transfer: transfer_check,
-          intake: intake_check,
-          void_bet: voidbet_check,
-          is_account: is_account,
-        }),
-      },
+      data: dataToUpdate,
+    });
+
+    res.json({
+      status: "success",
     });
   }
 });
