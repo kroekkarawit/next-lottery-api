@@ -373,6 +373,8 @@ router.post("/login", async (req, res, next) => {
       access_token: accessToken,
       downline_user: getDownlineUser,
       ip_address: ip_address,
+      sub_user_setting
+
     });
   } catch (error) {
     console.error(error);
