@@ -536,6 +536,8 @@ router.get("/refresh-session", async (req, res, next) => {
         id: user.id,
         name: user.name,
         username: user.username,
+        main_name:findUpLineUser.name,
+        main_username:findUpLineUser.username,
         mobile: user.mobile,
         credit: findUpLineUser.credit,
         credit_limit: findUpLineUser.credit_limit,
