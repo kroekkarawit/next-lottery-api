@@ -509,6 +509,48 @@ router.get("/refresh-session", async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
+
+    if (user.account_level === "Sub_user") {
+      const findUpLineUser = await prisma.user.findFirst({
+        where: {
+          id: parseInt(user.referral),
+        },
+      });
+
+      const getDownlineUser = await prisma.user.findMany({
+        where: {
+          referral: parseInt(findUpLineUser.id),
+          account_level: "User",
+          status: "ACTIVE",
+        },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          credit: true,
+          currency: true,
+        },
+      });
+  
+      res.json({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        mobile: user.mobile,
+        credit: findUpLineUser.credit,
+        credit_limit: findUpLineUser.credit_limit,
+        currency: findUpLineUser.currency,
+        is_open_downline: findUpLineUser.is_open_downline,
+        account_level: user.account_level,
+        status: user.status,
+        image: "avatar",
+        role: user.role,
+        access_token: accessToken,
+        downline_user: getDownlineUser,
+      });
+
+    }
+
     const getDownlineUser = await prisma.user.findMany({
       where: {
         referral: parseInt(user.id),
