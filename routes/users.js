@@ -1610,12 +1610,12 @@ router.get("/transfer-history", async (req, res, next) => {
 
       const transfersHistory = await prisma.transfer.findMany({
         where: {
-          user_id: parseInt(user.user_id)
+          user_id: parseInt(user.id)
         }
       })
 
       res.json({
-        data: getAllSubUser,
+        data: transfersHistory,
       });
     } catch (error) {
       console.error(error);
