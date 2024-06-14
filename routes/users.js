@@ -549,6 +549,7 @@ router.get("/refresh-session", async (req, res, next) => {
         role: user.role,
         access_token: accessToken,
         downline_user: getDownlineUser,
+        sub_user_setting: JSON.parse(user?.sub_user_setting || null)
       });
 
     }
