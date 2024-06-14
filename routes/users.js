@@ -1592,6 +1592,42 @@ router.post("/transfer", async (req, res, next) => {
   }
 });
 
+router.get("/transfer-history", async (req, res, next) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const decodedToken = jwt.decode(accessToken);
+
+  if (decodedToken) {
+    const username = decodedToken.username;
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const transfersHistory = await prisma.transfer.findMany({
+        where: {
+          user_id: parseInt(user.user_id)
+        }
+      })
+
+      res.json({
+        data: getAllSubUser,
+      });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
+  } else {
+    res.status(500).json({ error: "Authentication failed" });
+  }
+});
+
 router.post("/sub-user", async (req, res, next) => {
   const { action, update, insert, id: user_id } = req.body;
 
