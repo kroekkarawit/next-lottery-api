@@ -239,3 +239,11 @@ model Win_strike {
   remark     String
   created_at DateTime @default(now())
 }
+
+model Exchange_rate {
+  id          Int      @id @default(autoincrement())
+  currency    String   @unique
+  rate        Float
+  updatedAt   DateTime @default(now()) @updatedAt
+
+}

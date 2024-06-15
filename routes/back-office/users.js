@@ -23,7 +23,8 @@ router.get("/get-user", async (req, res, next) => {
       }
 
       const getAllUser = await prisma.user.findMany({
-        where: {},
+        where: {
+        },
         select: {
           id: true,
           username: true,

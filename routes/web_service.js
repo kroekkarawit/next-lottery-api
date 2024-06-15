@@ -98,11 +98,48 @@ router.get("/cronjob", async (req, res, next) => {
 
 router.get("/exchange", async (req, res, next) => {
   try {
-    res.json({
-      SGD: 3.5,
-      MYR: 1,
-      THB: 0.13,
+    const exchangeRates = await prisma.exchange_rate.findMany();
+    const rates = exchangeRates.reduce((acc, rate) => {
+      acc[rate.currency] = rate.rate;
+      return acc;
+    }, {});
+
+    res.json(rates);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+// Route to update exchange rates
+router.post("/exchange", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (!decodedToken) {
+      return res.status(404).json({ message: "Authentication failed" });
+    }
+    
+    const username = decodedToken.username;
+    const admin = await prisma.admin.findFirst({
+      where: {
+        username: username,
+      },
     });
+    if (!admin) {
+      return res.status(404).json({ message: "admin not found" });
+    }
+
+    const { currency, rate } = req.body;
+    const updatedRate = await prisma.exchange_rate.upsert({
+      where: { currency },
+      update: { rate: parseFloat(rate) },
+      create: { currency, rate: parseFloat(rate) },
+    });
+
+    res.json(updatedRate);
   } catch (error) {
     res
       .status(500)
