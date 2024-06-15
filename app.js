@@ -6,6 +6,8 @@ app.use(cors())
 // Require route files
 const indexRouter = require('./routes/index');
 const adminsRouter = require('./routes/admins');
+const backOfficeUsersRouter = require('./routes/back-office/users');
+
 const usersRouter = require('./routes/users');
 const betRouter = require('./routes/bet');
 const lotteryRouter = require('./routes/lottery');
@@ -17,6 +19,9 @@ app.use(express.json());
 // Mount routes
 app.use('/', indexRouter);
 app.use('/admins', adminsRouter);
+
+app.use('/back-office/users', backOfficeUsersRouter);
+
 app.use('/users', usersRouter);
 app.use('/users/bet', betRouter);
 app.use('/lottery', lotteryRouter);
