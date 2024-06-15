@@ -373,8 +373,7 @@ router.post("/login", async (req, res, next) => {
       access_token: accessToken,
       downline_user: getDownlineUser,
       ip_address: ip_address,
-      sub_user_setting: JSON.parse(user?.sub_user_setting || null)
-
+      sub_user_setting: JSON.parse(user?.sub_user_setting || null),
     });
   } catch (error) {
     console.error(error);
@@ -424,7 +423,7 @@ router.get("/main-data", async (req, res, next) => {
           position_taking: findUpLineUser.position_taking,
           position_taking_gd: findUpLineUser.position_taking_GD,
         };
-  
+
         const {
           detail,
           gd_ibox,
@@ -509,7 +508,6 @@ router.get("/refresh-session", async (req, res, next) => {
       { expiresIn: "7d" }
     );
 
-
     if (user.account_level === "Sub_user") {
       const findUpLineUser = await prisma.user.findFirst({
         where: {
@@ -531,13 +529,13 @@ router.get("/refresh-session", async (req, res, next) => {
           currency: true,
         },
       });
-  
+
       res.json({
         id: user.id,
         name: user.name,
         username: user.username,
-        main_name:findUpLineUser.name,
-        main_username:findUpLineUser.username,
+        main_name: findUpLineUser.name,
+        main_username: findUpLineUser.username,
         mobile: user.mobile,
         credit: findUpLineUser.credit,
         credit_limit: findUpLineUser.credit_limit,
@@ -549,9 +547,8 @@ router.get("/refresh-session", async (req, res, next) => {
         role: user.role,
         access_token: accessToken,
         downline_user: getDownlineUser,
-        sub_user_setting: JSON.parse(user?.sub_user_setting || null)
+        sub_user_setting: JSON.parse(user?.sub_user_setting || null),
       });
-
     }
 
     const getDownlineUser = await prisma.user.findMany({
@@ -1411,14 +1408,13 @@ router.get("/get-user", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-
       if (user.account_level === "Sub_user") {
         const findUpLineUser = await prisma.user.findFirst({
           where: {
             id: parseInt(user.referral),
           },
         });
-  
+
         const getAllRefUser = await prisma.user.findMany({
           where: {
             referral: parseInt(findUpLineUser.id),
@@ -1442,11 +1438,10 @@ router.get("/get-user", async (req, res, next) => {
             created_at: true,
           },
         });
-  
+
         res.json({
           data: getAllRefUser,
         });
-  
       }
 
       const getAllRefUser = await prisma.user.findMany({
@@ -1569,56 +1564,142 @@ router.post("/transfer", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const results = [];
-      for (const transfer of transfers) {
-        const { to_user_id, amount, remark } = transfer;
+      if (user.account_level === "Sub_user") {
+        const findUpLineUser = await prisma.user.findFirst({
+          where: {
+            id: parseInt(user.referral),
+          },
+        });
 
-        if (!to_user_id || !amount) {
-          return res.status(400).json({
-            message: "to_user_id and amount are required for each transfer",
+        const results = [];
+        for (const transfer of transfers) {
+          const { to_user_id, amount, remark } = transfer;
+
+          if (!to_user_id || !amount) {
+            return res.status(400).json({
+              message: "to_user_id and amount are required for each transfer",
+            });
+          }
+
+          const ToUser = await prisma.user.findFirst({
+            where: {
+              id: parseInt(to_user_id),
+              referral: parseInt(findUpLineUser.id),
+            },
           });
+
+          if (!ToUser) {
+            return res
+              .status(404)
+              .json({
+                message: `User not found for to_user_id: ${to_user_id}`,
+              });
+          }
+
+          const updateFromUser = await prisma.user.update({
+            where: {
+              id: parseInt(findUpLineUser.id),
+            },
+            data: {
+              balance: parseFloat(findUpLineUser.balance) - parseFloat(amount),
+            },
+          });
+
+          const updateToUser = await prisma.user.update({
+            where: {
+              id: parseInt(to_user_id),
+              referral: parseInt(findUpLineUser.id),
+            },
+            data: {
+              balance: parseFloat(ToUser.balance) + parseFloat(amount),
+            },
+          });
+
+
+
+          const createTransfer = await prisma.transfer.create({
+            data: {
+              user_id: parseInt(findUpLineUser.id),
+              to_user_id: parseInt(to_user_id),
+              remark: remark || "",
+              previous_balance: ToUser.balance,
+              amount: amount,
+              balance: parseFloat(ToUser.balance) + parseFloat(amount),
+            },
+          });
+
+          results.push(createTransfer);
         }
 
-        const ToUser = await prisma.user.findFirst({
-          where: {
-            id: parseInt(to_user_id),
-            referral: parseInt(user.id),
-          },
+        res.json({
+          transfers: results,
         });
 
-        if (!ToUser) {
-          return res
-            .status(404)
-            .json({ message: `User not found for to_user_id: ${to_user_id}` });
+
+
+      } else {
+        const results = [];
+        for (const transfer of transfers) {
+          const { to_user_id, amount, remark } = transfer;
+
+          if (!to_user_id || !amount) {
+            return res.status(400).json({
+              message: "to_user_id and amount are required for each transfer",
+            });
+          }
+
+          const ToUser = await prisma.user.findFirst({
+            where: {
+              id: parseInt(to_user_id),
+              referral: parseInt(user.id),
+            },
+          });
+
+          if (!ToUser) {
+            return res
+              .status(404)
+              .json({
+                message: `User not found for to_user_id: ${to_user_id}`,
+              });
+          }
+
+          const updateFromUser = await prisma.user.update({
+            where: {
+              id: parseInt(user.id),
+            },
+            data: {
+              balance: parseFloat(user.balance) - parseFloat(amount),
+            },
+          });
+
+          const updateUser = await prisma.user.update({
+            where: {
+              id: parseInt(to_user_id),
+              referral: parseInt(user.id),
+            },
+            data: {
+              balance: parseFloat(ToUser.balance) + parseFloat(amount),
+            },
+          });
+
+          const createTransfer = await prisma.transfer.create({
+            data: {
+              user_id: parseInt(user.id),
+              to_user_id: parseInt(to_user_id),
+              remark: remark || "",
+              previous_balance: ToUser.balance,
+              amount: amount,
+              balance: parseFloat(ToUser.balance) + parseFloat(amount),
+            },
+          });
+
+          results.push(createTransfer);
         }
 
-        const updateUser = await prisma.user.update({
-          where: {
-            id: parseInt(to_user_id),
-            referral: parseInt(user.id),
-          },
-          data: {
-            balance: parseFloat(ToUser.balance) + parseFloat(amount),
-          },
+        res.json({
+          transfers: results,
         });
-
-        const createTransfer = await prisma.transfer.create({
-          data: {
-            user_id: parseInt(user.id),
-            to_user_id: parseInt(to_user_id),
-            remark: remark || "",
-            previous_balance: ToUser.balance,
-            amount: amount,
-            balance: parseFloat(ToUser.balance) + parseFloat(amount),
-          },
-        });
-
-        results.push(createTransfer);
       }
-
-      res.json({
-        transfers: results,
-      });
     } catch (error) {
       console.error(error);
       res
@@ -1648,9 +1729,9 @@ router.get("/transfer-history", async (req, res, next) => {
 
       const transfersHistory = await prisma.transfer.findMany({
         where: {
-          user_id: parseInt(user.id)
-        }
-      })
+          user_id: parseInt(user.id),
+        },
+      });
 
       res.json({
         data: transfersHistory,
