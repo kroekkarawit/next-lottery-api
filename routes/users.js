@@ -1411,6 +1411,44 @@ router.get("/get-user", async (req, res, next) => {
         return res.status(404).json({ message: "User not found" });
       }
 
+
+      if (user.account_level === "Sub_user") {
+        const findUpLineUser = await prisma.user.findFirst({
+          where: {
+            id: parseInt(user.referral),
+          },
+        });
+  
+        const getAllRefUser = await prisma.user.findMany({
+          where: {
+            referral: parseInt(findUpLineUser.id),
+            account_level: "User",
+            status: "ACTIVE",
+          },
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            email: true,
+            status: true,
+            ip_address: true,
+            remark: true,
+            account_level: true,
+            referral: true,
+            credit: true,
+            credit_limit: true,
+            outstanding: true,
+            balance: true,
+            created_at: true,
+          },
+        });
+  
+        res.json({
+          data: getAllRefUser,
+        });
+  
+      }
+
       const getAllRefUser = await prisma.user.findMany({
         where: {
           referral: parseInt(user.id),
