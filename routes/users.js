@@ -502,7 +502,7 @@ router.get("/refresh-session", async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const accessToken = jwt.sign(
+    const newAccessToken = jwt.sign(
       { id: user.id, username: user.username },
       process.env.SECRET_KEY,
       { expiresIn: "7d" }
@@ -530,7 +530,7 @@ router.get("/refresh-session", async (req, res, next) => {
         },
       });
 
-      res.json({
+      return res.json({
         id: user.id,
         name: user.name,
         username: user.username,
@@ -545,7 +545,7 @@ router.get("/refresh-session", async (req, res, next) => {
         status: user.status,
         image: "avatar",
         role: user.role,
-        access_token: accessToken,
+        access_token: newAccessToken,
         downline_user: getDownlineUser,
         sub_user_setting: JSON.parse(user?.sub_user_setting || null),
       });
@@ -579,16 +579,15 @@ router.get("/refresh-session", async (req, res, next) => {
       status: user.status,
       image: "avatar",
       role: user.role,
-      access_token: accessToken,
+      access_token: newAccessToken,
       downline_user: getDownlineUser,
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 router.post("/change-password", async (req, res, next) => {
   const { newPassword, oldPassword } = req.body;
@@ -1439,7 +1438,7 @@ router.get("/get-user", async (req, res, next) => {
           },
         });
 
-        res.json({
+        return res.json({
           data: getAllRefUser,
         });
       }
