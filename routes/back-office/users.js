@@ -163,7 +163,7 @@ router.post("/add-user", async (req, res, next) => {
             credit_limit: parseFloat(account_detail.credit_limit) || 0,
             remark: account_detail.remark,
             status: "ACTIVE",
-            account_level: "User",
+            account_level: "Agent",
             currency: currencyString,
             is_open_downline: account_detail.open_downline,
             referral: null,
