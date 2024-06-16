@@ -1724,13 +1724,13 @@ router.get("/transfer-history", async (req, res, next) => {
         },
       });
 
-      const { totalCredit, totalCreditLimit, totalBalance } = data.data.reduce((acc, item) => ({
+      const { totalCredit, totalCreditLimit,totalOutstanding, totalBalance } = transfersHistory.reduce((acc, item) => ({
         totalCredit: acc.totalCredit + parseFloat(item.credit),
         totalCreditLimit: acc.totalCreditLimit + parseFloat(item.credit_limit),
         totalOutstanding: acc.totalOutstanding + parseFloat(item.outstanding),
         totalBalance: acc.totalBalance + parseFloat(item.balance),
         
-      }), { totalCredit: 0, totalCreditLimit: 0, totalBalance: 0 });
+      }), { totalCredit: 0, totalCreditLimit: 0,totalOutstanding: 0, totalBalance: 0 });
 
       res.json({
         data: transfersHistory,
