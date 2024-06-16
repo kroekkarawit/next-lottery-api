@@ -584,7 +584,9 @@ router.get("/refresh-session", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
@@ -1587,11 +1589,9 @@ router.post("/transfer", async (req, res, next) => {
           });
 
           if (!ToUser) {
-            return res
-              .status(404)
-              .json({
-                message: `User not found for to_user_id: ${to_user_id}`,
-              });
+            return res.status(404).json({
+              message: `User not found for to_user_id: ${to_user_id}`,
+            });
           }
 
           const updateFromUser = await prisma.user.update({
@@ -1613,8 +1613,6 @@ router.post("/transfer", async (req, res, next) => {
             },
           });
 
-
-
           const createTransfer = await prisma.transfer.create({
             data: {
               user_id: parseInt(findUpLineUser.id),
@@ -1632,9 +1630,6 @@ router.post("/transfer", async (req, res, next) => {
         res.json({
           transfers: results,
         });
-
-
-
       } else {
         const results = [];
         for (const transfer of transfers) {
@@ -1654,11 +1649,9 @@ router.post("/transfer", async (req, res, next) => {
           });
 
           if (!ToUser) {
-            return res
-              .status(404)
-              .json({
-                message: `User not found for to_user_id: ${to_user_id}`,
-              });
+            return res.status(404).json({
+              message: `User not found for to_user_id: ${to_user_id}`,
+            });
           }
 
           const updateFromUser = await prisma.user.update({
@@ -1731,8 +1724,22 @@ router.get("/transfer-history", async (req, res, next) => {
         },
       });
 
+      const { totalCredit, totalCreditLimit, totalBalance } = data.data.reduce((acc, item) => ({
+        totalCredit: acc.totalCredit + parseFloat(item.credit),
+        totalCreditLimit: acc.totalCreditLimit + parseFloat(item.credit_limit),
+        totalOutstanding: acc.totalOutstanding + parseFloat(item.outstanding),
+        totalBalance: acc.totalBalance + parseFloat(item.balance),
+        
+      }), { totalCredit: 0, totalCreditLimit: 0, totalBalance: 0 });
+
       res.json({
         data: transfersHistory,
+        grand_total: {
+          credit_imit: totalCreditLimit,
+          used_limit: 0,
+          outstanding: totalOutstanding,
+          balance: totalBalance,
+        },
       });
     } catch (error) {
       console.error(error);
