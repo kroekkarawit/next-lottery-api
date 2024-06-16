@@ -588,7 +588,6 @@ router.get("/refresh-session", async (req, res, next) => {
   }
 });
 
-
 router.post("/change-password", async (req, res, next) => {
   const { newPassword, oldPassword } = req.body;
   if (!newPassword || !oldPassword) {

@@ -40,7 +40,7 @@ const PORT = process.env.PORT || 3000;
 
 cron.schedule("* * * * *", async () => {
     console.log("Running a task every minute");
-    await openLottery();
+    //await openLottery();
   });
 
 
