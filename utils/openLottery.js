@@ -1,5 +1,3 @@
-const express = require("express");
-const router = express.Router();
 const { PrismaClient, Status } = require("@prisma/client");
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
@@ -11,7 +9,7 @@ const openLottery = async () => {
   let day = date.getDay(); // Get the day of the week (0-6, Sunday-Saturday)
   day = (day + 6) % 7; //Note: to make Monday is 0 start from monday
 
-  console.log(`OpenLottery`, date);
+  //console.log(`OpenLottery`, date);
 
   const lotteries = await prisma.lottery.findMany({
     where: {
@@ -54,10 +52,24 @@ const openLottery = async () => {
           },
         });
 
+        // console.log("checkExistingRound", {
+        //   lottery_id: parseInt(lottery.id),
+        //   code: lottery.code,
+        //   start_time: startTime,
+        //   close_time: closeTime,
+        //   result_time: resultTime,
+        //   result: null,
+        //   status: "ACTIVE",
+        // },checkExistingRound);
+
+
+        // console.log("empty checkExistingRound lodash", _.isEmpty(checkExistingRound));
+        // console.log("empty checkExistingRound",  checkExistingRound);
+
         if (!checkExistingRound) {
-          await prisma.round.create({
+          const roundCreated = await prisma.round.create({
             data: {
-              lottery_id: lottery.id.toString(),
+              lottery_id: parseInt(lottery.id),
               code: lottery.code,
               start_time: startTime,
               close_time: closeTime,
@@ -66,90 +78,11 @@ const openLottery = async () => {
               status: "ACTIVE",
             },
           });
+          console.log("roundCreated",  roundCreated);
         }
       }
     }
   });
 };
 
-const closeLottery = async () => {
-  console.log("closeLottery");
-};
-
-const drawLottery = async () => {
-  console.log("drawLottery");
-};
-
-router.get("/cronjob", async (req, res, next) => {
-  try {
-    await openLottery();
-    await closeLottery();
-    await drawLottery();
-
-    res.json({
-      status: "success",
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
-  }
-});
-
-router.get("/exchange", async (req, res, next) => {
-  try {
-    const exchangeRates = await prisma.exchange_rate.findMany();
-    const rates = exchangeRates.reduce((acc, rate) => {
-      acc[rate.currency] = rate.rate;
-      return acc;
-    }, {});
-
-    res.json(rates);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
-  }
-});
-
-// Route to update exchange rates
-router.post("/exchange", async (req, res, next) => {
-  try {
-    const accessToken = req.headers.authorization.split(" ")[1];
-    const decodedToken = jwt.decode(accessToken);
-
-    if (!decodedToken) {
-      return res.status(404).json({ message: "Authentication failed" });
-    }
-
-    const username = decodedToken.username;
-    const admin = await prisma.admin.findFirst({
-      where: {
-        username: username,
-      },
-    });
-    if (!admin) {
-      return res.status(404).json({ message: "admin not found" });
-    }
-
-    const { currency, rate } = req.body;
-    const updatedRate = await prisma.exchange_rate.upsert({
-      where: { currency },
-      update: { rate: parseFloat(rate) },
-      create: { currency, rate: parseFloat(rate) },
-    });
-
-    res.json(updatedRate);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
-  }
-});
-
-process.on("SIGINT", async () => {
-  await prisma.$disconnect();
-  process.exit();
-});
-
-module.exports = router;
+module.exports = openLottery;

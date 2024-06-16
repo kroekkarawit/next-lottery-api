@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 var cors = require('cors')
 app.use(cors())
+const cron = require("node-cron");
 
 // Require route files
 const indexRouter = require('./routes/index');
@@ -13,6 +14,8 @@ const betRouter = require('./routes/bet');
 const lotteryRouter = require('./routes/lottery');
 const webServiceRouter = require('./routes/web_service');
 const reportsRouter = require('./routes/reports');
+
+const openLottery = require('./utils/openLottery')
 
 app.use(express.json());
 
@@ -29,8 +32,16 @@ app.use('/web-service', webServiceRouter);
 app.use('/reports', reportsRouter);
 
 
+
 // Start the server
 const PORT = process.env.PORT || 3000;
+
+cron.schedule("* * * * *", async () => {
+    console.log("Running a task every minute");
+    await openLottery();
+  });
+
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

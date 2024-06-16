@@ -102,7 +102,7 @@ model Receipt {
 
 model Round {
   id          Int       @id @default(autoincrement())
-  lottery_id  String    @db.VarChar(255)
+  lottery_id  Int
   start_time  DateTime?
   result_time DateTime?
   result      String?
