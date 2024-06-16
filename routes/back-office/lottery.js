@@ -6,6 +6,15 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { update, isEmpty } = require("lodash");
 
+const isValidJSON = (str) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};
+
 router.get("/get-round", async (req, res, next) => {
   try {
     const today = new Date();
@@ -40,10 +49,16 @@ router.get("/get-lottery", async (req, res, next) => {
     const response = lotteries.map((i) => {
       return {
         ...i,
-        detail: JSON.parse(i.detail),
-        close_weekday: JSON.parse(i.close_weekday),
-        close_extra: JSON.parse(i.close_extra),
-        off_holiday: JSON.parse(i.off_holiday),
+        detail: isValidJSON(i.detail) ? JSON.parse(i.detail) : i.detail,
+        close_weekday: isValidJSON(i.close_weekday)
+          ? JSON.parse(i.close_weekday)
+          : i.close_weekday,
+        close_extra: isValidJSON(i.close_extra)
+          ? JSON.parse(i.close_extra)
+          : i.close_extra,
+        off_holiday: isValidJSON(i.off_holiday)
+          ? JSON.parse(i.off_holiday)
+          : i.off_holiday,
       };
     });
 
