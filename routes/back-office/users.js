@@ -23,8 +23,7 @@ router.get("/get-user", async (req, res, next) => {
       }
 
       const getAllUser = await prisma.user.findMany({
-        where: {
-        },
+        where: {},
         select: {
           id: true,
           username: true,
@@ -743,51 +742,97 @@ router.post("/add-user", async (req, res, next) => {
   }
 });
 
-router.get("/get/:username", async (req, res) => {
-    const username = req.params.username;
-  
-    try {
-      const user = await prisma.user.findFirst({
-        where: {
-          username: username,
-        },
-      });
-  
-      const totalAgent = await prisma.user.count({
-        where: {
-          referral: parseInt(user.id),
-        },
-      });
-  
-      const package = await prisma.package.findFirst({
-        where: {
-          user_id: parseInt(user.id),
-        },
-      });
+router.get("/get-id/:id", async (req, res) => {
+  const userId = req.params.id;
 
-      const userSetting = await prisma.user_setting.findFirst({
-        where: {
-          user_id: parseInt(user.id),
-        },
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        id: parseInt(userId),
+      },
+    });
+
+    const totalAgent = await prisma.user.count({
+      where: {
+        referral: parseInt(user.id),
+      },
+    });
+
+    const package = await prisma.package.findFirst({
+      where: {
+        user_id: parseInt(user.id),
+      },
+    });
+
+    const userSetting = await prisma.user_setting.findFirst({
+      where: {
+        user_id: parseInt(user.id),
+      },
+    });
+
+    if (user) {
+      res.json({
+        ...user,
+        total_agents: totalAgent,
+        package: package,
+        setting: userSetting,
       });
-  
-      if (user) {
-        res.json({
-          ...user,
-          total_agents: totalAgent,
-          package: package,
-          setting: userSetting,
-        });
-      } else {
-        res.status(404).json({ error: "User not found" });
-      }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res
-        .status(500)
-        .json({ error: "Internal server error", details: error.message });
+    } else {
+      res.status(404).json({ error: "User not found" });
     }
-  });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.get("/get-username/:username", async (req, res) => {
+  const username = req.params.username;
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+    });
+
+    const totalAgent = await prisma.user.count({
+      where: {
+        referral: parseInt(user.id),
+      },
+    });
+
+    const package = await prisma.package.findFirst({
+      where: {
+        user_id: parseInt(user.id),
+      },
+    });
+
+    const userSetting = await prisma.user_setting.findFirst({
+      where: {
+        user_id: parseInt(user.id),
+      },
+    });
+
+    if (user) {
+      res.json({
+        ...user,
+        total_agents: totalAgent,
+        package: package,
+        setting: userSetting,
+      });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
 
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
