@@ -8,6 +8,7 @@ const cron = require("node-cron");
 const indexRouter = require('./routes/index');
 const adminsRouter = require('./routes/admins');
 const backOfficeUsersRouter = require('./routes/back-office/users');
+const backOfficeLotteryRouter = require('./routes/back-office/lottery');
 
 const usersRouter = require('./routes/users');
 const betRouter = require('./routes/bet');
@@ -24,6 +25,7 @@ app.use('/', indexRouter);
 app.use('/admins', adminsRouter);
 
 app.use('/back-office/users', backOfficeUsersRouter);
+app.use('/back-office/lottery', backOfficeLotteryRouter);
 
 app.use('/users', usersRouter);
 app.use('/users/bet', betRouter);

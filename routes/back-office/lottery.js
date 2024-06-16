@@ -42,3 +42,10 @@ router.get('/get-lottery', async (req, res, next) => {
         res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
+
+process.on("SIGINT", async () => {
+    await prisma.$disconnect();
+    process.exit();
+  });
+  
+  module.exports = router;
