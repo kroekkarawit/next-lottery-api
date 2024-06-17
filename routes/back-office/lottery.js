@@ -20,9 +20,11 @@ router.get("/get-round", async (req, res, next) => {
     const today = new Date();
     const rounds = await prisma.round.findMany({
       where: {
+        /*
         start_time: {
           gt: today, // Filter for rounds starting after today
         },
+        */
         status: "ACTIVE", // Filter for active rounds
       },
     });
@@ -61,6 +63,49 @@ router.get("/get-lottery", async (req, res, next) => {
           : i.off_holiday,
       };
     });
+
+    res.json({
+      status: "success",
+      data: response,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.post("/edit-lottery", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (!decodedToken) {
+      return res.status(404).json({ message: "Authentication failed" });
+    }
+
+    const username = decodedToken.username;
+    const admin = await prisma.admin.findFirst({
+      where: {
+        username: username,
+      },
+    });
+    if (!admin) {
+      return res.status(404).json({ message: "admin not found" });
+    }
+
+    const { lottery_id, detail, open_time, close_time, result_time, status } =
+      req.body;
+
+    const lottery = await prisma.lottery.findFirst({
+      where: {
+        id: parseInt(lottery_id),
+      },
+    });
+
+    if(!lottery){
+        return res.status(404).json({ message: "lottery not found" });
+    }
 
     res.json({
       status: "success",

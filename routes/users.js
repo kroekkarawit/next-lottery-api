@@ -1380,6 +1380,45 @@ router.post("/edit-user", async (req, res, next) => {
         },
       });
 
+      const intake = {
+        gd: settings.gd,
+        magnum: settings.magnum,
+        pmp: settings.pmp,
+        sabah: settings.sabah,
+        sandakan: settings.sandakan,
+        sarawak: settings.sarawak,
+        singapore: settings.singapore,
+        toto: settings.toto,
+        _9lotto: settings._9lotto,
+      };
+
+      const checkUserSetting = await prisma.user_setting.findFirst({
+        where: {
+          user_id: parseInt(user_id),
+        },
+      });
+      if (!checkUserSetting) {
+        return res.status(404).json({ message: "checkUserSetting not found" });
+      }
+      const updateUserSetting = await prisma.user_setting.update({
+        where: {
+          id: checkUserSetting.id,
+          user_id: parseInt(user_id),
+        },
+        data: {
+          sms_service: settings.sms_service === "true" ? true : false,
+          bet_method: settings.bet_method,
+          bet_1000_number: settings.bet_1000_number === "true" ? true : false,
+          bet_setting: settings.bet_setting === "true" ? true : false,
+          box_ibox: settings.box_ibox,
+          bet_date: settings.buy_format,
+          bet_type: settings.bet_type || settings.buy_type,
+          draw_date: settings.draw_date,
+          draw_type: JSON.stringify(settings.draw_type),
+          intake: JSON.stringify(intake),
+        },
+      });
+
       res.json({ updateUser });
     } catch (error) {
       console.error(error);
@@ -1724,13 +1763,23 @@ router.get("/transfer-history", async (req, res, next) => {
         },
       });
 
-      const { totalCredit, totalCreditLimit,totalOutstanding, totalBalance } = transfersHistory.reduce((acc, item) => ({
-        totalCredit: acc.totalCredit + parseFloat(item.credit),
-        totalCreditLimit: acc.totalCreditLimit + parseFloat(item.credit_limit),
-        totalOutstanding: acc.totalOutstanding + parseFloat(item.outstanding),
-        totalBalance: acc.totalBalance + parseFloat(item.balance),
-        
-      }), { totalCredit: 0, totalCreditLimit: 0,totalOutstanding: 0, totalBalance: 0 });
+      const { totalCredit, totalCreditLimit, totalOutstanding, totalBalance } =
+        transfersHistory.reduce(
+          (acc, item) => ({
+            totalCredit: acc.totalCredit + parseFloat(item.credit),
+            totalCreditLimit:
+              acc.totalCreditLimit + parseFloat(item.credit_limit),
+            totalOutstanding:
+              acc.totalOutstanding + parseFloat(item.outstanding),
+            totalBalance: acc.totalBalance + parseFloat(item.balance),
+          }),
+          {
+            totalCredit: 0,
+            totalCreditLimit: 0,
+            totalOutstanding: 0,
+            totalBalance: 0,
+          }
+        );
 
       res.json({
         data: transfersHistory,
