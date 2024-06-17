@@ -198,10 +198,10 @@ router.get('/get-round', async (req, res, next) => {
         const today = new Date();
         const rounds = await prisma.round.findMany({
             where: {
-                start_time: {
-                    gt: today, // Filter for rounds starting after today
-                },
-                status: "ACTIVE", // Filter for active rounds
+                // start_time: {
+                //     gt: today, // Filter for rounds starting after today
+                // },
+                // status: "ACTIVE", // Filter for active rounds
             },
         });
 

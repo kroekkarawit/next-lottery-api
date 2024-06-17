@@ -25,7 +25,7 @@ router.get("/get-round", async (req, res, next) => {
           gt: today, // Filter for rounds starting after today
         },
         */
-        status: "ACTIVE", // Filter for active rounds
+        //status: "ACTIVE", // Filter for active rounds
       },
     });
 
@@ -103,8 +103,8 @@ router.post("/edit-lottery", async (req, res, next) => {
       },
     });
 
-    if(!lottery){
-        return res.status(404).json({ message: "lottery not found" });
+    if (!lottery) {
+      return res.status(404).json({ message: "lottery not found" });
     }
 
     res.json({
