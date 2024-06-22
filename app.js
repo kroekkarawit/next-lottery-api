@@ -9,6 +9,8 @@ const indexRouter = require('./routes/index');
 const adminsRouter = require('./routes/admins');
 const backOfficeUsersRouter = require('./routes/back-office/users');
 const backOfficeLotteryRouter = require('./routes/back-office/lottery');
+const backOfficeMessageRouter = require('./routes/back-office/message');
+
 
 const usersRouter = require('./routes/users');
 const betRouter = require('./routes/bet');
@@ -26,6 +28,7 @@ app.use('/admins', adminsRouter);
 
 app.use('/back-office/users', backOfficeUsersRouter);
 app.use('/back-office/lottery', backOfficeLotteryRouter);
+app.use('/back-office/message', backOfficeMessageRouter);
 
 app.use('/users', usersRouter);
 app.use('/users/bet', betRouter);

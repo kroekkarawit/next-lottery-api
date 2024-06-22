@@ -2769,6 +2769,25 @@ router.post("/hot-special-number", async (req, res, next) => {
   }
 });
 
+router.get("/message", async (req, res, next) => {
+  try {
+    const messages = await prisma.message.findMany({
+      where: {
+        status: "ACTIVE"
+      },
+    });
+
+    res.json({
+      status: "success",
+      data: messages,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
