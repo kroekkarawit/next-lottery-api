@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../utils/jwt");
-const {convertBets} = require("../utils/tools");
+const { convertBets, betToCommmission } = require("../utils/tools");
 const convertToSlipFormat = require("../utils/slip-gen");
 
 function formatDate(date) {
@@ -39,7 +39,7 @@ router.post("/", async (req, res, next) => {
 
   const userPackage = await prisma.package.findFirst({
     where: {
-      user_id: parseInt(user.id)
+      user_id: parseInt(user.id),
     },
   });
 
@@ -97,20 +97,42 @@ router.post("/", async (req, res, next) => {
       return res.status(400).json({ message: "bet is empty" });
     }
 
-    const createBets = await prisma.bet.createMany({
-      data: betPrepared,
-      skipDuplicates: false,
-    });
+    const createBets = await Promise.all(
+      betPrepared.map(async (bet) => {
+        return prisma.bet.create({
+          data: bet,
+        });
+      })
+    );
 
-    const createCommission = createBets.map(async (i) => {
-      await prisma.commission.create({
-        data: {
-          user_id: parseInt(user.id),
-          bet_id: parseInt(i.id),
-          amount: 100,
-        },
-      });
-    });
+    const betsArray = Array.isArray(createBets) ? createBets : [createBets];
+
+    const createCommission = await Promise.all(
+      betsArray.map(async (i) => {
+        console.log(
+          `Id: ${i.id} lottery_type: ${i.lottery_type} bet: ${
+            i.bet_type
+          } amount: ${betToCommmission({
+            lottery_type: i.lottery_type,
+            bet_type: i.bet_type,
+            amount: i.amount,
+            packages: userPackage,
+          })}`
+        );
+        await prisma.commission.create({
+          data: {
+            user_id: parseInt(user.id),
+            bet_id: parseInt(i.id),
+            amount: betToCommmission({
+              lottery_type: i.lottery_type,
+              bet_type: i.bet_type,
+              amount: i.amount,
+              packages: userPackage,
+            }),
+          },
+        });
+      })
+    );
 
     const updateReceipt = await prisma.receipt.update({
       where: {

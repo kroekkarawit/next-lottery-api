@@ -1101,13 +1101,13 @@ router.post("/add-user", async (req, res, next) => {
                 rebate: "27.00",
                 prize: "90.00",
               },
-              run_top: {
+              one_top: {
                 price: "1.00",
                 commission: "27.00",
                 rebate: "27.00",
                 prize: "3.2",
               },
-              run_under: {
+              one_under: {
                 price: "1.00",
                 commission: "27.00",
                 rebate: "27.00",
