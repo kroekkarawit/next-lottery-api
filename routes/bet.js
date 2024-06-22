@@ -306,7 +306,11 @@ router.post("/thai", async (req, res, next) => {
       },
       data: {
         total_amount: totalAmount,
-        slip: "",
+        slip: convertToSlipFormatThai(
+          req.body,
+          formatDate(new Date()),
+          user.username
+        ),
       },
     });
 
@@ -321,10 +325,10 @@ router.post("/thai", async (req, res, next) => {
 
     res.json({
       detail: convertToSlipFormatThai(
-          req.body,
-          formatDate(new Date()),
-          user.username
-        ),
+        req.body,
+        formatDate(new Date()),
+        user.username
+      ),
     });
   } catch (error) {
     console.error(error);
