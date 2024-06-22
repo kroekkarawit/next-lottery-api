@@ -220,6 +220,7 @@ router.get("/main-data", async (req, res, next) => {
           ibox,
           nine_lotto_ibox,
           nine_lotto_package,
+          thai
         } = getUserPackage;
 
         return res.json({
@@ -232,6 +233,7 @@ router.get("/main-data", async (req, res, next) => {
             ibox: JSON.parse(ibox),
             nine_lotto_ibox: JSON.parse(nine_lotto_ibox),
             nine_lotto_package: JSON.parse(nine_lotto_package),
+            thai: JSON.parse(thai)
           },
         });
       }
@@ -249,8 +251,8 @@ router.get("/main-data", async (req, res, next) => {
         ibox,
         nine_lotto_ibox,
         nine_lotto_package,
+        thai
       } = getUserPackage;
-
 
       res.json({
         account_details: accountDetails,
@@ -262,6 +264,7 @@ router.get("/main-data", async (req, res, next) => {
           ibox: JSON.parse(ibox),
           nine_lotto_ibox: JSON.parse(nine_lotto_ibox),
           nine_lotto_package: JSON.parse(nine_lotto_package),
+          thai: JSON.parse(thai)
         },
       });
     } catch (error) {
@@ -1059,6 +1062,56 @@ router.post("/add-user", async (req, res, next) => {
                   "4E": "183.75",
                   "4F": "612.50",
                 },
+              },
+            }),
+            thai: JSON.stringify({
+              three_top: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "900.00",
+              },
+              three_under: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "450.00",
+              },
+              three_front: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "450.00",
+              },
+              three_tod: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "150.00",
+              },
+              two_top: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "90.00",
+              },
+              two_under: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "90.00",
+              },
+              run_top: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "3.2",
+              },
+              run_under: {
+                price: "1.00",
+                commission: "27.00",
+                rebate: "27.00",
+                prize: "3.2",
               },
             }),
             status: "ACTIVE",

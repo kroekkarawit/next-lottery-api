@@ -151,6 +151,7 @@ model Package {
   gd_ibox            String   @db.LongText
   nine_lotto_package String   @db.LongText
   nine_lotto_ibox    String   @db.LongText
+  thai               String   @db.LongText @default("")
   status             Status
   updated_at         DateTime @updatedAt
   created_at         DateTime @default(now())
