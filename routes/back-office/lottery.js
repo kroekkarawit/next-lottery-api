@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { update, isEmpty } = require("lodash");
+const { convertBets, extractTimeFromISO8601 } = require("../../utils/tools");
 
 const isValidJSON = (str) => {
   try {
@@ -20,12 +21,7 @@ router.get("/get-round", async (req, res, next) => {
     const today = new Date();
     const rounds = await prisma.round.findMany({
       where: {
-        /*
-        start_time: {
-          gt: today, // Filter for rounds starting after today
-        },
-        */
-        //status: "ACTIVE", // Filter for active rounds
+        status: "ACTIVE", // Filter for active rounds
       },
     });
 
@@ -61,6 +57,11 @@ router.get("/get-lottery", async (req, res, next) => {
         off_holiday: isValidJSON(i.off_holiday)
           ? JSON.parse(i.off_holiday)
           : i.off_holiday,
+
+        open_time: extractTimeFromISO8601(i.open_time),
+        close_time: extractTimeFromISO8601(i.close_time),
+        result_time: extractTimeFromISO8601(i.result_time),
+
       };
     });
 
@@ -94,7 +95,8 @@ router.post("/edit-lottery", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id, detail, open_time, close_time, result_time, status } = req.body;
+    const { lottery_id, detail, open_time, close_time, result_time, status } =
+      req.body;
 
     const lottery = await prisma.lottery.findFirst({
       where: {
@@ -108,9 +110,14 @@ router.post("/edit-lottery", async (req, res, next) => {
 
     // Convert time strings to ISO-8601 format
     const convertTimeStringToISO8601 = (timeString) => {
-      const [hours, minutes, seconds] = timeString.split(':');
+      const [hours, minutes, seconds] = timeString.split(":");
       const date = new Date();
-      date.setUTCHours(parseInt(hours), parseInt(minutes), parseInt(seconds), 0);
+      date.setUTCHours(
+        parseInt(hours),
+        parseInt(minutes),
+        parseInt(seconds),
+        0
+      );
       return date.toISOString();
     };
 
@@ -140,7 +147,6 @@ router.post("/edit-lottery", async (req, res, next) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
-
 
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
