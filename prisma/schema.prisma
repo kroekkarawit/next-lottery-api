@@ -143,17 +143,17 @@ model Lottery {
 // }
 
 model Package {
-  id                 Int    @id @default(autoincrement())
+  id                 Int      @id @default(autoincrement())
   user_id            Int
-  detail             String @db.LongText
-  ibox               String @db.LongText
-  gd_package         String @db.LongText
-  gd_ibox            String @db.LongText
-  nine_lotto_package String @db.LongText
-  nine_lotto_ibox String @db.LongText
-  status     Status
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
+  detail             String   @db.LongText
+  ibox               String   @db.LongText
+  gd_package         String   @db.LongText
+  gd_ibox            String   @db.LongText
+  nine_lotto_package String   @db.LongText
+  nine_lotto_ibox    String   @db.LongText
+  status             Status
+  updated_at         DateTime @updatedAt
+  created_at         DateTime @default(now())
 }
 
 model Fight_eat_credit {
@@ -240,10 +240,24 @@ model Win_strike {
   created_at DateTime @default(now())
 }
 
-model Exchange_rate {
-  id          Int      @id @default(autoincrement())
-  currency    String   @unique
-  rate        Float
-  updatedAt   DateTime @default(now()) @updatedAt
+model commission {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  bet_id     Int
+  amount     Decimal
+  created_at DateTime @default(now())
+}
 
+model Exchange_rate {
+  id        Int      @id @default(autoincrement())
+  currency  String   @unique
+  rate      Float
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  message    String
+  status     Status
+  created_at DateTime @default(now())
 }

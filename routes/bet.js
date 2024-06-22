@@ -37,8 +37,6 @@ router.post("/", async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  console.log(userId, user);
-
   try {
     const newReceipt = await prisma.receipt.create({
       data: {
@@ -96,6 +94,16 @@ router.post("/", async (req, res, next) => {
     const createBets = await prisma.bet.createMany({
       data: betPrepared,
       skipDuplicates: false,
+    });
+
+    const createCommission = createBets.map(async (i) => {
+      await prisma.commission.create({
+        data: {
+          user_id: parseInt(user.id),
+          bet_id: parseInt(i.id),
+          amount: 100,
+        },
+      });
     });
 
     const updateReceipt = await prisma.receipt.update({
@@ -178,7 +186,7 @@ router.post("/receipt", async (req, res, next) => {
         gte: new Date(created_at.start),
         lte: new Date(created_at.end),
       };
-    }  
+    }
     console.log(where);
     const receipts = await prisma.receipt.findMany({
       where,
@@ -187,18 +195,17 @@ router.post("/receipt", async (req, res, next) => {
       },
     });
 
-    const results = await Promise.all(receipts.map(async (i) => {
+    const results = await Promise.all(
+      receipts.map(async (i) => {
+        const userData = await prisma.user.findUnique({
+          where: {
+            id: parseInt(i.user_id),
+          },
+        });
 
-      const userData = await prisma.user.findUnique({
-        where: {
-          id: parseInt(i.user_id),
-        },
-      });
-
-      
-      return {
-        account: { username: userData?.username, name: userData?.name },
-        bet_info: `Page: 1
+        return {
+          account: { username: userData?.username, name: userData?.name },
+          bet_info: `Page: 1
         Currency: ${i.currency}
         Date/Time: ${new Date(i.created_at).toLocaleString()}
         Bet By: ${userData?.username} (${userData?.name})
@@ -209,15 +216,16 @@ router.post("/receipt", async (req, res, next) => {
         Bet Date: Day - D
         Box / IBox: * / **
         Draw Date / Day: # / ##`,
-        re_buy: {
-          orderEntry: "#18|+1|1234#1#0#0#0#0#0#0",
-          buyType: "B-S-4A-C-A",
-          ibox: "**",
-        },
-        slip: i.slip,
-        ip_address: i.ip_address,
-      };
-    }));
+          re_buy: {
+            orderEntry: "#18|+1|1234#1#0#0#0#0#0#0",
+            buyType: "B-S-4A-C-A",
+            ibox: "**",
+          },
+          slip: i.slip,
+          ip_address: i.ip_address,
+        };
+      })
+    );
     res.json(results);
   } catch (error) {
     console.error(error);
