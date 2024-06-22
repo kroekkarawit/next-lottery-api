@@ -149,6 +149,61 @@ router.post("/edit-lottery", async (req, res, next) => {
   }
 });
 
+router.post("/add-round", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (!decodedToken) {
+      return res.status(404).json({ message: "Authentication failed" });
+    }
+
+    const username = decodedToken.username;
+    const admin = await prisma.admin.findFirst({
+      where: {
+        username: username,
+      },
+    });
+    if (!admin) {
+      return res.status(404).json({ message: "admin not found" });
+    }
+
+    const { lottery_id, start_time, result_time, close_time } =
+      req.body;
+
+    const lottery = await prisma.lottery.findFirst({
+      where: {
+        id: parseInt(lottery_id),
+        status: "ACTIVE"
+      }
+    })
+
+    if (!lottery) {
+      return res.status(404).json({ message: "lottery not found" });
+    }
+
+    const addRound = await prisma.round.create({
+      data: {
+        lottery_id: parseInt(lottery_id),
+        start_time: new Date(start_time),
+        result_time: new Date(result_time),
+        close_time: new Date(close_time),
+        status: "ACTIVE",
+        code: lottery.code
+      },
+    });
+
+    res.json({
+      status: "success",
+      data: addRound,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
