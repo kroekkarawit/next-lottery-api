@@ -96,8 +96,9 @@ router.post("/edit-lottery", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id, close_weekday, open_time, close_time, result_time, status } =
+    const { lottery_id, close_weekday, open_time, close_time, status } =
       req.body;
+    const result_time = "21:30:00"  
 
     const lottery = await prisma.lottery.findFirst({
       where: {
