@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { update, isEmpty } = require("lodash");
 const { convertBets, extractTimeFromISO8601 } = require("../../utils/tools");
-const { isValid, parseISO } = require('date-fns');
+const { isValid, parseISO } = require("date-fns");
 
 const isValidJSON = (str) => {
   try {
@@ -62,7 +62,6 @@ router.get("/get-lottery", async (req, res, next) => {
         open_time: extractTimeFromISO8601(i.open_time),
         close_time: extractTimeFromISO8601(i.close_time),
         result_time: extractTimeFromISO8601(i.result_time),
-
       };
     });
 
@@ -96,9 +95,15 @@ router.post("/edit-lottery", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id,open_before, close_weekday, open_time, close_time, status } =
-      req.body;
-    const result_time = "21:30:00"  
+    const {
+      lottery_id,
+      open_before,
+      close_weekday,
+      open_time,
+      close_time,
+      status,
+    } = req.body;
+    const result_time = "21:30:00";
 
     const lottery = await prisma.lottery.findFirst({
       where: {
@@ -152,7 +157,6 @@ router.post("/edit-lottery", async (req, res, next) => {
   }
 });
 
-
 router.post("/add-round", async (req, res, next) => {
   try {
     const accessToken = req.headers.authorization.split(" ")[1];
@@ -182,8 +186,8 @@ router.post("/add-round", async (req, res, next) => {
     const lottery = await prisma.lottery.findFirst({
       where: {
         id: parseInt(lottery_id),
-        status: "ACTIVE"
-      }
+        status: "ACTIVE",
+      },
     });
 
     if (!lottery) {
@@ -195,7 +199,11 @@ router.post("/add-round", async (req, res, next) => {
     const parsedResultTime = parseISO(result_time);
     const parsedCloseTime = parseISO(close_time);
 
-    if (!isValid(parsedStartTime) || !isValid(parsedResultTime) || !isValid(parsedCloseTime)) {
+    if (
+      !isValid(parsedStartTime) ||
+      !isValid(parsedResultTime) ||
+      !isValid(parsedCloseTime)
+    ) {
       return res.status(400).json({ message: "Invalid date format" });
     }
 
@@ -206,7 +214,7 @@ router.post("/add-round", async (req, res, next) => {
         result_time: parsedResultTime,
         close_time: parsedCloseTime,
         status: "ACTIVE",
-        code: lottery.code
+        code: lottery.code,
       },
     });
 
@@ -216,7 +224,9 @@ router.post("/add-round", async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
@@ -240,50 +250,58 @@ router.post("/add-result", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id, start_time, result_time, close_time } = req.body;
+    const { lottery_id, round_id, result } = req.body;
 
-    if (!start_time || !result_time || !close_time) {
+    if (!lottery_id || !round_id || !result) {
       return res.status(400).json({ message: "Missing required date fields" });
     }
 
     const lottery = await prisma.lottery.findFirst({
       where: {
         id: parseInt(lottery_id),
-        status: "ACTIVE"
-      }
+        status: "ACTIVE",
+      },
     });
 
     if (!lottery) {
       return res.status(404).json({ message: "lottery not found" });
     }
 
-    // Parse the dates and check if they are valid
-    const parsedStartTime = parseISO(start_time);
-    const parsedResultTime = parseISO(result_time);
-    const parsedCloseTime = parseISO(close_time);
+    const round = await prisma.round.findFirst({
+      where: {
+        OR: [{ result: null }, { result: "" }],
+        close_time: {
+          lte: new Date(),
+        },
+        lottery_id: parseInt(lottery_id),
+        id: parseInt(round_id)
+      },
+    });
 
-    if (!isValid(parsedStartTime) || !isValid(parsedResultTime) || !isValid(parsedCloseTime)) {
-      return res.status(400).json({ message: "Invalid date format" });
+    if (!round) {
+      return res.status(404).json({ message: "round not found" });
     }
 
-    const addRound = await prisma.round.create({
-      data: {
-        lottery_id: parseInt(lottery_id),
-        start_time: parsedStartTime,
-        result_time: parsedResultTime,
-        close_time: parsedCloseTime,
-        status: "ACTIVE",
-        code: lottery.code
+    const editRound = await prisma.round.update({
+      where: {
+        id: parseInt(round.id),
       },
+      data:{
+        result: JSON.stringify(result),
+        status: "INACTIVE"
+      }
     });
 
     res.json({
       status: "success",
-      data: addRound,
+      round: round,
+      data: editRound,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
