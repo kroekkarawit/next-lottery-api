@@ -68,6 +68,42 @@ function convertToSlipFormat(jsonData, dateTimeStr, username) {
     return slipLines.join('\n');
 }
 
+function convertToSlipFormatThai(jsonData, dateTimeStr, username) {
+
+    // Function to process bets and calculate total amount
+    function processBets(bets) {
+        let totalAmount = 0;
+        const betLines = bets.map(bet => {
+            if (!bet.number) {
+                return '';
+            }
+            const lottoTypes = "TH";
+            const amounts = [`${bet.number}=`];
+            const keys = ['three_top', 'three_under', 'three_tod', 'three_front', 'two_top', 'two_under', 'one_top', 'one_under'];
+            keys.forEach(key => {
+                if (bet[key]) {
+                    amounts.push(`${bet[key]} ${key}, `);
+                }
+            });
+            totalAmount += keys.reduce((sum, key) => sum + (parseFloat(bet[key]) || 0), 0);
+            return `*${lottoTypes}\n${amounts.join(' ')}`;
+        }).filter(line => line !== ''); // Filter out any empty lines resulting from missing numbers
+        return { betLines, totalAmount };
+    }
+
+    const { betLines, totalAmount } = processBets(jsonData.bet);
+    const gtStr = `GT=${totalAmount.toFixed(2)}`;
+
+    // Constructing the final slip
+    const slipLines = [
+        dateTimeStr,
+        username,
+        ...betLines,
+        gtStr
+    ];
+
+    return slipLines.join('\n');
+}
 
 
-module.exports = convertToSlipFormat;
+module.exports = {convertToSlipFormat,convertToSlipFormatThai};

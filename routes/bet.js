@@ -5,8 +5,15 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../utils/jwt");
-const { convertBets, betToCommmission } = require("../utils/tools");
-const convertToSlipFormat = require("../utils/slip-gen");
+const {
+  convertBets,
+  convertThaiBets,
+  betToCommmission,
+} = require("../utils/tools");
+const {
+  convertToSlipFormat,
+  convertToSlipFormatThai,
+} = require("../utils/slip-gen");
 
 function formatDate(date) {
   const year = date.getFullYear().toString().slice(-2); // Last two digits of the year
@@ -163,6 +170,161 @@ router.post("/", async (req, res, next) => {
         formatDate(new Date()),
         user.username
       ),
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.post("/thai", async (req, res, next) => {
+  const { bet, currency } = req.body;
+  if (!bet) {
+    return res.status(400).json({ message: "bet detail are required" });
+  }
+
+  const decodedToken = verifyToken(req);
+  const userId = decodedToken.id.toString();
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: parseInt(userId),
+    },
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const userPackage = await prisma.package.findFirst({
+    where: {
+      user_id: parseInt(user.id),
+    },
+  });
+
+  const lotteryRound = await prisma.round.findFirst({
+    where: {
+      code: "TH",
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+
+  try {
+    const newReceipt = await prisma.receipt.create({
+      data: {
+        user_id: parseInt(userId),
+        remark: "",
+        currency: currency,
+        bet_method: "MULTIPLY",
+        total_amount: 0,
+        ip_address: user?.ip_address || null,
+        status: "PENDING",
+      },
+    });
+
+    let totalAmount = 0;
+    const betData = bet;
+    const convertedBets = convertThaiBets(betData);
+    let betPrepared = [];
+
+    convertedBets.forEach((bet) => {
+      if (!bet.number) return;
+
+      Object.entries(bet.bet_type).forEach(([bet_type, bet_amount]) => {
+        if (!bet_amount) return;
+
+        Object.entries(bet.lotto_type).forEach(
+          ([lottery_type, lottery_value]) => {
+            if (!lottery_value) return;
+
+            console.log(
+              `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type},   \n`
+            );
+            totalAmount += parseFloat(bet_amount);
+            betPrepared.push({
+              user_id: parseInt(userId),
+              receipt_id: newReceipt.id.toString(),
+              number: bet.number,
+              amount: parseFloat(bet_amount).toFixed(2),
+              bet_type: bet_type,
+              lottery_type: "TH",
+              status: "PENDING",
+              result_date: new Date(lotteryRound.result_time),
+            });
+          }
+        );
+      });
+    });
+    if (betPrepared.length <= 0) {
+      return res.status(400).json({ message: "bet is empty" });
+    }
+
+    const createBets = await Promise.all(
+      betPrepared.map(async (bet) => {
+        return prisma.bet.create({
+          data: bet,
+        });
+      })
+    );
+
+    const betsArray = Array.isArray(createBets) ? createBets : [createBets];
+
+    const createCommission = await Promise.all(
+      betsArray.map(async (i) => {
+        console.log(
+          `Id: ${i.id} lottery_type: ${i.lottery_type} bet: ${
+            i.bet_type
+          } amount: ${betToCommmission({
+            lottery_type: i.lottery_type,
+            bet_type: i.bet_type,
+            amount: i.amount,
+            packages: userPackage,
+          })}`
+        );
+        await prisma.commission.create({
+          data: {
+            user_id: parseInt(user.id),
+            bet_id: parseInt(i.id),
+            amount: betToCommmission({
+              lottery_type: i.lottery_type,
+              bet_type: i.bet_type,
+              amount: i.amount,
+              packages: userPackage,
+            }),
+          },
+        });
+      })
+    );
+
+    const updateReceipt = await prisma.receipt.update({
+      where: {
+        id: newReceipt.id,
+      },
+      data: {
+        total_amount: totalAmount,
+        slip: "",
+      },
+    });
+
+    const updateUser = await prisma.user.update({
+      where: {
+        id: parseInt(userId),
+      },
+      data: {
+        credit: user.credit - totalAmount,
+      },
+    });
+
+    res.json({
+      detail: convertToSlipFormatThai(
+          req.body,
+          formatDate(new Date()),
+          user.username
+        ),
     });
   } catch (error) {
     console.error(error);

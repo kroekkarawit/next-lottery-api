@@ -23,6 +23,28 @@ function convertBets(bets) {
   });
 }
 
+function convertThaiBets(bets) {
+  return bets.map((bet) => {
+    const { number, ...rest } = bet;
+    const bet_type = {
+      three_top: bet.three_top || "",
+      three_under: bet.three_under || "",
+      three_tod: bet.three_tod || "",
+      three_front: bet.three_front || "",
+      two_top: bet.two_top || "",
+      two_under: bet.two_under || "",
+      one_top: bet.one_top || "",
+      one_under: bet.one_under || "",
+    };
+
+    return {
+      number,
+      bet_type,
+      lotto_type: "TH",
+    };
+  });
+}
+
 function extractTimeFromISO8601(isoString) {
   const date = new Date(isoString);
   const hours = String(date.getUTCHours()).padStart(2, "0");
@@ -84,7 +106,7 @@ function betToCommmission(data) {
 
     const commissionPath = commissionPaths[bet_type];
     const thisPackage = safeJSONParse(packages.nine_lotto_package);
- 
+
     if (commissionPath) {
       return (
         (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
@@ -93,10 +115,10 @@ function betToCommmission(data) {
   } else if (lottery_type === "TH") {
     if (bet_type) {
       const thisPackage = safeJSONParse(packages.thai);
- 
+
       return (parseFloat(thisPackage[bet_type].commission) * amount) / 100;
     }
-  } else if(['M', 'P', 'T', 'S', 'B', 'K', 'W'].includes(lottery_type)){
+  } else if (["M", "P", "T", "S", "B", "K", "W"].includes(lottery_type)) {
     const commissionPaths = {
       B: "big",
       Big: "big",
@@ -114,7 +136,7 @@ function betToCommmission(data) {
     };
     const commissionPath = commissionPaths[bet_type];
     const thisPackage = safeJSONParse(packages.detail);
- 
+
     if (commissionPath) {
       return (
         (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
@@ -128,6 +150,7 @@ function betToCommmission(data) {
 // Exporting multiple functions
 module.exports = {
   convertBets,
+  convertThaiBets,
   extractTimeFromISO8601,
   betToCommmission,
 };
