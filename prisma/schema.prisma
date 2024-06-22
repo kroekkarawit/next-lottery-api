@@ -140,7 +140,7 @@ model Package {
   gd_ibox            String   @db.LongText
   nine_lotto_package String   @db.LongText
   nine_lotto_ibox    String   @db.LongText
-  thai               String   @db.LongText @default("")
+  thai               String   @default("") @db.LongText
   status             Status
   updated_at         DateTime @updatedAt
   created_at         DateTime @default(now())
@@ -249,5 +249,14 @@ model Message {
   id         Int      @id @default(autoincrement())
   message    String
   status     Status   @default(ACTIVE)
+  created_at DateTime @default(now())
+}
+
+model Result {
+  id         Int      @id @default(autoincrement())
+  round_id   Int
+  lottery_id Int
+  code       String
+  details    String   @db.LongText
   created_at DateTime @default(now())
 }

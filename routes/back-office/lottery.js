@@ -218,6 +218,73 @@ router.post("/add-round", async (req, res, next) => {
   }
 });
 
+router.post("/add-result", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (!decodedToken) {
+      return res.status(404).json({ message: "Authentication failed" });
+    }
+
+    const username = decodedToken.username;
+    const admin = await prisma.admin.findFirst({
+      where: {
+        username: username,
+      },
+    });
+
+    if (!admin) {
+      return res.status(404).json({ message: "admin not found" });
+    }
+
+    const { lottery_id, start_time, result_time, close_time } = req.body;
+
+    if (!start_time || !result_time || !close_time) {
+      return res.status(400).json({ message: "Missing required date fields" });
+    }
+
+    const lottery = await prisma.lottery.findFirst({
+      where: {
+        id: parseInt(lottery_id),
+        status: "ACTIVE"
+      }
+    });
+
+    if (!lottery) {
+      return res.status(404).json({ message: "lottery not found" });
+    }
+
+    // Parse the dates and check if they are valid
+    const parsedStartTime = parseISO(start_time);
+    const parsedResultTime = parseISO(result_time);
+    const parsedCloseTime = parseISO(close_time);
+
+    if (!isValid(parsedStartTime) || !isValid(parsedResultTime) || !isValid(parsedCloseTime)) {
+      return res.status(400).json({ message: "Invalid date format" });
+    }
+
+    const addRound = await prisma.round.create({
+      data: {
+        lottery_id: parseInt(lottery_id),
+        start_time: parsedStartTime,
+        result_time: parsedResultTime,
+        close_time: parsedCloseTime,
+        status: "ACTIVE",
+        code: lottery.code
+      },
+    });
+
+    res.json({
+      status: "success",
+      data: addRound,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
+  }
+});
+
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
