@@ -237,7 +237,10 @@ router.get("/get-round", async (req, res, next) => {
         // start_time: {
         //     gt: today, // Filter for rounds starting after today
         // },
-        // status: "ACTIVE", // Filter for active rounds
+        code: {
+          not: "TH",
+        },
+        status: "ACTIVE", // Filter for active rounds
       },
     });
 
@@ -257,7 +260,7 @@ router.get("/get-round-thai", async (req, res, next) => {
     const today = new Date();
     const rounds = await prisma.round.findFirst({
       where: {
-        lottery_id: 10,
+        code: "TH",
       },
       orderBy: {
         created_at: "desc",

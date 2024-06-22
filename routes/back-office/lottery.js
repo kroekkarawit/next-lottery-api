@@ -94,8 +94,7 @@ router.post("/edit-lottery", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id, detail, open_time, close_time, result_time, status } =
-      req.body;
+    const { lottery_id, detail, open_time, close_time, result_time, status } = req.body;
 
     const lottery = await prisma.lottery.findFirst({
       where: {
@@ -107,6 +106,30 @@ router.post("/edit-lottery", async (req, res, next) => {
       return res.status(404).json({ message: "lottery not found" });
     }
 
+    // Convert time strings to ISO-8601 format
+    const convertTimeStringToISO8601 = (timeString) => {
+      const [hours, minutes, seconds] = timeString.split(':');
+      const date = new Date();
+      date.setUTCHours(parseInt(hours), parseInt(minutes), parseInt(seconds), 0);
+      return date.toISOString();
+    };
+
+    const openTime = convertTimeStringToISO8601(open_time);
+    const closeTime = convertTimeStringToISO8601(close_time);
+    const resultTime = convertTimeStringToISO8601(result_time);
+
+    const response = await prisma.lottery.update({
+      where: {
+        id: parseInt(lottery_id),
+      },
+      data: {
+        open_time: openTime,
+        close_time: closeTime,
+        result_time: resultTime,
+        status: status,
+      },
+    });
+
     res.json({
       status: "success",
       data: response,
@@ -117,6 +140,7 @@ router.post("/edit-lottery", async (req, res, next) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 process.on("SIGINT", async () => {
   await prisma.$disconnect();

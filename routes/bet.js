@@ -37,6 +37,12 @@ router.post("/", async (req, res, next) => {
     return res.status(404).json({ message: "User not found" });
   }
 
+  const userPackage = await prisma.package.findFirst({
+    where: {
+      user_id: parseInt(user.id)
+    },
+  });
+
   try {
     const newReceipt = await prisma.receipt.create({
       data: {
