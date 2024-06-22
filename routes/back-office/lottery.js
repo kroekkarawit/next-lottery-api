@@ -96,7 +96,7 @@ router.post("/edit-lottery", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id, close_weekday, open_time, close_time, status } =
+    const { lottery_id,open_before, close_weekday, open_time, close_time, status } =
       req.body;
     const result_time = "21:30:00"  
 
@@ -132,6 +132,7 @@ router.post("/edit-lottery", async (req, res, next) => {
         id: parseInt(lottery_id),
       },
       data: {
+        open_before: parseInt(open_before),
         close_weekday: JSON.stringify(close_weekday),
         open_time: openTime,
         close_time: closeTime,
