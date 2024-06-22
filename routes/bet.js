@@ -118,6 +118,15 @@ router.post("/", async (req, res, next) => {
     if (betPrepared.length <= 0) {
       return res.status(400).json({ message: "bet is empty" });
     }
+    
+    if (user.credit < totalAmount) {
+      await prisma.receipt.delete({
+        where: {
+          id: parseInt(newReceipt.id),
+        },
+      });
+      return res.status(400).json({ message: "credit is insufficient" });
+    }
 
     const createBets = await Promise.all(
       betPrepared.map(async (bet) => {
@@ -279,8 +288,18 @@ router.post("/thai", async (req, res, next) => {
         );
       });
     });
+
     if (betPrepared.length <= 0) {
       return res.status(400).json({ message: "bet is empty" });
+    }
+
+    if (user.credit < totalAmount) {
+      await prisma.receipt.delete({
+        where: {
+          id: parseInt(newReceipt.id),
+        },
+      });
+      return res.status(400).json({ message: "credit is insufficient" });
     }
 
     const createBets = await Promise.all(
