@@ -178,7 +178,7 @@ router.get("/main-data", async (req, res, next) => {
 
   if (decodedToken) {
     const username = decodedToken.username;
-   
+    try {
       const user = await prisma.user.findFirst({
         where: {
           username: username,
@@ -267,7 +267,12 @@ router.get("/main-data", async (req, res, next) => {
           thai: JSON.parse(thai)
         },
       });
-   
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: error.message });
+    }
   } else {
     res.status(500).json({ error: "Authentication failed" });
   }

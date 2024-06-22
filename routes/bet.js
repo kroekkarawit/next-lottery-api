@@ -26,7 +26,7 @@ function formatDate(date) {
 }
 
 router.post("/", async (req, res, next) => {
-  const { bet, currency } = req.body;
+  const { bet, currency, user_id: buyerUserId } = req.body;
   if (!bet) {
     return res.status(400).json({ message: "bet detail are required" });
   }
@@ -34,11 +34,26 @@ router.post("/", async (req, res, next) => {
   const decodedToken = verifyToken(req);
   const userId = decodedToken.id.toString();
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: parseInt(userId),
-    },
-  });
+  let user;
+  if (userId != buyerUserId) {
+    const buyerUser = await prisma.user.findUnique({
+      where: {
+        id: parseInt(buyerUserId),
+        referral: parseInt(userId),
+      },
+    });
+
+    if (!buyerUser) {
+      return res.status(404).json({ message: "User incorrect" });
+    }
+    user = buyerUser;
+  } else {
+    user = await prisma.user.findUnique({
+      where: {
+        id: parseInt(userId),
+      },
+    });
+  }
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -53,7 +68,7 @@ router.post("/", async (req, res, next) => {
   try {
     const newReceipt = await prisma.receipt.create({
       data: {
-        user_id: parseInt(userId),
+        user_id: parseInt(user.id),
         remark: "",
         currency: currency,
         bet_method: "MULTIPLY",
@@ -80,12 +95,12 @@ router.post("/", async (req, res, next) => {
 
             Object.entries(bet.date).forEach(([date, date_value]) => {
               if (date_value) {
-                console.log(
-                  `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`
-                );
+                // console.log(
+                //   `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`
+                // );
                 totalAmount += parseFloat(bet_amount);
                 betPrepared.push({
-                  user_id: parseInt(userId),
+                  user_id: parseInt(user.id),
                   receipt_id: newReceipt.id.toString(),
                   number: bet.number,
                   amount: parseFloat(bet_amount).toFixed(2),
@@ -116,16 +131,6 @@ router.post("/", async (req, res, next) => {
 
     const createCommission = await Promise.all(
       betsArray.map(async (i) => {
-        console.log(
-          `Id: ${i.id} lottery_type: ${i.lottery_type} bet: ${
-            i.bet_type
-          } amount: ${betToCommmission({
-            lottery_type: i.lottery_type,
-            bet_type: i.bet_type,
-            amount: i.amount,
-            packages: userPackage,
-          })}`
-        );
         await prisma.commission.create({
           data: {
             user_id: parseInt(user.id),
@@ -157,7 +162,7 @@ router.post("/", async (req, res, next) => {
 
     const updateUser = await prisma.user.update({
       where: {
-        id: parseInt(userId),
+        id: parseInt(user.id),
       },
       data: {
         credit: user.credit - totalAmount,
@@ -180,7 +185,7 @@ router.post("/", async (req, res, next) => {
 });
 
 router.post("/thai", async (req, res, next) => {
-  const { bet, currency } = req.body;
+  const { bet, currency, user_id: buyerUserId } = req.body;
   if (!bet) {
     return res.status(400).json({ message: "bet detail are required" });
   }
@@ -188,11 +193,26 @@ router.post("/thai", async (req, res, next) => {
   const decodedToken = verifyToken(req);
   const userId = decodedToken.id.toString();
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: parseInt(userId),
-    },
-  });
+  let user;
+  if (userId != buyerUserId) {
+    const buyerUser = await prisma.user.findUnique({
+      where: {
+        id: parseInt(buyerUserId),
+        referral: parseInt(userId),
+      },
+    });
+
+    if (!buyerUser) {
+      return res.status(404).json({ message: "User incorrect" });
+    }
+    user = buyerUser;
+  } else {
+    user = await prisma.user.findUnique({
+      where: {
+        id: parseInt(userId),
+      },
+    });
+  }
 
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -216,7 +236,7 @@ router.post("/thai", async (req, res, next) => {
   try {
     const newReceipt = await prisma.receipt.create({
       data: {
-        user_id: parseInt(userId),
+        user_id: parseInt(user.id),
         remark: "",
         currency: currency,
         bet_method: "MULTIPLY",
@@ -241,12 +261,12 @@ router.post("/thai", async (req, res, next) => {
           ([lottery_type, lottery_value]) => {
             if (!lottery_value) return;
 
-            console.log(
-              `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type},   \n`
-            );
+            // console.log(
+            //   `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type},   \n`
+            // );
             totalAmount += parseFloat(bet_amount);
             betPrepared.push({
-              user_id: parseInt(userId),
+              user_id: parseInt(user.id),
               receipt_id: newReceipt.id.toString(),
               number: bet.number,
               amount: parseFloat(bet_amount).toFixed(2),
@@ -275,16 +295,16 @@ router.post("/thai", async (req, res, next) => {
 
     const createCommission = await Promise.all(
       betsArray.map(async (i) => {
-        console.log(
-          `Id: ${i.id} lottery_type: ${i.lottery_type} bet: ${
-            i.bet_type
-          } amount: ${betToCommmission({
-            lottery_type: i.lottery_type,
-            bet_type: i.bet_type,
-            amount: i.amount,
-            packages: userPackage,
-          })}`
-        );
+        // console.log(
+        //   `Id: ${i.id} lottery_type: ${i.lottery_type} bet: ${
+        //     i.bet_type
+        //   } amount: ${betToCommmission({
+        //     lottery_type: i.lottery_type,
+        //     bet_type: i.bet_type,
+        //     amount: i.amount,
+        //     packages: userPackage,
+        //   })}`
+        // );
         await prisma.commission.create({
           data: {
             user_id: parseInt(user.id),
@@ -316,7 +336,7 @@ router.post("/thai", async (req, res, next) => {
 
     const updateUser = await prisma.user.update({
       where: {
-        id: parseInt(userId),
+        id: parseInt(user.id),
       },
       data: {
         credit: user.credit - totalAmount,
@@ -381,7 +401,6 @@ router.post("/receipt", async (req, res, next) => {
         lte: new Date(created_at.end),
       };
     }
-    console.log(where);
     const receipts = await prisma.receipt.findMany({
       where,
       orderBy: {
