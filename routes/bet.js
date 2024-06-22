@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const verifyToken = require("../utils/jwt");
-const convertBets = require("../utils/tools");
+const {convertBets} = require("../utils/tools");
 const convertToSlipFormat = require("../utils/slip-gen");
 
 function formatDate(date) {

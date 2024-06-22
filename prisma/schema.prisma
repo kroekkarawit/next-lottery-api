@@ -131,17 +131,6 @@ model Lottery {
   created_at    DateTime @default(now())
 }
 
-// model Package {
-//   id         Int      @id @default(autoincrement())
-//   user_id    Int
-//   name       String
-//   bet_type   String
-//   detail     String   @db.LongText
-//   status     Status
-//   updated_at DateTime @updatedAt
-//   created_at DateTime @default(now())
-// }
-
 model Package {
   id                 Int      @id @default(autoincrement())
   user_id            Int

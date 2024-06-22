@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { update, isEmpty } = require("lodash");
 const { convertBets, extractTimeFromISO8601 } = require("../../utils/tools");
+const { isValid, parseISO } = require('date-fns');
 
 const isValidJSON = (str) => {
   try {
@@ -149,6 +150,7 @@ router.post("/edit-lottery", async (req, res, next) => {
   }
 });
 
+
 router.post("/add-round", async (req, res, next) => {
   try {
     const accessToken = req.headers.authorization.split(" ")[1];
@@ -164,30 +166,43 @@ router.post("/add-round", async (req, res, next) => {
         username: username,
       },
     });
+
     if (!admin) {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { lottery_id, start_time, result_time, close_time } =
-      req.body;
+    const { lottery_id, start_time, result_time, close_time } = req.body;
+
+    if (!start_time || !result_time || !close_time) {
+      return res.status(400).json({ message: "Missing required date fields" });
+    }
 
     const lottery = await prisma.lottery.findFirst({
       where: {
         id: parseInt(lottery_id),
         status: "ACTIVE"
       }
-    })
+    });
 
     if (!lottery) {
       return res.status(404).json({ message: "lottery not found" });
     }
 
+    // Parse the dates and check if they are valid
+    const parsedStartTime = parseISO(start_time);
+    const parsedResultTime = parseISO(result_time);
+    const parsedCloseTime = parseISO(close_time);
+
+    if (!isValid(parsedStartTime) || !isValid(parsedResultTime) || !isValid(parsedCloseTime)) {
+      return res.status(400).json({ message: "Invalid date format" });
+    }
+
     const addRound = await prisma.round.create({
       data: {
         lottery_id: parseInt(lottery_id),
-        start_time: new Date(start_time),
-        result_time: new Date(result_time),
-        close_time: new Date(close_time),
+        start_time: parsedStartTime,
+        result_time: parsedResultTime,
+        close_time: parsedCloseTime,
         status: "ACTIVE",
         code: lottery.code
       },
@@ -198,9 +213,8 @@ router.post("/add-round", async (req, res, next) => {
       data: addRound,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+    console.error(error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
 
