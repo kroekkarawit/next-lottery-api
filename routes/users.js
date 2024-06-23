@@ -1204,7 +1204,7 @@ router.post("/edit-user", async (req, res, next) => {
           credit: 0,
           credit_limit: parseFloat(account_detail.credit_limit) || 0,
           remark: account_detail.remark,
-          status: "ACTIVE",
+          status: account_detail.account_status,
           account_level: "User",
           currency: currencyString,
           is_open_downline: account_detail.open_downline,
