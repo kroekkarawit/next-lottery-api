@@ -1392,15 +1392,15 @@ router.get("/get-user", async (req, res, next) => {
 
       const grandTotal = getAllRefUser.reduce(
         (acc, user) => {
-          acc.credit_limit += user.credit_limit || 0;
-          acc.user_limit += user.credit || 0;
-          acc.outstanding += user.outstanding || 0;
-          acc.balance += user.balance || 0;
+          acc.credit_limit += parseFloat(user.credit_limit) || 0;
+          acc.used_limit += parseFloat(user.credit) || 0;
+          acc.outstanding += parseFloat(user.outstanding) || 0;
+          acc.balance += parseFloat(user.balance) || 0;
           return acc;
         },
         {
           credit_limit: 0,
-          user_limit: 0,
+          used_limit: 0,
           outstanding: 0,
           balance: 0,
         }
