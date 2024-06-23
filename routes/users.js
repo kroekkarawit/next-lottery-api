@@ -135,7 +135,6 @@ router.post("/login", async (req, res, next) => {
       where: {
         referral: parseInt(user.id),
         account_level: "User",
-        status: "ACTIVE",
       },
       select: {
         id: true,
@@ -156,7 +155,7 @@ router.post("/login", async (req, res, next) => {
       currency: user.currency,
       is_open_downline: user.is_open_downline,
       account_level: user.account_level,
-      outstanding:  user.outstanding,
+      outstanding: user.outstanding,
       status: user.status,
       image: "avatar",
       role: user.role,
@@ -221,7 +220,7 @@ router.get("/main-data", async (req, res, next) => {
           ibox,
           nine_lotto_ibox,
           nine_lotto_package,
-          thai
+          thai,
         } = getUserPackage;
 
         return res.json({
@@ -234,7 +233,7 @@ router.get("/main-data", async (req, res, next) => {
             ibox: JSON.parse(ibox),
             nine_lotto_ibox: JSON.parse(nine_lotto_ibox),
             nine_lotto_package: JSON.parse(nine_lotto_package),
-            thai: JSON.parse(thai)
+            thai: JSON.parse(thai),
           },
         });
       }
@@ -252,7 +251,7 @@ router.get("/main-data", async (req, res, next) => {
         ibox,
         nine_lotto_ibox,
         nine_lotto_package,
-        thai
+        thai,
       } = getUserPackage;
 
       res.json({
@@ -265,7 +264,7 @@ router.get("/main-data", async (req, res, next) => {
           ibox: JSON.parse(ibox),
           nine_lotto_ibox: JSON.parse(nine_lotto_ibox),
           nine_lotto_package: JSON.parse(nine_lotto_package),
-          thai: JSON.parse(thai)
+          thai: JSON.parse(thai),
         },
       });
     } catch (error) {
@@ -309,31 +308,29 @@ router.get("/refresh-session", async (req, res, next) => {
 
       const currentOutStanding = await prisma.bet.aggregate({
         _sum: {
-          amount: true
+          amount: true,
         },
         where: {
           user_id: parseInt(findUpLineUser.id),
-          status: "PENDING"
-        }
+          status: "PENDING",
+        },
       });
-      
+
       const totalOutstanding = currentOutStanding._sum.amount || 0;
-      
 
       const updateOutStanding = await prisma.user.update({
         where: {
-          id: parseInt(findUpLineUser.id)
+          id: parseInt(findUpLineUser.id),
         },
         data: {
-          outstanding: totalOutstanding
-        }
-      })
+          outstanding: totalOutstanding,
+        },
+      });
 
       const getDownlineUser = await prisma.user.findMany({
         where: {
           referral: parseInt(findUpLineUser.id),
           account_level: "User",
-          status: "ACTIVE",
         },
         select: {
           id: true,
@@ -370,7 +367,6 @@ router.get("/refresh-session", async (req, res, next) => {
       where: {
         referral: parseInt(user.id),
         account_level: "User",
-        status: "ACTIVE",
       },
       select: {
         id: true,
@@ -381,27 +377,26 @@ router.get("/refresh-session", async (req, res, next) => {
       },
     });
 
-
     const currentOutStanding = await prisma.bet.aggregate({
       _sum: {
-        amount: true
+        amount: true,
       },
       where: {
         user_id: parseInt(user.id),
-        status: "PENDING"
-      }
+        status: "PENDING",
+      },
     });
-    
+
     const totalOutstanding = currentOutStanding._sum.amount || 0;
-  
+
     const updateOutStanding = await prisma.user.update({
       where: {
-        id: parseInt(user.id)
+        id: parseInt(user.id),
       },
       data: {
-        outstanding: totalOutstanding
-      }
-    })
+        outstanding: totalOutstanding,
+      },
+    });
 
     res.json({
       id: user.id,
@@ -1395,8 +1390,25 @@ router.get("/get-user", async (req, res, next) => {
         },
       });
 
+      const grandTotal = getAllRefUser.reduce(
+        (acc, user) => {
+          acc.credit_limit += user.credit_limit || 0;
+          acc.user_limit += user.credit || 0;
+          acc.outstanding += user.outstanding || 0;
+          acc.balance += user.balance || 0;
+          return acc;
+        },
+        {
+          credit_limit: 0,
+          user_limit: 0,
+          outstanding: 0,
+          balance: 0,
+        }
+      );
+
       res.json({
         data: getAllRefUser,
+        grandTotal,
       });
     } catch (error) {
       console.error(error);
