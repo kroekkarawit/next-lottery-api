@@ -156,6 +156,7 @@ router.post("/login", async (req, res, next) => {
       currency: user.currency,
       is_open_downline: user.is_open_downline,
       account_level: user.account_level,
+      outstanding:  user.outstanding,
       status: user.status,
       image: "avatar",
       role: user.role,
@@ -306,6 +307,28 @@ router.get("/refresh-session", async (req, res, next) => {
         },
       });
 
+      const currentOutStanding = await prisma.bet.aggregate({
+        _sum: {
+          amount: true
+        },
+        where: {
+          user_id: parseInt(findUpLineUser.id),
+          status: "PENDING"
+        }
+      });
+      
+      const totalOutstanding = currentOutStanding._sum.amount || 0;
+      
+
+      const updateOutStanding = await prisma.user.update({
+        where: {
+          id: parseInt(findUpLineUser.id)
+        },
+        data: {
+          outstanding: totalOutstanding
+        }
+      })
+
       const getDownlineUser = await prisma.user.findMany({
         where: {
           referral: parseInt(findUpLineUser.id),
@@ -333,6 +356,7 @@ router.get("/refresh-session", async (req, res, next) => {
         currency: findUpLineUser.currency,
         is_open_downline: findUpLineUser.is_open_downline,
         account_level: user.account_level,
+        outstanding: user.outstanding,
         status: user.status,
         image: "avatar",
         role: user.role,
@@ -357,6 +381,28 @@ router.get("/refresh-session", async (req, res, next) => {
       },
     });
 
+
+    const currentOutStanding = await prisma.bet.aggregate({
+      _sum: {
+        amount: true
+      },
+      where: {
+        user_id: parseInt(user.id),
+        status: "PENDING"
+      }
+    });
+    
+    const totalOutstanding = currentOutStanding._sum.amount || 0;
+  
+    const updateOutStanding = await prisma.user.update({
+      where: {
+        id: parseInt(user.id)
+      },
+      data: {
+        outstanding: totalOutstanding
+      }
+    })
+
     res.json({
       id: user.id,
       name: user.name,
@@ -367,6 +413,7 @@ router.get("/refresh-session", async (req, res, next) => {
       currency: user.currency,
       is_open_downline: user.is_open_downline,
       account_level: user.account_level,
+      outstanding: user.outstanding,
       status: user.status,
       image: "avatar",
       role: user.role,
