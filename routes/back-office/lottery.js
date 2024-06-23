@@ -99,10 +99,12 @@ router.post("/edit-lottery", async (req, res, next) => {
       lottery_id,
       open_before,
       close_weekday,
+      close_extra,
       open_time,
       close_time,
       status,
     } = req.body;
+
     const result_time = "21:30:00";
 
     const lottery = await prisma.lottery.findFirst({
@@ -132,18 +134,25 @@ router.post("/edit-lottery", async (req, res, next) => {
     const closeTime = convertTimeStringToISO8601(close_time);
     const resultTime = convertTimeStringToISO8601(result_time);
 
+    const lotteryUpdateData = {
+      open_before: parseInt(open_before),
+      open_time: openTime,
+      close_time: closeTime,
+      result_time: resultTime,
+      status: status,
+    };
+
+    if (lottery_id != 10) {
+      lotteryUpdateData["close_weekday"] = JSON.stringify(close_weekday);
+    } else {
+      lotteryUpdateData["close_extra"] = JSON.stringify(close_extra);
+    }
+
     const response = await prisma.lottery.update({
       where: {
         id: parseInt(lottery_id),
       },
-      data: {
-        open_before: parseInt(open_before),
-        close_weekday: JSON.stringify(close_weekday),
-        open_time: openTime,
-        close_time: closeTime,
-        result_time: resultTime,
-        status: status,
-      },
+      data: lotteryUpdateData,
     });
 
     res.json({
@@ -274,7 +283,7 @@ router.post("/add-result", async (req, res, next) => {
           lte: new Date(),
         },
         lottery_id: parseInt(lottery_id),
-        id: parseInt(round_id)
+        id: parseInt(round_id),
       },
     });
 
@@ -286,10 +295,10 @@ router.post("/add-result", async (req, res, next) => {
       where: {
         id: parseInt(round.id),
       },
-      data:{
+      data: {
         result: JSON.stringify(result),
-        status: "INACTIVE"
-      }
+        status: "INACTIVE",
+      },
     });
 
     res.json({

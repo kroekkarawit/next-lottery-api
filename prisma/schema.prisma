@@ -106,7 +106,7 @@ model Round {
   start_time  DateTime?
   result_time DateTime?
   result      String?
-  status      Status
+  status      Status_round
   created_at  DateTime  @default(now())
   code        String
   close_time  DateTime?
@@ -186,12 +186,20 @@ enum Admin_status {
 enum User_status {
   ACTIVE
   INACTIVE
+  SUSPENDED
 }
 
 enum Status {
   ACTIVE
   INACTIVE
   PENDING
+}
+
+enum Status_round {
+  ACTIVE
+  ISSUED
+  PENDING
+  CANCEL
 }
 
 enum Role {
