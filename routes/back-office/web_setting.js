@@ -20,6 +20,7 @@ router.get("/dashboard", async (req, res, next) => {
         });
 
         const totalAgentActive = totalAgent.filter(i => i.status === "ACTIVE").length;
+        const totalAgentInActive = totalAgent.filter(i => i.status === "INACTIVE").length;
         const totalAgentSuspended = totalAgent.filter(i => i.status === "SUSPENDED").length;
 
         const totalBet = await prisma.bet.aggregate({
@@ -59,6 +60,7 @@ router.get("/dashboard", async (req, res, next) => {
             data: {
                 totalAgent: totalAgent.length,
                 totalAgentActive: totalAgentActive,
+                totalAgentInActive: totalAgentInActive,
                 totalAgentSuspended: totalAgentSuspended,
                 totalBet: totalBetAmount,
                 totalStrike: totalStrikeAmount,
