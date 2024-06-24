@@ -10,6 +10,7 @@ const adminsRouter = require('./routes/admins');
 const backOfficeUsersRouter = require('./routes/back-office/users');
 const backOfficeLotteryRouter = require('./routes/back-office/lottery');
 const backOfficeMessageRouter = require('./routes/back-office/message');
+const backOfficeWebSettingRouter = require('./routes/back-office/web_setting');
 
 
 const usersRouter = require('./routes/users');
@@ -29,6 +30,8 @@ app.use('/admins', adminsRouter);
 app.use('/back-office/users', backOfficeUsersRouter);
 app.use('/back-office/lottery', backOfficeLotteryRouter);
 app.use('/back-office/message', backOfficeMessageRouter);
+app.use('/back-office/web-setting', backOfficeWebSettingRouter);
+
 
 app.use('/users', usersRouter);
 app.use('/users/bet', betRouter);
@@ -42,11 +45,11 @@ app.use('/reports', reportsRouter);
 const PORT = process.env.PORT || 3000;
 
 cron.schedule("* * * * *", async () => {
-    console.log("Running a task every minute");
-    //await openLottery();
-  });
+  console.log("Running a task every minute");
+  //await openLottery();
+});
 
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
