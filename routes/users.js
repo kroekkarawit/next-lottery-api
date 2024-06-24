@@ -142,8 +142,14 @@ router.post("/login", async (req, res, next) => {
         name: true,
         credit: true,
         currency: true,
+        status: true
       },
     });
+
+    const downlineActive  = getDownlineUser.filter(i => i.status === "ACTIVE");
+    const downlineInActive  = getDownlineUser.filter(i => i.status === "INACTIVE");
+    const downlineSuspended  = getDownlineUser.filter(i => i.status === "SUSPENDED");
+
 
     res.json({
       id: user.id,
@@ -161,6 +167,11 @@ router.post("/login", async (req, res, next) => {
       role: user.role,
       access_token: accessToken,
       downline_user: getDownlineUser,
+      totalAgent: {
+        active: downlineActive,
+        inactive: downlineInActive,
+        suspended: downlineSuspended
+      },
       ip_address: ip_address,
       sub_user_setting: JSON.parse(user?.sub_user_setting || null),
     });
