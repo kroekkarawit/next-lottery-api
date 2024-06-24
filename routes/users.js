@@ -349,8 +349,14 @@ router.get("/refresh-session", async (req, res, next) => {
           name: true,
           credit: true,
           currency: true,
+          status: true
         },
       });
+  
+      const downlineActive  = getDownlineUser.filter(i => i.status === "ACTIVE");
+      const downlineInActive  = getDownlineUser.filter(i => i.status === "INACTIVE");
+      const downlineSuspended  = getDownlineUser.filter(i => i.status === "SUSPENDED");
+  
 
       return res.json({
         id: user.id,
@@ -370,6 +376,11 @@ router.get("/refresh-session", async (req, res, next) => {
         role: user.role,
         access_token: newAccessToken,
         downline_user: getDownlineUser,
+        totalAgent: {
+          active: downlineActive,
+          inactive: downlineInActive,
+          suspended: downlineSuspended
+        },
         sub_user_setting: JSON.parse(user?.sub_user_setting || null),
       });
     }
@@ -385,8 +396,14 @@ router.get("/refresh-session", async (req, res, next) => {
         name: true,
         credit: true,
         currency: true,
+        status: true
       },
     });
+
+    const downlineActive  = getDownlineUser.filter(i => i.status === "ACTIVE");
+    const downlineInActive  = getDownlineUser.filter(i => i.status === "INACTIVE");
+    const downlineSuspended  = getDownlineUser.filter(i => i.status === "SUSPENDED");
+
 
     const currentOutStanding = await prisma.bet.aggregate({
       _sum: {
@@ -425,6 +442,11 @@ router.get("/refresh-session", async (req, res, next) => {
       role: user.role,
       access_token: newAccessToken,
       downline_user: getDownlineUser,
+      totalAgent: {
+        active: downlineActive,
+        inactive: downlineInActive,
+        suspended: downlineSuspended
+      },
     });
   } catch (error) {
     console.error(error);
