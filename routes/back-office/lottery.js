@@ -16,6 +16,29 @@ const isValidJSON = (str) => {
   }
   return true;
 };
+router.get("/get-closed-round", async (req, res, next) => {
+  try {
+    const today = new Date();
+    const rounds = await prisma.round.findMany({
+      where: {
+        status: "ACTIVE",
+        OR: [{ result: null }, { result: "" }],
+        close_time: {
+          lte: new Date(),
+        },
+      },
+    });
+
+    res.json({
+      status: "success",
+      data: rounds,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
 
 router.get("/get-round", async (req, res, next) => {
   try {
@@ -230,6 +253,84 @@ router.post("/add-round", async (req, res, next) => {
     res.json({
       status: "success",
       data: addRound,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+router.post("/edit-round", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (!decodedToken) {
+      return res.status(404).json({ message: "Authentication failed" });
+    }
+
+    const username = decodedToken.username;
+    const admin = await prisma.admin.findFirst({
+      where: {
+        username: username,
+      },
+    });
+
+    if (!admin) {
+      return res.status(404).json({ message: "admin not found" });
+    }
+
+    const { round_id, start_time, result_time, close_time, status } = req.body;
+
+    const round = await prisma.round.findFirst({
+      where: {
+        id: parseInt(round_id),
+      },
+    });
+
+    if (!round) {
+      return res.status(404).json({ message: "round not found" });
+    }
+
+    const lottery = await prisma.lottery.findFirst({
+      where: {
+        id: parseInt(round.lottery_id),
+        status: "ACTIVE",
+      },
+    });
+
+    if (!lottery) {
+      return res.status(404).json({ message: "lottery not found" });
+    }
+
+    let editData = {}; 
+    if (start_time && result_time && close_time) {
+      // Parse the dates and check if they are valid
+      const parsedStartTime = new Date(start_time);
+      const parsedResultTime = new Date(result_time);
+      const parsedCloseTime = new Date(close_time);
+
+      editData["start_time"] = parsedStartTime;
+      editData["result_time"] = parsedResultTime;
+      editData["close_time"] = parsedCloseTime;
+    }
+
+    if (status) {
+      editData["status"] = status;
+    }
+
+    const updateRound = await prisma.round.update({
+      where: {
+        id: parseInt(round_id),
+      },
+      data: editData,
+    });
+
+    res.json({
+      status: "success",
+      data: updateRound,
     });
   } catch (error) {
     console.error(error);
