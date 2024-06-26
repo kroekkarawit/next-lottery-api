@@ -401,7 +401,7 @@ router.post("/add-result", async (req, res, next) => {
       },
       data: {
         result: JSON.stringify(result),
-        status: "INACTIVE",
+        status: "ISSUED",
       },
     });
 
