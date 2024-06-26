@@ -101,13 +101,13 @@ model Receipt {
 }
 
 model Round {
-  id          Int       @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   lottery_id  Int
   start_time  DateTime?
   result_time DateTime?
-  result      String?
+  result      String?      @db.LongText
   status      Status_round
-  created_at  DateTime  @default(now())
+  created_at  DateTime     @default(now())
   code        String
   close_time  DateTime?
 }

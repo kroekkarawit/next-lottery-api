@@ -366,7 +366,7 @@ router.post("/add-result", async (req, res, next) => {
     const { lottery_id, round_id, result } = req.body;
 
     if (!lottery_id || !round_id || !result) {
-      return res.status(400).json({ message: "Missing required date fields" });
+      return res.status(400).json({ message: "Missing required lottery_id, round_id, result fields" });
     }
 
     const lottery = await prisma.lottery.findFirst({
