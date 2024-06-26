@@ -27,6 +27,9 @@ router.get("/get-closed-round", async (req, res, next) => {
           lte: new Date(),
         },
       },
+      orderBy: {
+        close_time: "asc"
+      }
     });
 
     res.json({
