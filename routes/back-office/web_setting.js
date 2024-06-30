@@ -6,80 +6,95 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { update, isEmpty } = require("lodash");
 const { convertBets, extractTimeFromISO8601 } = require("../../utils/tools");
-const { isValid, parseISO } = require("date-fns");
-
+const { isValid, parseISO, startOfToday, endOfToday } = require("date-fns");
 
 router.get("/dashboard", async (req, res, next) => {
-    try {
-        const totalAgent = await prisma.user.findMany({
-            where: {
-                account_level: {
-                    not: "Sub_user"
-                }
-            }
-        });
+  try {
+    const totalAgent = await prisma.user.findMany({
+      where: {
+        account_level: {
+          not: "Sub_user",
+        },
+      },
+    });
 
-        const totalAgentActive = totalAgent.filter(i => i.status === "ACTIVE").length;
-        const totalAgentInActive = totalAgent.filter(i => i.status === "INACTIVE").length;
-        const totalAgentSuspended = totalAgent.filter(i => i.status === "SUSPENDED").length;
+    const totalAgentActive = totalAgent.filter(
+      (i) => i.status === "ACTIVE"
+    ).length;
+    const totalAgentInActive = totalAgent.filter(
+      (i) => i.status === "INACTIVE"
+    ).length;
+    const totalAgentSuspended = totalAgent.filter(
+      (i) => i.status === "SUSPENDED"
+    ).length;
 
-        const totalBet = await prisma.bet.aggregate({
-            _sum: {
-                amount: true
-            },
-            where: {
-                // Add any conditions here if needed
-            }
-        });
+    const start = startOfToday();
+    const end = endOfToday();
 
-        const totalStrike = await prisma.win_strike.aggregate({
-            _sum: {
-                amount: true
-            },
-            where: {
-                // Add any conditions here if needed
-            }
-        });
+    const totalBet = await prisma.bet.aggregate({
+      _sum: {
+        amount: true,
+      },
+      where: {
+        createdAt: {
+          gte: start,
+          lt: end,
+        },
+      },
+    });
 
-        const totalTransfer = await prisma.transfer.aggregate({
-            _sum: {
-                amount: true
-            },
-            where: {
-                // Add any conditions here if needed
-            }
-        });
+    const totalStrike = await prisma.win_strike.aggregate({
+      _sum: {
+        amount: true,
+      },
+      where: {
+        createdAt: {
+          gte: start,
+          lt: end,
+        },
+      },
+    });
 
-        // Extract the summed amounts
-        const totalBetAmount = totalBet._sum.amount || 0;
-        const totalStrikeAmount = totalStrike._sum.amount || 0;
-        const totalTransferAmount = totalTransfer._sum.amount || 0;
+    const totalTransfer = await prisma.transfer.aggregate({
+      _sum: {
+        amount: true,
+      },
+      where: {
+        createdAt: {
+          gte: start,
+          lt: end,
+        },
+      },
+    });
 
-        res.json({
-            status: "success",
-            data: {
-                totalAgent: totalAgent.length,
-                totalAgentActive: totalAgentActive,
-                totalAgentInActive: totalAgentInActive,
-                totalAgentSuspended: totalAgentSuspended,
-                totalBet: totalBetAmount,
-                totalStrike: totalStrikeAmount,
-                totalTransfer: totalTransferAmount,
-                totalWithdraw: 0,
-            },
-        });
-    } catch (error) {
-        res
-            .status(500)
-            .json({ error: "Internal server error", details: error.message });
-    }
+    // Extract the summed amounts
+    const totalBetAmount = totalBet._sum.amount || 0;
+    const totalStrikeAmount = totalStrike._sum.amount || 0;
+    const totalTransferAmount = totalTransfer._sum.amount || 0;
+
+    res.json({
+      status: "success",
+      data: {
+        totalAgent: totalAgent.length,
+        totalAgentActive: totalAgentActive,
+        totalAgentInActive: totalAgentInActive,
+        totalAgentSuspended: totalAgentSuspended,
+        totalBet: totalBetAmount,
+        totalStrike: totalStrikeAmount,
+        totalTransfer: totalTransferAmount,
+        totalWithdraw: 0,
+      },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
 });
 
-
-
 process.on("SIGINT", async () => {
-    await prisma.$disconnect();
-    process.exit();
+  await prisma.$disconnect();
+  process.exit();
 });
 
 module.exports = router;

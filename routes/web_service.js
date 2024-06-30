@@ -132,14 +132,18 @@ router.post("/exchange", async (req, res, next) => {
       return res.status(404).json({ message: "admin not found" });
     }
 
-    const { currency, rate } = req.body;
-    const updatedRate = await prisma.exchange_rate.upsert({
-      where: { currency },
-      update: { rate: parseFloat(rate) },
-      create: { currency, rate: parseFloat(rate) },
+    const { data } = req.body;
+
+    data.map(async (i) => {
+      const { currency, rate } = i;
+      const updatedRate = await prisma.exchange_rate.upsert({
+        where: { currency },
+        update: { rate: parseFloat(rate) },
+        create: { currency, rate: parseFloat(rate) },
+      });
     });
 
-    res.json(updatedRate);
+    res.json({ status: "success" });
   } catch (error) {
     res
       .status(500)

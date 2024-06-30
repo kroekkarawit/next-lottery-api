@@ -78,6 +78,7 @@ model Bet {
   id           Int       @id @default(autoincrement())
   user_id      Int
   lottery_type String?
+  round_id     Int       @default(0)
   receipt_id   String    @db.VarChar(255)
   number       String?
   amount       Decimal?
