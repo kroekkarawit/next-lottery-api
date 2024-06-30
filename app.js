@@ -11,6 +11,7 @@ const backOfficeUsersRouter = require('./routes/back-office/users');
 const backOfficeLotteryRouter = require('./routes/back-office/lottery');
 const backOfficeMessageRouter = require('./routes/back-office/message');
 const backOfficeWebSettingRouter = require('./routes/back-office/web_setting');
+const backOfficeReportRouter = require('./routes/back-office/reports');
 
 
 const usersRouter = require('./routes/users');
@@ -31,6 +32,7 @@ app.use('/back-office/users', backOfficeUsersRouter);
 app.use('/back-office/lottery', backOfficeLotteryRouter);
 app.use('/back-office/message', backOfficeMessageRouter);
 app.use('/back-office/web-setting', backOfficeWebSettingRouter);
+app.use('/back-office/reports', backOfficeReportRouter);
 
 
 app.use('/users', usersRouter);
