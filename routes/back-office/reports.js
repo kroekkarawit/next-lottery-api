@@ -1766,6 +1766,65 @@ router.post("/profit-sharing", async (req, res) => {
   }
 });
 
+router.post("/bet-summary", async (req, res) => {
+  const { round_id, lottery_type } = req.body;
+  try {
+
+    const getAllBet = await prisma.bet.findMany({
+      where: {
+        lottery_type: lottery_type,
+        //round_id: round_id
+      }
+    });
+
+    const summarizeAmounts = (data) => {
+      const result = {};
+
+      data.forEach(item => {
+        const key = `${item.number}-${item.bet_type}`;
+        const amount = parseFloat(item.amount);
+
+        if (result[key]) {
+          result[key].total += amount;
+        } else {
+          result[key] = { number: item.number, bet_type: item.bet_type, total: amount };
+        }
+      });
+
+      return Object.values(result);
+    };
+
+    const summarizedAmounts = summarizeAmounts(getAllBet);
+
+    res.json({
+      data: {
+        "B": summarizedAmounts.filter(i => i.bet_type === "B"),
+        "S": summarizedAmounts.filter(i => i.bet_type === "S"),
+        "4A": summarizedAmounts.filter(i => i.bet_type === "4A"),
+        "ABC": summarizedAmounts.filter(i => i.bet_type === "ABC"),
+        "A": summarizedAmounts.filter(i => i.bet_type === "A"),
+        "5D": summarizedAmounts.filter(i => i.bet_type === "5D"),
+        "6D": summarizedAmounts.filter(i => i.bet_type === "6D"),
+        "2A": summarizedAmounts.filter(i => i.bet_type === "2A"),
+        "2F": summarizedAmounts.filter(i => i.bet_type === "2F"),
+        "three_top": summarizedAmounts.filter(i => i.bet_type === "three_top"),
+        "three_tod": summarizedAmounts.filter(i => i.bet_type === "three_tod"),
+        "three_front": summarizedAmounts.filter(i => i.bet_type === "three_front"),
+        "three_under": summarizedAmounts.filter(i => i.bet_type === "three_under"),
+        "two_top": summarizedAmounts.filter(i => i.bet_type === "two_top"),
+        "two_under": summarizedAmounts.filter(i => i.bet_type === "two_under"),
+        "one_top": summarizedAmounts.filter(i => i.bet_type === "one_top"),
+        "one_under": summarizedAmounts.filter(i => i.bet_type === "one_under"),
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
 process.on("SIGINT", async () => {
   await prisma.$disconnect();
   process.exit();
