@@ -1825,34 +1825,38 @@ router.post("/bet-summary", async (req, res) => {
 
     const summarizedAmounts = summarizeAmounts(getAllBet);
 
+    const betTypes = [
+      "B", "S", "4A", "ABC", "A", "5D", "6D", "2A", "2F",
+      "three_top", "three_tod", "three_front", "three_under",
+      "two_top", "two_under", "one_top", "one_under"
+    ];
+    
+    const filteredData = Object.fromEntries(
+      betTypes
+        .map((betType) => [
+          betType,
+          summarizedAmounts.filter((i) => i.bet_type === betType)
+        ])
+        .filter(([_, value]) => value.length > 0)
+    );
+    
+    const total = Object.fromEntries(
+      Object.entries(filteredData).map(([betType, items]) => {
+        const sum = items.reduce((acc, item) => {
+          const amount = Number(item.total);
+          return acc + (isNaN(amount) ? 0 : amount);
+        }, 0);
+        console.log(`Debug - ${betType}: items=${items.length}, sum=${sum}`);
+        return [betType, sum];
+      })
+    );
+    
+
+
     res.json({
       round: round,
-      data: Object.fromEntries(
-        [
-          "B",
-          "S",
-          "4A",
-          "ABC",
-          "A",
-          "5D",
-          "6D",
-          "2A",
-          "2F",
-          "three_top",
-          "three_tod",
-          "three_front",
-          "three_under",
-          "two_top",
-          "two_under",
-          "one_top",
-          "one_under",
-        ]
-          .map((betType) => [
-            betType,
-            summarizedAmounts.filter((i) => i.bet_type === betType),
-          ])
-          .filter(([_, value]) => value.length > 0)
-      ),
+      data: filteredData,
+      total: total
     });
   } catch (error) {
     console.error("Error fetching user:", error);
