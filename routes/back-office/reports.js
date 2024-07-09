@@ -1767,7 +1767,7 @@ router.post("/profit-sharing", async (req, res) => {
 });
 
 router.post("/bet-summary", async (req, res) => {
-  const { round_id, lottery_type } = req.body;
+  const { round_id } = req.body;
   try {
     const accessToken = req.headers.authorization.split(" ")[1];
     const decodedToken = jwt.decode(accessToken);
@@ -1797,7 +1797,7 @@ router.post("/bet-summary", async (req, res) => {
 
     const getAllBet = await prisma.bet.findMany({
       where: {
-        lottery_type: lottery_type,
+        lottery_type: round.code,
         //round_id: round_id
       },
     });
