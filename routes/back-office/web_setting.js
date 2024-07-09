@@ -36,7 +36,7 @@ router.get("/dashboard", async (req, res, next) => {
         amount: true,
       },
       where: {
-        createdAt: {
+        created_at: {
           gte: start,
           lt: end,
         },
@@ -48,7 +48,7 @@ router.get("/dashboard", async (req, res, next) => {
         amount: true,
       },
       where: {
-        createdAt: {
+        created_at: {
           gte: start,
           lt: end,
         },
@@ -60,7 +60,7 @@ router.get("/dashboard", async (req, res, next) => {
         amount: true,
       },
       where: {
-        createdAt: {
+        created_at: {
           gte: start,
           lt: end,
         },
