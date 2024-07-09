@@ -1769,25 +1769,54 @@ router.post("/profit-sharing", async (req, res) => {
 router.post("/bet-summary", async (req, res) => {
   const { round_id, lottery_type } = req.body;
   try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    const decodedToken = jwt.decode(accessToken);
+
+    if (decodedToken) {
+      const username = decodedToken.username;
+
+      const admin = await prisma.admin.findFirst({
+        where: {
+          username: username,
+        },
+      });
+      if (!admin) {
+        return res.status(404).json({ message: "admin not found" });
+      }
+    }
+    const round = await prisma.round.findFirst({
+      where: {
+        id: parseInt(round_id),
+        status: "ACTIVE",
+      },
+    });
+
+    if (!round) {
+      return res.status(404).json({ message: "round not found" });
+    }
 
     const getAllBet = await prisma.bet.findMany({
       where: {
         lottery_type: lottery_type,
         //round_id: round_id
-      }
+      },
     });
 
     const summarizeAmounts = (data) => {
       const result = {};
 
-      data.forEach(item => {
+      data.forEach((item) => {
         const key = `${item.number}-${item.bet_type}`;
         const amount = parseFloat(item.amount);
 
         if (result[key]) {
           result[key].total += amount;
         } else {
-          result[key] = { number: item.number, bet_type: item.bet_type, total: amount };
+          result[key] = {
+            number: item.number,
+            bet_type: item.bet_type,
+            total: amount,
+          };
         }
       });
 
@@ -1797,25 +1826,33 @@ router.post("/bet-summary", async (req, res) => {
     const summarizedAmounts = summarizeAmounts(getAllBet);
 
     res.json({
-      data: {
-        "B": summarizedAmounts.filter(i => i.bet_type === "B"),
-        "S": summarizedAmounts.filter(i => i.bet_type === "S"),
-        "4A": summarizedAmounts.filter(i => i.bet_type === "4A"),
-        "ABC": summarizedAmounts.filter(i => i.bet_type === "ABC"),
-        "A": summarizedAmounts.filter(i => i.bet_type === "A"),
-        "5D": summarizedAmounts.filter(i => i.bet_type === "5D"),
-        "6D": summarizedAmounts.filter(i => i.bet_type === "6D"),
-        "2A": summarizedAmounts.filter(i => i.bet_type === "2A"),
-        "2F": summarizedAmounts.filter(i => i.bet_type === "2F"),
-        "three_top": summarizedAmounts.filter(i => i.bet_type === "three_top"),
-        "three_tod": summarizedAmounts.filter(i => i.bet_type === "three_tod"),
-        "three_front": summarizedAmounts.filter(i => i.bet_type === "three_front"),
-        "three_under": summarizedAmounts.filter(i => i.bet_type === "three_under"),
-        "two_top": summarizedAmounts.filter(i => i.bet_type === "two_top"),
-        "two_under": summarizedAmounts.filter(i => i.bet_type === "two_under"),
-        "one_top": summarizedAmounts.filter(i => i.bet_type === "one_top"),
-        "one_under": summarizedAmounts.filter(i => i.bet_type === "one_under"),
-      }
+      round: round,
+      data: Object.fromEntries(
+        [
+          "B",
+          "S",
+          "4A",
+          "ABC",
+          "A",
+          "5D",
+          "6D",
+          "2A",
+          "2F",
+          "three_top",
+          "three_tod",
+          "three_front",
+          "three_under",
+          "two_top",
+          "two_under",
+          "one_top",
+          "one_under",
+        ]
+          .map((betType) => [
+            betType,
+            summarizedAmounts.filter((i) => i.bet_type === betType),
+          ])
+          .filter(([_, value]) => value.length > 0)
+      ),
     });
   } catch (error) {
     console.error("Error fetching user:", error);
