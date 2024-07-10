@@ -32,7 +32,7 @@ const openLottery = async () => {
         lotteryDate.setDate(date.getDate() + 1);
         const dateOnlyString = lotteryDate.toISOString().split("T")[0];
         console.log(lottery.open_time.toISOString().split("T")[1]);
-        const startTime = new Date(
+        const openTime = new Date(
           `${dateOnlyString}T${lottery.open_time.toISOString().split("T")[1]}`
         );
         const closeTime = new Date(
@@ -42,51 +42,54 @@ const openLottery = async () => {
           `${dateOnlyString}T${lottery.result_time.toISOString().split("T")[1]}`
         );
 
-        const checkExistingRound = await prisma.round.findFirst({
-          where: {
-            lottery_id: parseInt(lottery.id),
-            code: lottery.code,
-            start_time: startTime,
-            close_time: closeTime,
-            result_time: resultTime,
-            result: null,
-            status: "ACTIVE",
-          },
-        });
+        console.log(`openTime: ${openTime}  closeTime: ${closeTime} resultTime: ${resultTime}`)
+        console.log(`\n\n`)
 
-        const checkLatestRound = await prisma.round.findFirst({
-          where: {
-            lottery_id: parseInt(lottery.id),
-            code: lottery.code,
-            result: null,
-            status: "ACTIVE",
-          },
-          orderBy: {
-            created_at: 'desc',
-          },
-        });
+        // const checkExistingRound = await prisma.round.findFirst({
+        //   where: {
+        //     lottery_id: parseInt(lottery.id),
+        //     code: lottery.code,
+        //     open_time: openTime,
+        //     close_time: closeTime,
+        //     result_time: resultTime,
+        //     result: null,
+        //     status: "ACTIVE",
+        //   },
+        // });
 
-        console.log("checkExistingRound", checkExistingRound);
+        // const checkLatestRound = await prisma.round.findFirst({
+        //   where: {
+        //     lottery_id: parseInt(lottery.id),
+        //     code: lottery.code,
+        //     result: null,
+        //     status: "ACTIVE",
+        //   },
+        //   orderBy: {
+        //     created_at: 'desc',
+        //   },
+        // });
 
-        console.log("checkLatestRound", checkLatestRound);
-        const isExact7Days = checkExact7DaysDifference(checkLatestRound.start_time, checkExistingRound.start_time);
-        console.log("isExact7Days", isExact7Days);
+        // console.log("checkExistingRound", checkExistingRound);
+
+        // console.log("checkLatestRound", checkLatestRound);
+        // const isExact7Days = checkExact7DaysDifference(checkLatestRound?.open_time, checkExistingRound?.open_time);
+        // console.log("isExact7Days", isExact7Days);
 
 
-        if (!checkExistingRound) {
-          const roundCreated = await prisma.round.create({
-            data: {
-              lottery_id: parseInt(lottery.id),
-              code: lottery.code,
-              start_time: startTime,
-              close_time: closeTime,
-              result_time: resultTime,
-              result: null,
-              status: "ACTIVE",
-            },
-          });
-          console.log("roundCreated", roundCreated);
-        }
+        // if (!checkExistingRound) {
+        //   const roundCreated = await prisma.round.create({
+        //     data: {
+        //       lottery_id: parseInt(lottery.id),
+        //       code: lottery.code,
+        //       open_time: openTime,
+        //       close_time: closeTime,
+        //       result_time: resultTime,
+        //       result: null,
+        //       status: "ACTIVE",
+        //     },
+        //   });
+        //   console.log("roundCreated", roundCreated);
+        // }
       }
     }
   });
@@ -94,15 +97,17 @@ const openLottery = async () => {
 
 
 const checkExact7DaysDifference = (date1, date2) => {
-    // Parse the input date strings with dayjs
-    const day1 = dayjs(date1);
-    const day2 = dayjs(date2);
-  
-    // Calculate the difference in days
-    const dayDifference = day2.diff(day1, 'day');
-  
-    // Check if the difference is exactly 7 days
-    return dayDifference === 7;
-  };
+  // Parse the input date strings with dayjs
+  const day1 = dayjs(date1);
+  const day2 = dayjs(date2);
+
+  if (!date1, !date2) true
+
+  // Calculate the difference in days
+  const dayDifference = day2.diff(day1, 'day');
+
+  // Check if the difference is exactly 7 days
+  return dayDifference === 7;
+};
 
 module.exports = openLottery;

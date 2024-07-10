@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://db_user:P!0h42sd5@46.250.235.56:3306/lottery"
+  url      = "mysql://db_user:P!0h42sd5@46.250.235.56:3306/shadow?serverTimezone=Asia/Bangkok"
 }
 
 model User {
@@ -104,7 +104,7 @@ model Receipt {
 model Round {
   id          Int          @id @default(autoincrement())
   lottery_id  Int
-  start_time  DateTime?
+  open_time   DateTime?
   result_time DateTime?
   result      String?      @db.LongText
   status      Status_round
@@ -198,6 +198,7 @@ enum Status {
 
 enum Status_round {
   ACTIVE
+  INACTIVE
   ISSUED
   PENDING
   CANCEL

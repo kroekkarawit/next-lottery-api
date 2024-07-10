@@ -13,6 +13,9 @@ const openLottery = async () => {
     const lotteries = await prisma.lottery.findMany({
         where: {
             status: "ACTIVE",
+            code: {
+                not: "TH"
+            }
         },
     });
 
@@ -101,6 +104,43 @@ const openLottery = async () => {
     });
 };
 
+
+const closeLottery = async () => {
+    const date = new Date();
+    let day = date.getDay(); // Get the day of the week (0-6, Sunday-Saturday)
+    day = (day + 6) % 7; // Note: to make Monday is 0 start from Monday
+
+    const lotteries = await prisma.lottery.findMany({
+        where: {
+            status: "ACTIVE",
+            code: {
+                not: "TH"
+            }
+        },
+    });
+
+    lotteries.forEach(async (lottery) => {
+        const updateRound = await prisma.round.updateMany({
+            where: {
+                lottery_id: parseInt(lottery.id),
+                code: lottery.code,
+                close_time: {
+                    lte: new Date()
+                },
+                result: null,
+                status: "ACTIVE",
+            },
+            data: {
+                status: "INACTIVE"
+            }
+        });
+
+        if (updateRound.count > 0) {
+            console.log(`Updated ${updateRound.count} round(s) to INACTIVE status.`);
+        }
+    })
+}
+
 const checkExact7DaysDifference = (date1, date2) => {
     // Parse the input date strings with dayjs
     const day1 = dayjs(date1);
@@ -115,4 +155,6 @@ const checkExact7DaysDifference = (date1, date2) => {
     return dayDifference === 7;
 };
 
-openLottery();
+//openLottery();
+
+closeLottery();
