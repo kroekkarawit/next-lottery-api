@@ -141,6 +141,46 @@ const closeLottery = async () => {
     })
 }
 
+
+const openLotteryThai = async () => {
+    const date = new Date();
+    let lotteryDate = new Date(date);
+
+
+    const lottery = await prisma.lottery.findFirst({
+        where: {
+            status: "ACTIVE",
+            code: "TH"
+        },
+    });
+
+    const dateOnlyString = lotteryDate.toISOString().split("T")[0];
+    console.log(lottery.open_time.toISOString().split("T")[1]);
+
+    const openTime = new Date(
+        `${dateOnlyString}T${lottery.open_time.toISOString().split("T")[1]}`
+    );
+    const closeTime = new Date(
+        `${dateOnlyString}T${lottery.close_time.toISOString().split("T")[1]}`
+    );
+    const resultTime = new Date(
+        `${dateOnlyString}T${lottery.result_time.toISOString().split("T")[1]}`
+    );
+
+    const checkExistingRound = await prisma.round.findFirst({
+        where: {
+            lottery_id: parseInt(lottery.id),
+            code: lottery.code,
+            open_time: openTime,
+            close_time: closeTime,
+            result_time: resultTime,
+            result: null,
+            status: "ACTIVE",
+        },
+    });
+
+    console.log(checkExistingRound)
+}
 const checkExact7DaysDifference = (date1, date2) => {
     // Parse the input date strings with dayjs
     const day1 = dayjs(date1);
@@ -155,6 +195,6 @@ const checkExact7DaysDifference = (date1, date2) => {
     return dayDifference === 7;
 };
 
-openLottery();
+//openLottery(); // Should be called 23:30 - 00:30 only cause it's  will distrupt closeLottery
 
 closeLottery();
