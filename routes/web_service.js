@@ -116,7 +116,7 @@ router.get("/exchange", async (req, res, next) => {
 router.get("/time", async (req, res, next) => {
   try {
 
-    res.json(new Date());
+    res.json([new Date(), new Date().toString()]);
   } catch (error) {
     res
       .status(500)
