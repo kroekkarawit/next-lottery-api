@@ -1,158 +1,168 @@
 function convertBets(bets) {
-  return bets.map((bet) => {
-    const { number, ...rest } = bet;
-    const bet_type = {
-      B: bet.B || "",
-      S: bet.S || "",
-      "4A": bet["4A"] || "",
-      ABC: bet.ABC || "",
-      A: bet.A || "",
-      "5D": bet["5D"] || "",
-      "6D": bet["6D"] || "",
-      "2A": bet["2A"] || "",
-      "2F": bet["2F"] || "",
-    };
+    return bets.map((bet) => {
+        const { number, ...rest } = bet;
+        const bet_type = {
+            B: bet.B || "",
+            S: bet.S || "",
+            "4A": bet["4A"] || "",
+            ABC: bet.ABC || "",
+            A: bet.A || "",
+            "5D": bet["5D"] || "",
+            "6D": bet["6D"] || "",
+            "2A": bet["2A"] || "",
+            "2F": bet["2F"] || "",
+        };
 
-    return {
-      number,
-      bet_type,
-      date: bet.date,
-      lotto_type: bet.lotto_type,
-      option: bet.option,
-    };
-  });
+        return {
+            number,
+            bet_type,
+            date: bet.date,
+            lotto_type: bet.lotto_type,
+            option: bet.option,
+        };
+    });
 }
 
 function convertThaiBets(bets) {
-  return bets.map((bet) => {
-    const { number, ...rest } = bet;
-    const bet_type = {
-      three_top: bet.three_top || "",
-      three_under: bet.three_under || "",
-      three_tod: bet.three_tod || "",
-      three_front: bet.three_front || "",
-      two_top: bet.two_top || "",
-      two_under: bet.two_under || "",
-      one_top: bet.one_top || "",
-      one_under: bet.one_under || "",
-    };
+    return bets.map((bet) => {
+        const { number, ...rest } = bet;
+        const bet_type = {
+            three_top: bet.three_top || "",
+            three_under: bet.three_under || "",
+            three_tod: bet.three_tod || "",
+            three_front: bet.three_front || "",
+            two_top: bet.two_top || "",
+            two_under: bet.two_under || "",
+            one_top: bet.one_top || "",
+            one_under: bet.one_under || "",
+        };
 
-    return {
-      number,
-      bet_type,
-      lotto_type: "TH",
-    };
-  });
+        return {
+            number,
+            bet_type,
+            lotto_type: "TH",
+        };
+    });
 }
 
 function extractTimeFromISO8601(isoString) {
-  const date = new Date(isoString);
-  const hours = String(date.getUTCHours()).padStart(2, "0");
-  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-  const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-  return `${hours}:${minutes}:${seconds}`;
+    const date = new Date(isoString);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
 }
 
 function safeJSONParse(str) {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return str;
-  }
+    try {
+        return JSON.parse(str);
+    } catch (e) {
+        return str;
+    }
 }
 
 function betToCommmission(data) {
-  const { lottery_type, bet_type, amount, packages } = data;
+    const { lottery_type, bet_type, amount, packages } = data;
 
-  if (lottery_type === "H") {
-    const commissionPaths = {
-      B: "big",
-      Big: "big",
-      big: "big",
-      S: "small",
-      Small: "small",
-      small: "small",
-      "4A": "4A",
-      A: "A",
-      ABC: "ABC",
-      "6D": "6D",
-      "2A": "2A",
-      "2F": "2F",
-    };
+    if (lottery_type === "H") {
+        const commissionPaths = {
+            B: "big",
+            Big: "big",
+            big: "big",
+            S: "small",
+            Small: "small",
+            small: "small",
+            "4A": "4A",
+            A: "A",
+            ABC: "ABC",
+            "6D": "6D",
+            "2A": "2A",
+            "2F": "2F",
+        };
 
-    const commissionPath = commissionPaths[bet_type];
-    const thisPackage = safeJSONParse(packages.gd_package);
+        const commissionPath = commissionPaths[bet_type];
+        const thisPackage = safeJSONParse(packages.gd_package);
 
-    if (commissionPath) {
-      return (
-        (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
-      );
+        if (commissionPath) {
+            return (
+                (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
+            );
+        }
+    } else if (lottery_type === "E") {
+        const commissionPaths = {
+            B: "big",
+            Big: "big",
+            big: "big",
+            S: "small",
+            Small: "small",
+            small: "small",
+            "4A": "4A",
+            A: "A",
+            ABC: "ABC",
+            "6D": "6D",
+            "2D": "2D",
+            "2C": "2C",
+        };
+
+        const commissionPath = commissionPaths[bet_type];
+        const thisPackage = safeJSONParse(packages.nine_lotto_package);
+
+        if (commissionPath) {
+            return (
+                (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
+            );
+        }
+    } else if (lottery_type === "TH") {
+        if (bet_type) {
+            const thisPackage = safeJSONParse(packages.thai);
+
+            return (parseFloat(thisPackage[bet_type].commission) * amount) / 100;
+        }
+    } else if (["M", "P", "T", "S", "B", "K", "W"].includes(lottery_type)) {
+        const commissionPaths = {
+            B: "big",
+            Big: "big",
+            big: "big",
+            S: "small",
+            Small: "small",
+            small: "small",
+            "4A": "4A",
+            A: "A",
+            ABC: "ABC",
+            "5D": "5D",
+            "6D": "6D",
+            "2A": "2A",
+            "2F": "2F",
+        };
+        const commissionPath = commissionPaths[bet_type];
+        const thisPackage = safeJSONParse(packages.detail);
+
+        if (commissionPath) {
+            return (
+                (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
+            );
+        }
     }
-  } else if (lottery_type === "E") {
-    const commissionPaths = {
-      B: "big",
-      Big: "big",
-      big: "big",
-      S: "small",
-      Small: "small",
-      small: "small",
-      "4A": "4A",
-      A: "A",
-      ABC: "ABC",
-      "6D": "6D",
-      "2D": "2D",
-      "2C": "2C",
-    };
 
-    const commissionPath = commissionPaths[bet_type];
-    const thisPackage = safeJSONParse(packages.nine_lotto_package);
-
-    if (commissionPath) {
-      return (
-        (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
-      );
-    }
-  } else if (lottery_type === "TH") {
-    if (bet_type) {
-      const thisPackage = safeJSONParse(packages.thai);
-
-      return (parseFloat(thisPackage[bet_type].commission) * amount) / 100;
-    }
-  } else if (["M", "P", "T", "S", "B", "K", "W"].includes(lottery_type)) {
-    const commissionPaths = {
-      B: "big",
-      Big: "big",
-      big: "big",
-      S: "small",
-      Small: "small",
-      small: "small",
-      "4A": "4A",
-      A: "A",
-      ABC: "ABC",
-      "5D": "5D",
-      "6D": "6D",
-      "2A": "2A",
-      "2F": "2F",
-    };
-    const commissionPath = commissionPaths[bet_type];
-    const thisPackage = safeJSONParse(packages.detail);
-
-    if (commissionPath) {
-      return (
-        (parseFloat(thisPackage[commissionPath].commission) * amount) / 100
-      );
-    }
-  }
-
-  return 0;
+    return 0;
 }
+
+const isValidJSON = (str) => {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+};
 
 // Exporting multiple functions
 module.exports = {
-  convertBets,
-  convertThaiBets,
-  extractTimeFromISO8601,
-  betToCommmission,
+    convertBets,
+    convertThaiBets,
+    extractTimeFromISO8601,
+    betToCommmission,
+    isValidJSON
 };
 
 /*
