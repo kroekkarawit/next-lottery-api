@@ -21,7 +21,7 @@ router.get("/get-closed-round", async (req, res, next) => {
     const today = new Date();
     const rounds = await prisma.round.findMany({
       where: {
-        status: "ACTIVE",
+        status: "INACTIVE",
         OR: [{ result: null }, { result: "" }],
         close_time: {
           lte: new Date(),
@@ -308,7 +308,7 @@ router.post("/edit-round", async (req, res, next) => {
       return res.status(404).json({ message: "lottery not found" });
     }
 
-    let editData = {}; 
+    let editData = {};
     if (start_time && result_time && close_time) {
       // Parse the dates and check if they are valid
       const parsedStartTime = new Date(start_time);
