@@ -155,6 +155,6 @@ const checkExact7DaysDifference = (date1, date2) => {
     return dayDifference === 7;
 };
 
-//openLottery();
+openLottery();
 
 closeLottery();

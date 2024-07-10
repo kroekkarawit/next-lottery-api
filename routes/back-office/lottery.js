@@ -245,7 +245,7 @@ router.post("/add-round", async (req, res, next) => {
     const addRound = await prisma.round.create({
       data: {
         lottery_id: parseInt(lottery_id),
-        start_time: parsedStartTime,
+        open_time: parsedStartTime,
         result_time: parsedResultTime,
         close_time: parsedCloseTime,
         status: "ACTIVE",
@@ -315,7 +315,7 @@ router.post("/edit-round", async (req, res, next) => {
       const parsedResultTime = new Date(result_time);
       const parsedCloseTime = new Date(close_time);
 
-      editData["start_time"] = parsedStartTime;
+      editData["open_time"] = parsedStartTime;
       editData["result_time"] = parsedResultTime;
       editData["close_time"] = parsedCloseTime;
     }

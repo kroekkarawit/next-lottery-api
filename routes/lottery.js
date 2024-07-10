@@ -234,7 +234,7 @@ router.get("/get-round", async (req, res, next) => {
     const today = new Date();
     const rounds = await prisma.round.findMany({
       where: {
-        // start_time: {
+        // open_time: {
         //     gt: today, // Filter for rounds starting after today
         // },
         code: {
