@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://db_user:P!0h42sd5@46.250.235.56:3306/shadow?serverTimezone=Asia/Bangkok"
+  url      = "mysql://db_user:P!0h42sd5@46.250.235.56:3306/lottery?serverTimezone=Asia/Bangkok"
 }
 
 model User {
