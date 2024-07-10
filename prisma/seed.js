@@ -30,7 +30,7 @@ async function main() {
           flag: 'https://coba8.com/images/mag2.gif',
           color: '#ffff00'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -52,7 +52,7 @@ async function main() {
           flag: 'https://coba8.com/images/pmp2.gif',
           color: '#0000ff'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -74,7 +74,7 @@ async function main() {
           flag: 'https://coba8.com/images/tot2.gif',
           color: '#cc0000'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -96,7 +96,7 @@ async function main() {
           flag: 'https://coba8.com/images/sin2.gif',
           color: '#4C8ED1'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -118,7 +118,7 @@ async function main() {
           flag: 'https://coba8.com/images/sab2.gif',
           color: '#E51D20'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -140,7 +140,7 @@ async function main() {
           flag: 'https://coba8.com/images/san2.gif',
           color: '#E51D20'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -162,7 +162,7 @@ async function main() {
           flag: 'https://coba8.com/images/sar2.gif',
           color: '#00540E'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([2, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -184,7 +184,7 @@ async function main() {
           flag: 'https://coba8.com/images/gd.jpg',
           color: '#ffd700'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([0, 1, 2, 3, 4, 5, 6]),
         close_extra: JSON.stringify([]),
@@ -206,7 +206,7 @@ async function main() {
           flag: 'https://coba8.com/images/9lotto.png',
           color: '#ffa500'
         }),
-        open_before: 7,
+        open_before: 8,
         open_time: parseTime('00:30:00'),
         close_weekday: JSON.stringify([0, 1, 2, 3, 4, 5, 6]),
         close_extra: JSON.stringify([]),
