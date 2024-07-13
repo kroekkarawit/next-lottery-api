@@ -25,6 +25,16 @@ function formatDate(date) {
   return `${year}${month}${day} ${hours}${minutes}`;
 }
 
+async function findRoundId(lotteryType, closeTime) {
+  const round = await prisma.round.findFirst({
+    where: {
+      lottery_id: lotteryType,
+      close_time: new Date(closeTime),
+    },
+  });
+  return round ? round.id : null;
+}
+
 router.post("/", async (req, res, next) => {
   const { bet, currency, user_id: buyerUserId } = req.body;
   if (!bet) {
@@ -93,11 +103,18 @@ router.post("/", async (req, res, next) => {
           ([lottery_type, lottery_value]) => {
             if (!lottery_value) return;
 
-            Object.entries(bet.date).forEach(([date, date_value]) => {
+            Object.entries(bet.date).forEach(async ([date, date_value]) => {
               if (date_value) {
                 // console.log(
                 //   `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`
                 // );
+
+                const round_id = await findRoundId(lottery_type, date);
+
+                if (!round_id) {
+                  throw new Error('No round found for the given lottery type and close time.');
+                }
+
                 totalAmount += parseFloat(bet_amount);
                 betPrepared.push({
                   user_id: parseInt(user.id),
@@ -108,6 +125,7 @@ router.post("/", async (req, res, next) => {
                   lottery_type: lottery_type,
                   status: "PENDING",
                   result_date: new Date(date),
+                  round_id: round_id
                 });
               }
             });
@@ -118,7 +136,7 @@ router.post("/", async (req, res, next) => {
     if (betPrepared.length <= 0) {
       return res.status(400).json({ message: "bet is empty" });
     }
-    
+
     if (user.credit < totalAmount) {
       await prisma.receipt.delete({
         where: {
