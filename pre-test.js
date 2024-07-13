@@ -141,11 +141,9 @@ const closeLottery = async () => {
     })
 }
 
-
 const openLotteryThai = async () => {
     const date = new Date();
     let lotteryDate = new Date(date);
-
 
     const lottery = await prisma.lottery.findFirst({
         where: {
@@ -154,12 +152,18 @@ const openLotteryThai = async () => {
         },
     });
 
-    const dateOnlyString = lotteryDate.toISOString().split("T")[0];
-    console.log(lottery.open_time.toISOString().split("T")[1]);
+    const openBefore = parseInt(lottery.open_before);
 
-    const openTime = new Date(
+    const lotteryDates = JSON.parse(lottery.close_extra);
+    const nextRoundDate = getFirstFutureDate(lotteryDates);
+
+    const dateOnlyString = nextRoundDate.toISOString().split("T")[0];
+
+    const preOpenTime = new Date(
         `${dateOnlyString}T${lottery.open_time.toISOString().split("T")[1]}`
     );
+    const openTime = new Date(preOpenTime.setDate(preOpenTime.getDate() - openBefore));
+
     const closeTime = new Date(
         `${dateOnlyString}T${lottery.close_time.toISOString().split("T")[1]}`
     );
@@ -167,20 +171,65 @@ const openLotteryThai = async () => {
         `${dateOnlyString}T${lottery.result_time.toISOString().split("T")[1]}`
     );
 
-    const checkExistingRound = await prisma.round.findFirst({
+    const checkRoundExisting = await prisma.round.findFirst({
         where: {
             lottery_id: parseInt(lottery.id),
-            code: lottery.code,
+            status: "ACTIVE",
             open_time: openTime,
             close_time: closeTime,
             result_time: resultTime,
             result: null,
+        }
+    });
+
+    if (!checkRoundExisting) {
+        const roundCreated = await prisma.round.create({
+            data: {
+                lottery_id: parseInt(lottery.id),
+                code: lottery.code,
+                open_time: openTime,
+                close_time: closeTime,
+                result_time: resultTime,
+                result: null,
+                status: "ACTIVE",
+            },
+        });
+        console.log("roundCreated", roundCreated);
+    }
+}
+
+const closeLotteryThai = async () => {
+
+    const lottery = await prisma.lottery.findFirst({
+        where: {
             status: "ACTIVE",
+            code: "TH"
         },
     });
 
-    console.log(checkExistingRound)
+    const updateRound = await prisma.round.updateMany({
+        where: {
+            lottery_id: parseInt(lottery.id),
+            code: lottery.code,
+            close_time: {
+                lte: new Date()
+            },
+            result: null,
+            status: "ACTIVE",
+        },
+        data: {
+            status: "INACTIVE"
+        }
+    });
+
+    if (updateRound.count > 0) {
+        console.log(`Updated ${updateRound.count} round(s) to INACTIVE status.`);
+    }
 }
+
+
+
+
 const checkExact7DaysDifference = (date1, date2) => {
     // Parse the input date strings with dayjs
     const day1 = dayjs(date1);
@@ -195,6 +244,27 @@ const checkExact7DaysDifference = (date1, date2) => {
     return dayDifference === 7;
 };
 
+function getFirstFutureDate(dates) {
+    // Get today's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Remove time part for accurate comparison
+
+    // Parse dates and filter
+    const futureDates = dates
+        .map(dateStr => new Date(dateStr.split("-").reverse().join("-"))) // Convert "DD-MM-YYYY" to "YYYY-MM-DD"
+        .filter(date => date >= today);
+
+    // Sort dates in ascending order
+    futureDates.sort((a, b) => a - b);
+
+    // Return the first date, if available
+    return futureDates.length > 0 ? futureDates[0] : null;
+}
+
 //openLottery(); // Should be called 23:30 - 00:30 only cause it's  will distrupt closeLottery
 
-closeLottery();
+//closeLottery();
+
+//openLotteryThai();
+
+closeLotteryThai();
