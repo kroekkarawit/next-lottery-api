@@ -28,7 +28,7 @@ function formatDate(date) {
 async function findRoundId(lotteryType, closeTime) {
   const round = await prisma.round.findFirst({
     where: {
-      lottery_id: lotteryType,
+      code: lotteryType,
       close_time: new Date(closeTime),
     },
   });
