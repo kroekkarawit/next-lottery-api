@@ -103,6 +103,8 @@ router.post("/", async (req, res, next) => {
           if (!lottery_value) continue;
 
           for (const [date, date_value] of Object.entries(bet.date)) {
+            throw new Error(`date is ${date}`);
+
             if (date_value) {
               const round_id = await findRoundId(lottery_type, date);
 
