@@ -93,46 +93,41 @@ router.post("/", async (req, res, next) => {
     const convertedBets = convertBets(betData);
     let betPrepared = [];
 
-    convertedBets.forEach((bet) => {
-      if (!bet.number) return;
+    for (const bet of convertedBets) {
+      if (!bet.number) continue;
 
-      Object.entries(bet.bet_type).forEach(([bet_type, bet_amount]) => {
-        if (!bet_amount) return;
+      for (const [bet_type, bet_amount] of Object.entries(bet.bet_type)) {
+        if (!bet_amount) continue;
 
-        Object.entries(bet.lotto_type).forEach(
-          ([lottery_type, lottery_value]) => {
-            if (!lottery_value) return;
+        for (const [lottery_type, lottery_value] of Object.entries(bet.lotto_type)) {
+          if (!lottery_value) continue;
 
-            Object.entries(bet.date).forEach(async ([date, date_value]) => {
-              if (date_value) {
-                // console.log(
-                //   `Number: ${bet.number}, Bet Type: ${bet_type}, Bet Amount: ${bet_amount}, Lottery Type: ${lottery_type}, Date: ${date} \n`
-                // );
+          for (const [date, date_value] of Object.entries(bet.date)) {
+            if (date_value) {
+              const round_id = await findRoundId(lottery_type, date);
 
-                const round_id = await findRoundId(lottery_type, date);
-
-                if (!round_id) {
-                  throw new Error('No round found for the given lottery type and close time.');
-                }
-
-                totalAmount += parseFloat(bet_amount);
-                betPrepared.push({
-                  user_id: parseInt(user.id),
-                  receipt_id: newReceipt.id.toString(),
-                  number: bet.number,
-                  amount: parseFloat(bet_amount).toFixed(2),
-                  bet_type: bet_type,
-                  lottery_type: lottery_type,
-                  status: "PENDING",
-                  result_date: new Date(date),
-                  round_id: round_id
-                });
+              if (!round_id) {
+                throw new Error('No round found for the given lottery type and close time.');
               }
-            });
+
+              totalAmount += parseFloat(bet_amount);
+              betPrepared.push({
+                user_id: parseInt(user.id),
+                receipt_id: newReceipt.id.toString(),
+                number: bet.number,
+                amount: parseFloat(bet_amount).toFixed(2),
+                bet_type: bet_type,
+                lottery_type: lottery_type,
+                status: "PENDING",
+                result_date: new Date(date),
+                round_id: round_id,
+              });
+            }
           }
-        );
-      });
-    });
+        }
+      }
+    }
+
     if (betPrepared.length <= 0) {
       return res.status(400).json({ message: "bet is empty" });
     }
@@ -154,18 +149,16 @@ router.post("/", async (req, res, next) => {
       })
     );
 
-    const betsArray = Array.isArray(createBets) ? createBets : [createBets];
-
     const createCommission = await Promise.all(
-      betsArray.map(async (i) => {
+      createBets.map(async (bet) => {
         await prisma.commission.create({
           data: {
             user_id: parseInt(user.id),
-            bet_id: parseInt(i.id),
+            bet_id: parseInt(bet.id),
             amount: betToCommmission({
-              lottery_type: i.lottery_type,
-              bet_type: i.bet_type,
-              amount: i.amount,
+              lottery_type: bet.lottery_type,
+              bet_type: bet.bet_type,
+              amount: bet.amount,
               packages: userPackage,
             }),
           },
@@ -210,6 +203,7 @@ router.post("/", async (req, res, next) => {
       .json({ error: "Internal server error", details: error.message });
   }
 });
+
 
 router.post("/thai", async (req, res, next) => {
   const { bet, currency, user_id: buyerUserId } = req.body;
