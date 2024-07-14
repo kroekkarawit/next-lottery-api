@@ -85,7 +85,6 @@ router.post("/", async (req, res, next) => {
     },
   });
 
-
   const activeRound = await prisma.round.findMany({
     where: {
       status: 'ACTIVE',
@@ -318,6 +317,7 @@ router.post("/thai", async (req, res, next) => {
               lottery_type: "TH",
               status: "PENDING",
               result_date: new Date(lotteryRound.result_time),
+              round_id: new Date(lotteryRound.id),
             });
           }
         );
