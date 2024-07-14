@@ -317,7 +317,7 @@ router.post("/thai", async (req, res, next) => {
               lottery_type: "TH",
               status: "PENDING",
               result_date: new Date(lotteryRound.result_time),
-              round_id: new Date(lotteryRound.id),
+              round_id: parseInt(lotteryRound.id),
             });
           }
         );
