@@ -27,11 +27,17 @@ function formatDate(date) {
 
 function findRoundId(activeRound, lottery_type, date) {
   const targetDate = new Date(date);
+  // Helper function to extract only the date part
+  const extractDate = (dateTime) => {
+    const dateObj = new Date(dateTime);
+    return new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+  };
+
+  const targetDateOnly = extractDate(targetDate);
 
   for (const round of activeRound) {
-    const closeTime = new Date(round.close_time);
-
-    if (round.code === lottery_type && closeTime.getTime() === targetDate.getTime()) {
+    const closeDateOnly = extractDate(round.close_time);
+    if (round.code === lottery_type && closeDateOnly.getTime() === targetDateOnly.getTime()) {
       return round.id;
     }
   }
