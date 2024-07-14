@@ -267,4 +267,16 @@ function getFirstFutureDate(dates) {
 
 //openLotteryThai();
 
-closeLotteryThai();
+//closeLotteryThai();
+const activeRound11 = async () => {
+const activeRound = await prisma.round.findMany({
+    where: {
+        status: 'ACTIVE',
+    },
+});
+
+console.log(activeRound)
+
+}
+
+activeRound11();
