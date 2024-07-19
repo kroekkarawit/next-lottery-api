@@ -43,6 +43,7 @@ const issueLotteryPrize = async () => {
 
     }
 };
+
 function checkStrikePrize(lotteryData) {
     let prizes = [];
     // Extract the necessary data
@@ -56,7 +57,6 @@ function checkStrikePrize(lotteryData) {
 
     // Parse the result JSON
     const resultData = JSON.parse(targetRound.result);
-    const { prize_1, prize_2, prize_3, starters, consolations } = resultData;
 
     // Define a helper function to check for a number in prize categories
     function checkPrizes(prizes, number) {
@@ -66,89 +66,112 @@ function checkStrikePrize(lotteryData) {
         if (Array.isArray(prizes)) {
             return prizes.includes(number);
         } else if (typeof prizes === 'object') {
-            return Object.values(prizes).some(prize => prize === number);
+            return Object.values(prizes).some(prize => prize.number === number);
         } else {
             return prizes === number;
         }
     }
 
+    // Define a helper function to check for a number in prize arrays with order
+    function checkPrizesWithOrder(prizes, number) {
+        if (!prizes) {
+            return false;
+        }
+        return prizes.some(prize => prize.number === number);
+    }
+
+    // Check bet type and update prizes array accordingly
     if (["M", "P", "T", "S", "B", "W", "K"].includes(lotteryType.toUpperCase())) {
-        if (["B"].includes(betType.toUpperCase())) {
-            if (checkPrizes(prize_1, number)) {
-                prizes.push("prize_1");
-            }
-            if (checkPrizes(prize_2, number)) {
-                prizes.push("prize_2");
-            }
-            if (checkPrizes(prize_3, number)) {
-                prizes.push("prize_3");
-            }
-            if (checkPrizes(starters, number)) {
-                prizes.push("starters");
-            }
-            if (checkPrizes(consolations, number)) {
-                prizes.push("consolations");
-            }
-        }
-        if (["S"].includes(betType.toUpperCase())) {
-            if (checkPrizes(prize_1, number)) {
-                prizes.push("prize_1");
-            }
-            if (checkPrizes(prize_2, number)) {
-                prizes.push("prize_2");
-            }
-            if (checkPrizes(prize_3, number)) {
-                prizes.push("prize_3");
-            }
-        }
+        switch (betType.toUpperCase()) {
+            case "B":
+                if (checkPrizes(resultData.prize_1, number)) prizes.push("prize_1");
+                if (checkPrizes(resultData.prize_2, number)) prizes.push("prize_2");
+                if (checkPrizes(resultData.prize_3, number)) prizes.push("prize_3");
+                if (checkPrizes(resultData.starters, number)) prizes.push("starters");
+                if (checkPrizes(resultData.consolations, number)) prizes.push("consolations");
+                break;
 
-        if (["4A"].includes(betType.toUpperCase())) {
-            if (number === prize_1) {
-                prizes.push("prize_1");
-            }
+            case "S":
+                if (checkPrizes(resultData.prize_1, number)) prizes.push("prize_1");
+                if (checkPrizes(resultData.prize_2, number)) prizes.push("prize_2");
+                if (checkPrizes(resultData.prize_3, number)) prizes.push("prize_3");
+                break;
+
+            case "4A":
+                if (number === resultData.prize_1) prizes.push("prize_1");
+                break;
+
+            case "ABC":
+                if (number === resultData.prize_1) prizes.push("prize_1");
+                if (number === resultData.prize_2) prizes.push("prize_2");
+                if (number === resultData.prize_3) prizes.push("prize_3");
+                break;
+
+            case "A":
+                if (number === resultData.prize_1) prizes.push("prize_1");
+                if (number === resultData.prize_2) prizes.push("prize_2");
+                if (number === resultData.prize_3) prizes.push("prize_3");
+                if (checkPrizes(resultData.starters, number)) prizes.push("starters");
+                if (checkPrizes(resultData.consolations, number)) prizes.push("consolations");
+                break;
+
+            case "2A":
+                if (number.slice(0, 2) === resultData.prize_1.slice(0, 2)) prizes.push("prize_1");
+                break;
+
+            case "2F":
+                if (number.slice(-2) === resultData.prize_1.slice(-2)) prizes.push("prize_1");
+                break;
+
+            default:
+                return null; // Invalid bet type
         }
+    } else if (lotteryType.toLowerCase() === "9lotto" || lotteryType.toLowerCase() === "gd") {
+        const { prize_1, prize_2, prize_3, starters, consolations, jackpot, "6D": prize_6D } = resultData;
 
-        if (["ABC"].includes(betType.toUpperCase())) {
-            if (number === prize_1) {
-                prizes.push("prize_1");
-            }
-            if (number === prize_2) {
-                prizes.push("prize_2");
-            }
-            if (number === prize_3) {
-                prizes.push("prize_3");
-            }
-        }
+        switch (betType.toUpperCase()) {
+            case "B":
+                if (checkPrizesWithOrder(prize_1, number)) prizes.push("prize_1");
+                if (checkPrizesWithOrder(prize_2, number)) prizes.push("prize_2");
+                if (checkPrizesWithOrder(prize_3, number)) prizes.push("prize_3");
+                if (checkPrizesWithOrder(starters, number)) prizes.push("starters");
+                if (checkPrizesWithOrder(consolations, number)) prizes.push("consolations");
+                break;
 
-        if (["A"].includes(betType.toUpperCase())) {
+            case "S":
+                if (checkPrizesWithOrder(prize_1, number)) prizes.push("prize_1");
+                if (checkPrizesWithOrder(prize_2, number)) prizes.push("prize_2");
+                if (checkPrizesWithOrder(prize_3, number)) prizes.push("prize_3");
+                break;
 
-            if (number === prize_1) {
-                prizes.push("prize_1");
-            }
-            if (number === prize_2) {
-                prizes.push("prize_2");
-            }
-            if (number === prize_3) {
-                prizes.push("prize_3");
-            }
-            if ((Array.isArray(starters) && starters.includes(number))) {
-                prizes.push("starters");
-            }
-            if ((Array.isArray(consolations) && consolations.includes(number))) {
-                prizes.push("consolations");
-            }
-        }
+            case "4A":
+                if (number === prize_1.number) prizes.push("prize_1");
+                break;
 
-        if (["2A"].includes(betType.toUpperCase())) {
-            if (number.slice(0, 2) === prize_1.slice(0, 2)) {
-                prizes.push("prize_1");
-            }
-        }
+            case "ABC":
+                if (number === prize_1.number) prizes.push("prize_1");
+                if (number === prize_2.number) prizes.push("prize_2");
+                if (number === prize_3.number) prizes.push("prize_3");
+                break;
 
-        if (["2F"].includes(betType.toUpperCase())) {
-            if (number.slice(-2) === prize_1.slice(-2)) {
-                prizes.push("prize_1");
-            }
+            case "A":
+                if (number === prize_1.number) prizes.push("prize_1");
+                if (number === prize_2.number) prizes.push("prize_2");
+                if (number === prize_3.number) prizes.push("prize_3");
+                if (checkPrizesWithOrder(starters, number)) prizes.push("starters");
+                if (checkPrizesWithOrder(consolations, number)) prizes.push("consolations");
+                break;
+
+            case "2A":
+                if (number.slice(0, 2) === prize_1.number.slice(0, 2)) prizes.push("prize_1");
+                break;
+
+            case "2F":
+                if (number.slice(-2) === prize_1.number.slice(-2)) prizes.push("prize_1");
+                break;
+
+            default:
+                return null; // Invalid bet type
         }
     }
 
